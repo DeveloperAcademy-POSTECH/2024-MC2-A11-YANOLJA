@@ -1,5 +1,5 @@
 //
-//  MatchRecordEntity.swift
+//  GameRecordEntity.swift
 //  Yanolja
 //
 //  Created by 박혜운 on 5/13/24.
@@ -8,25 +8,25 @@
 
 import Foundation
 
-struct MatchRecordEntity: Identifiable {
+struct GameRecordModel: Identifiable {
   init(
     date: Date = .init(),
     myTeam: BaseballTeam = .myTeam,
-    matchTeam: BaseballTeam = .otherTeams.first ?? .myTeam,
+    vsTeam: BaseballTeam = .otherTeams.first ?? .myTeam,
     stadiums: BaseballStadiums = .jamsil,
-    result: GameResult = .win
+    gameResult: GameResult = .win
   ) {
     self.date = date
     self.myTeam = myTeam
-    self.matchTeam = matchTeam
+    self.vsTeam = vsTeam
     self.stadiums = stadiums
-    self.result = result
+    self.result = gameResult
   }
   
   let id: UUID = .init()
   var date: Date
   var myTeam: BaseballTeam
-  var matchTeam: BaseballTeam
+  var vsTeam: BaseballTeam
   var stadiums: BaseballStadiums
   var result: GameResult
 }
