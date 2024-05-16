@@ -1,5 +1,5 @@
 //
-//  TotalWinRateView.swift
+//  MainView.swift
 //  Yanolja
 //
 //  Created by 박혜운 on 5/13/24.
@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct MainView: View {
-  @Bindable var usecase: WinRateUseCase
+  @Bindable var winRateUseCase: WinRateUseCase
+  @Bindable var recordUseCase: RecordUseCase
   
   var body: some View {
     VStack(spacing: 30) {
@@ -25,39 +26,37 @@ struct MainView: View {
       VStack(spacing: 3) {
         Text("평균 직관 승리 기여도")
           .font(.footnote)
-        Text("\(usecase.state.myWinRate.totalWinRate.map{ String($0) } ?? "--")%")
+        Text("\(winRateUseCase.state.myWinRate.totalWinRate.map{ String($0) } ?? "--")%")
           .font(.title)
           .fontWeight(.bold)
       }
       
-      // MARK: - 구름 꺼
       ScrollView(.horizontal) {
         HStack(spacing: 10) {
           Button(
             action: {
-              usecase.effect(.tappedTeamWinRateCell)
+              winRateUseCase.effect(.tappedTeamWinRateCell)
             },
             label: {
-              Rectangle()
-                .frame(width: 161, height: 105)
-                .overlay {
-                  Text("구름꺼")
-                    .foregroundStyle(.white)
-                }
+              // MARK: - 구름
+              MediumVsTeamCell()
             }
           )
           .sheet(
             isPresented:
               .init(
                 get: {
-                  usecase.state.tappedTeamWinRateCell
+                  winRateUseCase.state.tappedTeamWinRateCell
                 },
                 set: { _ in
-                  usecase.effect(.tappedTeamWinRateCell)
+                  winRateUseCase.effect(.tappedTeamWinRateCell)
                 }
               ),
             content: {
-              EachTeamWinRateDetailView()
+              VsTeamDetailView(
+                winRateUseCase: winRateUseCase,
+                recordUseCase: recordUseCase
+              )
             }
           )
         }
@@ -68,5 +67,8 @@ struct MainView: View {
 }
 
 #Preview {
-  MainView(usecase: .init())
+  MainView(
+    winRateUseCase: WinRateUseCase(dataService: CoreDataService()),
+    recordUseCase: RecordUseCase()
+  )
 }
