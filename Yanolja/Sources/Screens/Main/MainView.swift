@@ -14,14 +14,13 @@ struct MainView: View {
   
   var body: some View {
     VStack(spacing: 30) {
-      BubbleTextView(text: "직관을 기록하고 나의 승리 기여도를 확인하세요")
-      
-      Circle()
-        .overlay {
-          Text("^-^")
-            .foregroundStyle(.white)
-        }
-        .frame(width: 300)
+      MyCharacterView(
+        characterModel: .init(
+          myTeam: winRateUseCase.state.myTeam,
+          totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
+        )
+      )
+      .padding(.horizontal, 20)
       
       VStack(spacing: 3) {
         Text("평균 직관 승리 기여도")
