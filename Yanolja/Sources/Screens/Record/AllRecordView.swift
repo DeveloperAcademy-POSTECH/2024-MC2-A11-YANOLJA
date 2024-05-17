@@ -21,10 +21,11 @@ struct AllRecordView: View {
             },
             label: {
               // MARK: - 로셸
-              LargeVsTeamCell()
+              LargeVsTeamCell(record: record)
             }
           )
         }
+        .padding(.horizontal, 16)
       }
     }
     .sheet(

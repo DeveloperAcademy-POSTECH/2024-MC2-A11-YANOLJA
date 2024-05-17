@@ -10,9 +10,11 @@ import SwiftUI
 
 // MARK: - 로셸
 struct LargeVsTeamCell: View {
+  let record: GameRecordModel
+  
   var body: some View {
     Rectangle()
-      .frame(width: 343, height: 162)
+      .frame(height: 162)
       .foregroundColor(.brandColor)
       .cornerRadius(20.0)
       .overlay {
@@ -24,17 +26,17 @@ struct LargeVsTeamCell: View {
               .foregroundColor(.black)
               .opacity(0.7)
               .padding(.leading, 20)
-            Text("TEAM NAME")
+            Text(record.vsTeam.name)
               .font(.title)
               .fontWeight(.bold)
               .foregroundStyle(.black)
               .padding(.leading, 20)
             HStack{
-              Text("Date")
+              Text(record.date.gameDate())
                 .font(.body)
                 .foregroundStyle(.black)
                 .padding(.leading, 20)
-              Text("Stadium")
+              Text(record.stadiums.title)
                 .font(.body)
                 .foregroundStyle(.black)
             }
@@ -45,7 +47,7 @@ struct LargeVsTeamCell: View {
           ZStack{
             Circle()
               .frame(width: 80)
-              .foregroundColor(.ssg1)
+              .foregroundColor(record.vsTeam.mainColor)
               .padding(.trailing, 20)
             
             Text("승")
@@ -60,5 +62,5 @@ struct LargeVsTeamCell: View {
 }
 
 #Preview {
-  LargeVsTeamCell()
+  LargeVsTeamCell(record: .init())
 }
