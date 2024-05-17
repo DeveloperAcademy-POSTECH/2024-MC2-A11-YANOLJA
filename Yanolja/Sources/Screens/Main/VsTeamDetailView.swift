@@ -12,15 +12,114 @@ import SwiftUI
 struct VsTeamDetailView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
+  let detailTeam: BaseballTeam
+  
+  init(
+    winRateUseCase: WinRateUseCase,
+    recordUseCase: RecordUseCase,
+    detailTeam: BaseballTeam
+  ) {
+    self.winRateUseCase = winRateUseCase
+    self.recordUseCase = recordUseCase
+    self.detailTeam = detailTeam
+    print(detailTeam)
+  }
   
   var body: some View {
-    Text("브리 꺼")
+    VStack {
+      HStack {
+        Text(detailTeam.name) // 구단 이름
+          .font(.system(.title2, weight: .bold))
+        Spacer()
+      }
+      .padding(.leading, 16) // 수정 예정
+      
+      HStack {
+        ZStack {
+          RoundedRectangle(cornerRadius: 20)
+            .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+            .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+          
+          VStack {
+            HStack {
+              Text("총 직관 횟수")
+                .font(.system(.body, weight: .bold))
+              
+              Spacer()
+            }
+            .padding(.leading, 16)
+            
+            Spacer()
+            
+            HStack {
+              Spacer()
+              
+              // 총 직관 횟수
+              if let recordCount = winRateUseCase.state.myWinRate
+                .vsTeamRecordCount[detailTeam] {
+                Text("\(recordCount)")
+                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+              } else {
+                Text("--")
+                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+              }
+              
+              Text("회")
+                .font(.body)
+            }
+            .padding(.trailing, 16)
+          }
+          .padding([.top, .bottom], 20)
+        }
+        .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+        
+        Spacer()
+        
+        ZStack {
+          RoundedRectangle(cornerRadius: 20)
+            .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+            .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+          
+          VStack {
+            HStack {
+              Text("직관 승률")
+                .font(.system(.body, weight: .bold))
+              
+              Spacer()
+            }.padding(.leading, 16)
+            
+            Spacer()
+            
+            HStack {
+              Spacer()
+              
+              // 직관 승률
+              if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
+                Text("\(winRate)")
+                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+              } else {
+                Text("--")
+                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+              }
+              
+              Text("%")
+                .font(.body)
+            }
+            .padding(.trailing, 16)
+          }
+          .padding([.top, .bottom], 20)
+        }
+        .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+      }
+      .padding([.leading, .trailing], 16)
+    }
   }
 }
 
 #Preview {
   VsTeamDetailView(
     winRateUseCase: WinRateUseCase(dataService: CoreDataService()),
-    recordUseCase: RecordUseCase()
+    recordUseCase: RecordUseCase(), 
+    detailTeam: .kia
   )
 }

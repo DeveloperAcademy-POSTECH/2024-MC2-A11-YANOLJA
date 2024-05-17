@@ -11,6 +11,7 @@ import SwiftUI
 struct MainView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
+  @State var selectedTeam: BaseballTeam?
   
   var body: some View {
     VStack(spacing: 30) {
@@ -33,35 +34,44 @@ struct MainView: View {
       
       ScrollView(.horizontal) {
         HStack(spacing: 10) {
-          Button(
-            action: {
-              winRateUseCase.effect(.tappedTeamWinRateCell)
-            },
-            label: {
-              // MARK: - 구름
-              MediumVsTeamCell()
-            }
-          )
-          .sheet(
-            isPresented:
-              .init(
-                get: {
-                  winRateUseCase.state.tappedTeamWinRateCell
-                },
-                set: { _ in
-                  winRateUseCase.effect(.tappedTeamWinRateCell)
-                }
-              ),
-            content: {
-              VsTeamDetailView(
-                winRateUseCase: winRateUseCase,
-                recordUseCase: recordUseCase
-              )
-            }
-          )
+          
+          ForEach(BaseballTeam.allCases, id: \.self.name) { team in
+            Button(
+              action: {
+                winRateUseCase.effect(.tappedTeamWinRateCell
+                )
+                selectedTeam = team
+              },
+              label: {
+                // MARK: - 구름
+                MediumVsTeamCell(team: team)
+              }
+            )
+          }
         }
         .padding(.horizontal, 15)
       }
+      .sheet(
+        isPresented:
+          .init(
+            get: {
+              winRateUseCase.state.tappedTeamWinRateCell
+            },
+            set: { _ in
+              winRateUseCase.effect(.tappedTeamWinRateCell
+              )
+            }
+          ),
+        content: {
+          if let team = selectedTeam {
+            VsTeamDetailView(
+              winRateUseCase: winRateUseCase,
+              recordUseCase: recordUseCase,
+              detailTeam: team
+            )
+          }
+        }
+      )
     }
   }
 }

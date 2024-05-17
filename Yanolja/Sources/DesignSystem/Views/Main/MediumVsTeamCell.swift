@@ -10,16 +10,17 @@ import SwiftUI
 
 // MARK: - 구름
 struct MediumVsTeamCell: View {
+  let team: BaseballTeam
   var body: some View {
     Rectangle()
       .frame(width: 161, height: 105)
       .overlay {
-        Text("구름꺼")
+        Text(team.name)
           .foregroundStyle(.white)
       }
   }
 }
 
 #Preview {
-  MediumVsTeamCell()
+  MediumVsTeamCell(team: .kia)
 }
