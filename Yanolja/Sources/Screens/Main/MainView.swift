@@ -38,7 +38,7 @@ struct MainView: View {
             },
             label: {
               // MARK: - 구름
-              MediumVsTeamCell()
+              MediumVsTeamCell(team: .doosan, winRate: 30)
             }
           )
           .sheet(
