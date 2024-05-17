@@ -24,7 +24,9 @@ enum BaseballTeam: String, CaseIterable {
   case lg
   case nc
   case ssg
-  
+}
+
+extension BaseballTeam {
   var name: String {
     switch self {
     case .doosan:
