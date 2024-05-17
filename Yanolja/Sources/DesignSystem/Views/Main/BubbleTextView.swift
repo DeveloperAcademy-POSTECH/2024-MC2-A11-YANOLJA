@@ -21,7 +21,7 @@ struct BubbleTextView: View {
         .background(
           RoundedRectangle(cornerRadius: 17.5)
             .foregroundStyle(
-              .angelGray
+              .brandColor
             )
         )
     }
