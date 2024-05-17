@@ -58,6 +58,7 @@ struct AppView: View {
                 label: {
                   Circle()
                     .frame(width: 40)
+                    .foregroundStyle(winRateUseCase.state.myTeam.mainColor)
                     .overlay{
                       Text(winRateUseCase.state.myTeam.name.split(separator: " ").first ?? "")
                         .foregroundStyle(.white)
