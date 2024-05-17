@@ -17,6 +17,7 @@ struct MediumVsTeamCell: View {
     Rectangle()
       .frame(width: 120, height: 130) // 텍스트 크기에 맞게 변동되게 할 수 있을까?
       .overlay {
+
         VStack(alignment: .center, spacing: 12){
           VStack(alignment: .center, spacing: 4){
             Text("VS") // 고정 텍스트

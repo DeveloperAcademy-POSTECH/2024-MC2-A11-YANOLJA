@@ -12,4 +12,16 @@ enum GameResult {
   case win
   case lose
   case draw
+  
+  var title: String {
+    switch self {
+      
+    case .win:
+      return "승"
+    case .lose:
+      return "패"
+    case .draw:
+      return "무"
+    }
+  }
 }
