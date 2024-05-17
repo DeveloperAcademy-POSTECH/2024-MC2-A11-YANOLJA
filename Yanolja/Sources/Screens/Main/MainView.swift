@@ -69,6 +69,8 @@ struct MainView: View {
               recordUseCase: recordUseCase,
               detailTeam: team
             )
+            .presentationDetents([.fraction(0.8)])
+            .presentationDragIndicator(.visible)
           }
         }
       )

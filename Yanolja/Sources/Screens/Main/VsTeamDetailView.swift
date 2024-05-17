@@ -130,7 +130,7 @@ struct VsTeamDetailView: View {
               
               Spacer()
               
-              Text("\(list.result)")
+              Text("\(list.result.title)")
                 .font(.largeTitle)
             }
             .padding([.leading, .trailing], 16)
@@ -141,6 +141,7 @@ struct VsTeamDetailView: View {
       }
       .listStyle(.plain)
     }
+    .padding(.top, 30)
   }
 }
 
