@@ -10,4 +10,10 @@ import Foundation
 
 enum BaseballStadiums {
   case jamsil
+  
+  var title: String {
+    switch self {
+    case .jamsil: return "잠실"
+    }
+  }
 }
