@@ -70,7 +70,7 @@ struct VsTeamDetailView: View {
             }
             .padding(.trailing, 16)
           }
-          .padding([.top, .bottom], 20)
+          .padding(.vertical, 20)
         }
         .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
         
@@ -108,11 +108,11 @@ struct VsTeamDetailView: View {
             }
             .padding(.trailing, 16)
           }
-          .padding([.top, .bottom], 20)
+          .padding(.vertical, 20)
         }
         .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
       }
-      .padding([.leading, .trailing], 16)
+      .padding(.horizontal, 16)
       
       List {
         ForEach(recordUseCase.state.recordList, id: \.id) { list in
