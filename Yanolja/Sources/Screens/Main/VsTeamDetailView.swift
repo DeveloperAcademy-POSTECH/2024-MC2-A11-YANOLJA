@@ -58,7 +58,7 @@ struct VsTeamDetailView: View {
               // 총 직관 횟수
               if let recordCount = winRateUseCase.state.myWinRate
                 .vsTeamRecordCount[detailTeam] {
-                Text("\(recordCount)")
+                Text("\(recordCount.map { String($0) } ?? "--")")
                   .font(.largeTitle)
               } else {
                 Text("--")
@@ -96,7 +96,7 @@ struct VsTeamDetailView: View {
               
               // 직관 승률
               if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
-                Text("\(winRate)")
+                Text("\(winRate.map{ String($0) } ?? "--")")
                   .font(.largeTitle)
               } else {
                 Text("--")
