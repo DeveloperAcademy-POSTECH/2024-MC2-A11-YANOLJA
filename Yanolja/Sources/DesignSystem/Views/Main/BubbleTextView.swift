@@ -21,10 +21,19 @@ struct BubbleTextView: View {
         .background(
           RoundedRectangle(cornerRadius: 17.5)
             .foregroundStyle(
-              .angelGray
+              .brandColor
             )
         )
     }
+    .overlay(
+      alignment: .bottom,
+      content: {
+        YanoljaAsset.bubbleEdge.swiftUIImage
+          .resizable()
+          .scaledToFit()
+          .frame(height: 23)
+      }
+    )
   }
 }
 

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import SwiftUI
+
 struct WinRateModel: Identifiable {
   let id: UUID = .init()
   var totalWinRate: Int?

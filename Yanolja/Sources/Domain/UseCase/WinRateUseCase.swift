@@ -17,7 +17,7 @@ class WinRateUseCase {
     
     // MARK: - Data State
     var myTeam: BaseballTeam = BaseballTeam.myTeam
-    var myWinRate: WinRateModel = .init()
+    var myWinRate: WinRateModel = .init(totalWinRate: 40)
   }
   
   // MARK: - Action
