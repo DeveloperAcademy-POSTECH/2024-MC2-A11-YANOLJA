@@ -26,30 +26,34 @@ struct MainView: View {
       VStack(spacing: 3) {
         Text("평균 직관 승리 기여도")
           .font(.footnote)
-        Text("\(winRateUseCase.state.myWinRate.totalWinRate.map{ String($0) } ?? "--")%")
+        Text("\(winRateUseCase.state.myWinRate.totalWinRate.map{ String($0) } ?? "---")%")
           .font(.title)
           .fontWeight(.bold)
       }
       
       ScrollView(.horizontal) {
         HStack(spacing: 10) {
-          
-          ForEach(BaseballTeam.allCases, id: \.self.name) { team in
-            Button(
-              action: {
-                winRateUseCase.effect(.tappedTeamWinRateCell
-                )
-                selectedTeam = team
-              },
-              label: {
-                // MARK: - 구름
-                MediumVsTeamCell(team: .doosan, winRate: 30)
-              }
-            )
+          ForEach(winRateUseCase.state.myWinRate.sortedTeams, id: \.self.name) { team in
+            if winRateUseCase.state.myTeam != team {
+              Button(
+                action: {
+                  winRateUseCase.effect(.tappedTeamWinRateCell)
+                  selectedTeam = team
+                },
+                label: {
+                  // MARK: - 구름
+                  MediumVsTeamCell(
+                    team: team,
+                    winRate: winRateUseCase.state.myWinRate.vsTeamWinRate[team] ?? nil
+                  )
+                }
+              )
+            }
           }
         }
         .padding(.horizontal, 15)
       }
+      .scrollIndicators(.never)
       .sheet(
         isPresented:
           .init(
