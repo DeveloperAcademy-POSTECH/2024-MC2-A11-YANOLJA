@@ -25,6 +25,7 @@ struct AllRecordView: View {
             }
           )
         }
+        .padding(.horizontal, 16)
       }
     }
     .sheet(

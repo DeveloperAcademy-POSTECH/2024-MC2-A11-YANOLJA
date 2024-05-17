@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: - 로셸
 struct LargeVsTeamCell: View {
-  
+
   let record: GameRecordModel
   
   var body: some View {
@@ -27,7 +27,8 @@ struct LargeVsTeamCell: View {
               .foregroundColor(.black)
               .opacity(0.7)
               .padding(.leading, 20)
-            Text("\(record.vsTeam.name)")
+
+            Text(record.vsTeam.name)
               .font(.title)
               .fontWeight(.bold)
               .foregroundStyle(.black)
@@ -45,7 +46,7 @@ struct LargeVsTeamCell: View {
           ZStack{
             Circle()
               .frame(width: 80)
-              .foregroundColor(.ssg1)
+              .foregroundColor(record.vsTeam.mainColor)
               .padding(.trailing, 20)
             
             Text("\(record.result.title)")
