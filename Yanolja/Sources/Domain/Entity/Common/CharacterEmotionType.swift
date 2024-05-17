@@ -8,12 +8,10 @@
 
 import SwiftUI
 
-struct CharacterEmotionType: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
-
-#Preview {
-    CharacterEmotionType()
+enum CharacterEmotionType: CaseIterable {
+  case none
+  case veryBad
+  case bad
+  case good
+  case excellent
 }

@@ -9,11 +9,23 @@
 import SwiftUI
 
 struct MyCharacterView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+  let characterModel: CharacterModel
+  
+  var body: some View {
+    VStack {
+      BubbleTextView(
+        text: characterModel.message
+      )
+      
+      characterModel.image
+        .resizable()
+        .scaledToFit()
     }
+  }
 }
 
 #Preview {
-    MyCharacterView()
+  MyCharacterView(
+    characterModel: .init(myTeam: .kiwoom)
+  )
 }

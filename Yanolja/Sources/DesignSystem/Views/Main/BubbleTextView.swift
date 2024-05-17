@@ -25,6 +25,15 @@ struct BubbleTextView: View {
             )
         )
     }
+    .overlay(
+      alignment: .bottom,
+      content: {
+        YanoljaAsset.bubbleEdge.swiftUIImage
+          .resizable()
+          .scaledToFit()
+          .frame(height: 23)
+      }
+    )
   }
 }
 
