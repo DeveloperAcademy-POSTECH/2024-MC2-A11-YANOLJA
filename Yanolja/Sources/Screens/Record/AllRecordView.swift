@@ -21,7 +21,7 @@ struct AllRecordView: View {
             },
             label: {
               // MARK: - 로셸
-              LargeVsTeamCell()
+              LargeVsTeamCell(record: record)
             }
           )
         }
