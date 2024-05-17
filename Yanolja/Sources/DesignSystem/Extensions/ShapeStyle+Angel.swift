@@ -9,7 +9,7 @@
 import SwiftUI
 
 extension ShapeStyle where Self == Color {
-  static var angelGray: Color { .init(hex: 0xEEEEEF) }
+  static var brandColor: Color { .init(hex: 0xF2F2F7) }
   
   static var doosan1: Color { .init(hex: 0x03234C) }
   static var doosan2: Color { .init(hex: 0xE22930) }
