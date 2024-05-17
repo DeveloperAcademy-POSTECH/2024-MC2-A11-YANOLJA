@@ -112,6 +112,34 @@ struct VsTeamDetailView: View {
         .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
       }
       .padding([.leading, .trailing], 16)
+      
+      List {
+        ForEach(recordUseCase.state.recordList, id: \.id) { list in
+          // 예시 리스트 🍎🍎🍎🍎
+          ZStack {
+            RoundedRectangle(cornerRadius: 20)
+              .foregroundColor(.pink)
+              .frame(height: 162)
+            
+            HStack {
+              VStack(alignment: .leading) {
+                Text("VS")
+                Text("\(detailTeam.name)")
+                Text("\(list.date.gameDate()) / \(list.stadiums)")
+              }
+              
+              Spacer()
+              
+              Text("\(list.result)")
+                .font(.largeTitle)
+            }
+            .padding([.leading, .trailing], 16)
+          }
+          .listRowSeparator(.hidden)
+          .frame(height: 162)
+        }
+      }
+      .listStyle(.plain)
     }
   }
 }
@@ -119,7 +147,7 @@ struct VsTeamDetailView: View {
 #Preview {
   VsTeamDetailView(
     winRateUseCase: WinRateUseCase(dataService: CoreDataService()),
-    recordUseCase: RecordUseCase(), 
+    recordUseCase: RecordUseCase(),
     detailTeam: .kia
   )
 }
