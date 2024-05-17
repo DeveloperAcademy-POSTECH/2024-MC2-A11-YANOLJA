@@ -10,6 +10,7 @@ import SwiftUI
 
 // MARK: - 로셸
 struct LargeVsTeamCell: View {
+
   let record: GameRecordModel
   
   var body: some View {
@@ -26,19 +27,17 @@ struct LargeVsTeamCell: View {
               .foregroundColor(.black)
               .opacity(0.7)
               .padding(.leading, 20)
+
             Text(record.vsTeam.name)
               .font(.title)
               .fontWeight(.bold)
               .foregroundStyle(.black)
               .padding(.leading, 20)
             HStack{
-              Text(record.date.gameDate())
+              Text("\(record.date.gameDate()) / \(record.stadiums)")
                 .font(.body)
                 .foregroundStyle(.black)
                 .padding(.leading, 20)
-              Text(record.stadiums.title)
-                .font(.body)
-                .foregroundStyle(.black)
             }
           }
           
@@ -50,7 +49,7 @@ struct LargeVsTeamCell: View {
               .foregroundColor(record.vsTeam.mainColor)
               .padding(.trailing, 20)
             
-            Text("승")
+            Text("\(record.result.title)")
               .font(.largeTitle)
               .fontWeight(.bold)
               .foregroundStyle(.white)

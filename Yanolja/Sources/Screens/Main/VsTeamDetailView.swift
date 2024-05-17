@@ -33,17 +33,18 @@ struct VsTeamDetailView: View {
         Spacer()
       }
       .padding(.leading, 16) // 수정 예정
+      .padding(.bottom, 20)
       
       HStack {
         ZStack {
           RoundedRectangle(cornerRadius: 20)
-            .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+            .foregroundColor(.brandColor)
             .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
           
           VStack {
             HStack {
               Text("총 직관 횟수")
-                .font(.system(.body, weight: .bold))
+                .font(.callout)
               
               Spacer()
             }
@@ -58,18 +59,18 @@ struct VsTeamDetailView: View {
               if let recordCount = winRateUseCase.state.myWinRate
                 .vsTeamRecordCount[detailTeam] {
                 Text("\(recordCount)")
-                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                  .font(.largeTitle)
               } else {
                 Text("--")
-                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                  .font(.largeTitle)
               }
               
               Text("회")
-                .font(.body)
+                .font(.subheadline)
             }
             .padding(.trailing, 16)
           }
-          .padding([.top, .bottom], 20)
+          .padding(.vertical, 20)
         }
         .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
         
@@ -77,13 +78,13 @@ struct VsTeamDetailView: View {
         
         ZStack {
           RoundedRectangle(cornerRadius: 20)
-            .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+            .foregroundColor(.brandColor)
             .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
           
           VStack {
             HStack {
               Text("직관 승률")
-                .font(.system(.body, weight: .bold))
+                .font(.callout)
               
               Spacer()
             }.padding(.leading, 16)
@@ -96,47 +97,33 @@ struct VsTeamDetailView: View {
               // 직관 승률
               if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
                 Text("\(winRate)")
-                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                  .font(.largeTitle)
               } else {
                 Text("--")
-                  .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                  .font(.largeTitle)
               }
               
               Text("%")
-                .font(.body)
+                .font(.subheadline)
             }
             .padding(.trailing, 16)
           }
-          .padding([.top, .bottom], 20)
+          .padding(.vertical, 20)
         }
         .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
       }
-      .padding([.leading, .trailing], 16)
+      .padding(.horizontal, 16)
       
       List {
         ForEach(recordUseCase.state.recordList, id: \.id) { list in
-          // 예시 리스트 🍎🍎🍎🍎
-          ZStack {
-            RoundedRectangle(cornerRadius: 20)
-              .foregroundColor(.pink)
-              .frame(height: 162)
-            
-            HStack {
-              VStack(alignment: .leading) {
-                Text("VS")
-                Text("\(detailTeam.name)")
-                Text("\(list.date.gameDate()) / \(list.stadiums)")
-              }
-              
-              Spacer()
-              
-              Text("\(list.result.title)")
-                .font(.largeTitle)
-            }
-            .padding([.leading, .trailing], 16)
+          
+          Button (action: {
+            // 커식 씨 View 추가 필요
           }
+                  ,label: {
+            LargeVsTeamCell(record: list)
+          })
           .listRowSeparator(.hidden)
-          .frame(height: 162)
         }
       }
       .listStyle(.plain)
