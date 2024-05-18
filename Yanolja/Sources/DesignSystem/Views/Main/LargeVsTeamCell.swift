@@ -33,6 +33,8 @@ struct LargeVsTeamCell: View {
               .fontWeight(.bold)
               .foregroundStyle(.black)
               .padding(.leading, 20)
+              .padding(.bottom, 5)
+            
             HStack{
               Text("\(record.date.gameDate()) / \(record.stadiums.rawValue)")
                 .font(.body)
