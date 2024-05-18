@@ -10,12 +10,15 @@ import Foundation
 
 struct GameRecordModel: Identifiable {
   init(
+    id: UUID = .init(),
     date: Date = .init(),
     myTeam: BaseballTeam = .myTeam,
     vsTeam: BaseballTeam = .otherTeams.first ?? .myTeam,
     stadiums: BaseballStadiums = .jamsil,
     gameResult: GameResult = .win
+    
   ) {
+    self.id = id
     self.date = date
     self.myTeam = myTeam
     self.vsTeam = vsTeam
@@ -23,7 +26,7 @@ struct GameRecordModel: Identifiable {
     self.result = gameResult
   }
   
-  let id: UUID = .init()
+  let id: UUID
   var date: Date
   var myTeam: BaseballTeam
   var vsTeam: BaseballTeam

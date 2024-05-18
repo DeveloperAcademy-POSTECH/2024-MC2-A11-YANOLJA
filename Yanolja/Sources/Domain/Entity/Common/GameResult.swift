@@ -8,14 +8,13 @@
 
 import Foundation
 
-enum GameResult {
+enum GameResult: String, CaseIterable {
   case win
   case lose
   case draw
   
   var title: String {
     switch self {
-      
     case .win:
       return "승"
     case .lose:
