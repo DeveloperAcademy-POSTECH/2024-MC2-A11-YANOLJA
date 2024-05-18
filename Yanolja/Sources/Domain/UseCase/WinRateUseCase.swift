@@ -40,7 +40,10 @@ class WinRateUseCase {
     case .success(let allList):
       self.totalWinRate(recordList: allList)
       self.vsAllTeamWinRate(recordList: allList)
-    case .failure: return
+      
+    case .failure:
+      return
+      
     }
   }
   

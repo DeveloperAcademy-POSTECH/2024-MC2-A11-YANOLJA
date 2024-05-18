@@ -34,5 +34,3 @@ struct WinRateModel: Identifiable {
     }
   }
 }
-
-

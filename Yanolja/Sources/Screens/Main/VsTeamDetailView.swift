@@ -58,6 +58,7 @@ struct VsTeamDetailView: View {
               // 총 직관 횟수
               if let recordCount = winRateUseCase.state.myWinRate
                 .vsTeamRecordCount[detailTeam] {
+
                 Text("\(recordCount.map { String($0) } ?? "--")")
                   .font(.system(.largeTitle, weight: .bold))
               } else {
@@ -98,6 +99,7 @@ struct VsTeamDetailView: View {
               if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
                 Text("\(winRate.map{ String($0) } ?? "--")")
                   .font(.system(.largeTitle, weight: .bold))
+                
               } else {
                 Text("--")
                   .font(.system(.largeTitle, weight: .bold))
@@ -116,13 +118,14 @@ struct VsTeamDetailView: View {
       
       List {
         ForEach(recordUseCase.state.recordList, id: \.id) { list in
-          
-          Button (action: {
-            // 커식 씨 View 추가 필요
-          }
-                  ,label: {
-            LargeVsTeamCell(record: list)
-          })
+          Button(
+            action: {
+              // 커식 씨 View 추가 필요
+            },
+            label: {
+              LargeVsTeamCell(record: list)
+            }
+          )
           .listRowSeparator(.hidden)
         }
       }

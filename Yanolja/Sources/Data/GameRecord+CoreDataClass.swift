@@ -7,10 +7,8 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(GameRecord)
-public class GameRecord: NSManagedObject {
-
-}
+public class GameRecord: NSManagedObject { }

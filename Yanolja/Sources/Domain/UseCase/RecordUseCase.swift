@@ -17,7 +17,10 @@ class RecordUseCase {
     var tappedRecordCell: Bool = false
     
     // MARK: - Data State
-    var recordList: [GameRecordModel] = [.init(vsTeam: .kia, gameResult: .draw), .init(vsTeam: .ssg, stadiums: .jamsil)] // 테스트 위한 더미 데이터 한 개
+    var recordList: [GameRecordModel] = [
+      .init(vsTeam: .kia, gameResult: .draw),
+        .init(vsTeam: .ssg, stadiums: .jamsil)
+    ] // 테스트 위한 더미 데이터 한 개
   }
   
   // MARK: - Action
