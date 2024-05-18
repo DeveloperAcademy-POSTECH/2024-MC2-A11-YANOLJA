@@ -28,9 +28,11 @@ extension Project {
                                  destinations: destinations,
                                  dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
     targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, destinations: destinations) })
-    return Project(name: name,
-                   organizationName: yanoljaOrganizationName,
-                   targets: targets)
+    return Project(
+      name: name,
+      organizationName: yanoljaOrganizationName,
+      targets: targets
+    )
   }
   
   // MARK: - Private
@@ -44,8 +46,13 @@ extension Project {
       bundleId: "\(yanoljaOrganizationName).\(name)",
       infoPlist: .default,
       sources: ["\(name)/Sources/**"],
-      resources: [],
-      dependencies: []
+      resources: [
+        "\(name)/Resources/**"
+      ],
+      dependencies: [],
+      coreDataModels: [
+        CoreDataModel("\(name)/Sources/Data/Baseball.xcdatamodeld")
+      ]
     )
     let tests = Target(name: "\(name)Tests",
                        destinations: destinations,
@@ -75,7 +82,10 @@ extension Project {
       sources: ["\(name)/Sources/**"],
       resources: ["\(name)/Resources/**"],
       scripts: commonScripts,
-      dependencies: dependencies
+      dependencies: dependencies,
+      coreDataModels: [
+        CoreDataModel("\(name)/Sources/Data/Baseball.xcdatamodeld")
+      ]
     )
     
     let testTarget = Target(
