@@ -101,4 +101,29 @@ extension BaseballTeam {
       return .ssg2
     }
   }
+  
+  var image: Image {
+    switch self {
+    case .doosan:
+      return YanoljaAsset.doosan.swiftUIImage
+    case .lotte:
+      return YanoljaAsset.lotte.swiftUIImage
+    case .samsung:
+      return YanoljaAsset.samsung.swiftUIImage
+    case .hanhwa:
+      return YanoljaAsset.hanwha.swiftUIImage
+    case .kiwoom:
+      return YanoljaAsset.kiwoom.swiftUIImage
+    case .kia:
+      return YanoljaAsset.kia.swiftUIImage
+    case .kt:
+      return YanoljaAsset.kt.swiftUIImage
+    case .lg:
+      return YanoljaAsset.lg.swiftUIImage
+    case .nc:
+      return YanoljaAsset.nc.swiftUIImage
+    case .ssg:
+      return YanoljaAsset.ssg.swiftUIImage
+    }
+  }
 }

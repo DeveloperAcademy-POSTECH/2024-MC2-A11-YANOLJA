@@ -117,7 +117,15 @@ struct VsTeamDetailView: View {
       .padding(.horizontal, 16)
       
       List {
-        ForEach(recordUseCase.state.recordList, id: \.id) { list in
+        ForEach(
+          recordUseCase
+            .state
+            .recordList
+            .filter{ list in
+              list.vsTeam == detailTeam
+            },
+          id: \.id
+        ) { list in
           Button(
             action: {
               // 커식 씨 View 추가 필요
