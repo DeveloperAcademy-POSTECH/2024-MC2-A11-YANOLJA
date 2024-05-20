@@ -11,7 +11,7 @@ import SwiftUI
 struct BubbleTextView: View {
   let text: String
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       Text(text)
         .lineLimit(1)
         .font(.footnote)
@@ -24,16 +24,11 @@ struct BubbleTextView: View {
               .brandColor
             )
         )
+      YanoljaAsset.bubbleEdge.swiftUIImage
+        .resizable()
+        .scaledToFit()
+        .frame(height: 23)
     }
-    .overlay(
-      alignment: .bottom,
-      content: {
-        YanoljaAsset.bubbleEdge.swiftUIImage
-          .resizable()
-          .scaledToFit()
-          .frame(height: 23)
-      }
-    )
   }
 }
 
