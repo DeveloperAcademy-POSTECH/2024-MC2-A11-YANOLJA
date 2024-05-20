@@ -8,19 +8,19 @@
 
 import SwiftUI
 
-struct TeamSelectCell: View {
-  
+struct MyTeamSelectCell: View {
   let team: BaseballTeam
   
     var body: some View {
       ZStack {
         RoundedRectangle(cornerRadius: 20)
-          .foregroundColor(.brandColor)
+          .fill(.brandColor)
           .frame(width: 105, height: 105)
         
         VStack {
           Text(team.name)
             .font(.system(.caption, weight: .bold))
+            .foregroundColor(.black)
           
           team.image
             .resizable()
@@ -34,5 +34,5 @@ struct TeamSelectCell: View {
 }
 
 #Preview {
-  TeamSelectCell(team: .samsung)
+  MyTeamSelectCell(team: .samsung)
 }
