@@ -61,6 +61,7 @@ struct MyTeamSelectView: View {
         }
       }
     )
+    .disabled(selectedTeam == nil)
     .padding(.horizontal, 16)
     .padding(.bottom, 41)
   }
