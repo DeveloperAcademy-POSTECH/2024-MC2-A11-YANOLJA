@@ -38,11 +38,11 @@ struct MyTeamSelectView: View {
             )
           }
         )
-        .padding(.bottom, 16)
+        .padding(.bottom, 10)
       }
     }
     .padding(.horizontal, 16)
-    .padding(.top, 21)
+    .padding(.top, 10)
     
     Spacer()
     
@@ -63,7 +63,6 @@ struct MyTeamSelectView: View {
     )
     .disabled(selectedTeam == nil)
     .padding(.horizontal, 16)
-    .padding(.bottom, 41)
   }
 }
 
