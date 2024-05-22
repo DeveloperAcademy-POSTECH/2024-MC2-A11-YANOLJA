@@ -28,14 +28,6 @@ struct VsTeamDetailView: View {
   var body: some View {
     VStack {
       HStack {
-        Text(detailTeam.name) // 구단 이름
-          .font(.system(.title2, weight: .bold))
-        Spacer()
-      }
-      .padding(.leading, 16) // 수정 예정
-      .padding(.bottom, 20)
-      
-      HStack {
         ZStack {
           RoundedRectangle(cornerRadius: 20)
             .foregroundColor(.brandColor)
@@ -58,7 +50,7 @@ struct VsTeamDetailView: View {
               // 총 직관 횟수
               if let recordCount = winRateUseCase.state.myWinRate
                 .vsTeamRecordCount[detailTeam] {
-
+                
                 Text("\(recordCount.map { String($0) } ?? "--")")
                   .font(.system(.largeTitle, weight: .bold))
               } else {
@@ -116,28 +108,46 @@ struct VsTeamDetailView: View {
       }
       .padding(.horizontal, 16)
       
-      List {
-        ForEach(
-          recordUseCase
-            .state
-            .recordList
-            .filter{ list in
-              list.vsTeam == detailTeam
-            },
-          id: \.id
-        ) { list in
-          Button(
-            action: {
-              // 커식 씨 View 추가 필요
-            },
-            label: {
-              LargeVsTeamCell(record: list)
-            }
-          )
-          .listRowSeparator(.hidden)
+      let filteredList = recordUseCase
+        .state
+        .recordList
+        .filter{ list in
+          list.vsTeam == detailTeam
         }
+      
+      if filteredList.isEmpty {
+        HStack{
+          Spacer()
+          Text("\(detailTeam.name)와의 직관 기록이 없습니다.")
+            .foregroundColor(.gray)
+            .font(.callout)
+          Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+      } else {
+        List {
+          ForEach(
+            recordUseCase
+              .state
+              .recordList
+              .filter{ list in
+                list.vsTeam == detailTeam
+              },
+            id: \.id
+          ) { list in
+            Button(
+              action: {
+                // 커식 씨 View 추가 필요
+              },
+              label: {
+                LargeVsTeamCell(record: list)
+              }
+            )
+            .listRowSeparator(.hidden)
+          }
+        }
+        .listStyle(.plain)
       }
-      .listStyle(.plain)
     }
     .padding(.top, 30)
   }
