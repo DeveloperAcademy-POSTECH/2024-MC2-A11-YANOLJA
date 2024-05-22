@@ -46,7 +46,7 @@ struct MediumVsTeamCell: View {
                 }
                 // 승률 데이터가 없을 경우
                 else {
-                  Text("---") // 고정 텍스트
+                  Text("--") // 고정 텍스트
                     .font(.callout)
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)

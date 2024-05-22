@@ -26,7 +26,7 @@ struct MainView: View {
       VStack(spacing: 3) {
         Text("평균 직관 승리 기여도")
           .font(.footnote)
-        Text("\(winRateUseCase.state.myWinRate.totalWinRate.map{ String($0) } ?? "---")%")
+        Text("\(winRateUseCase.state.myWinRate.totalWinRate.map{ String($0) } ?? "--")%")
           .font(.title)
           .fontWeight(.bold)
       }
