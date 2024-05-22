@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct AllRecordView: View {
+  @State var selectedRecord: GameRecordModel?
   @Bindable var useCase: RecordUseCase
   
   var body: some View {
@@ -17,7 +18,8 @@ struct AllRecordView: View {
         ForEach(useCase.state.recordList, id: \.id) { record in
           Button(
             action: {
-              useCase.effect(.tappedRecordCell)
+              selectedRecord = record
+              useCase.effect(.tappedRecordCellToEditRecordSheet(true))
             },
             label: {
               // MARK: - 로셸
@@ -33,29 +35,36 @@ struct AllRecordView: View {
       isPresented:
         .init(
           get: {
-            useCase.state.tappedRecordCell
+            useCase.state.editRecordSheet
           },
-          set: { _ in
+          set: { result in
             useCase
-              .effect(.tappedRecordCell)
+              .effect(.tappedRecordCellToEditRecordSheet(result))
           }
         )
     ) {
-      DetailRecordView(to: .edit)
+      if let selectedRecord = selectedRecord {
+        DetailRecordView(
+          to: .edit,
+          record: selectedRecord,
+          usecase: useCase
+        )
+      }
     }
     .sheet(
       isPresented:
         .init(
           get: {
-          useCase.state.tappedPlusButton
+            useCase.state.createRecordSheet
           },
-          set: { _ in
+          set: { result in
             useCase
-              .effect(.tappedAddButton)
+              .effect(.tappedCreateRecordSheet(result))
+            if !result { selectedRecord = nil }
           }
         )
     ) {
-      DetailRecordView(to: .create)
+      DetailRecordView(to: .create, usecase: useCase)
     }
   }
 }
