@@ -12,8 +12,8 @@ struct GameRecordModel: Identifiable {
   init(
     id: UUID = .init(),
     date: Date = .init(),
-    myTeam: BaseballTeam = .myTeam,
-    vsTeam: BaseballTeam = .otherTeams.first ?? .myTeam,
+    myTeam: BaseballTeam = .doosan,
+    vsTeam: BaseballTeam = .doosan.anyOtherTeam(),
     stadiums: BaseballStadiums = .jamsil,
     gameResult: GameResult = .win
     

@@ -52,8 +52,8 @@ struct CoreDataService: DataServiceInterface {
         GameRecordModel(
           id: record.id ?? UUID(),
           date: record.date ?? Date(),
-          myTeam: BaseballTeam(rawValue: record.myTeam ?? "") ?? .myTeam,
-          vsTeam: BaseballTeam(rawValue: record.vsTeam ?? "") ?? .myTeam,
+          myTeam: BaseballTeam(rawValue: record.myTeam ?? "") ?? .doosan,
+          vsTeam: BaseballTeam(rawValue: record.vsTeam ?? "") ?? .doosan.anyOtherTeam(),
           stadiums: BaseballStadiums(rawValue: record.stadiums ?? "") ?? .jamsil,
           gameResult: GameResult(rawValue: record.result ?? "") ?? .win
         )
