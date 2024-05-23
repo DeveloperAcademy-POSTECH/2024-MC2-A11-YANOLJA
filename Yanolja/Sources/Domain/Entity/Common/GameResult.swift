@@ -23,4 +23,15 @@ enum GameResult: String, CaseIterable {
       return "무"
     }
   }
+  
+  var label: String {
+    switch self {
+    case .win:
+      return "승리"
+    case .lose:
+      return "패배"
+    case .draw:
+      return "무승부"
+    }
+  }
 }

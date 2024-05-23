@@ -26,6 +26,7 @@ struct VsTeamDetailView: View {
   }
   
   var body: some View {
+    NavigationStack {
     VStack {
       HStack {
         ZStack {
@@ -43,68 +44,65 @@ struct VsTeamDetailView: View {
             .padding(.leading, 16)
             
             Spacer()
-            
-            HStack {
-              Spacer()
-              
-              // 총 직관 횟수
-              if let recordCount = winRateUseCase.state.myWinRate
-                .vsTeamRecordCount[detailTeam] {
+              HStack {
+                Spacer()
                 
-                Text("\(recordCount.map { String($0) } ?? "--")")
-                  .font(.system(.largeTitle, weight: .bold))
-              } else {
-                Text("--")
-                  .font(.system(.largeTitle, weight: .bold))
+                // 총 직관 횟수
+                if let recordCount = winRateUseCase.state.myWinRate
+                  .vsTeamRecordCount[detailTeam] {
+                  
+                  Text("\(recordCount.map { String($0) } ?? "--")")
+                    .font(.system(.largeTitle, weight: .bold))
+                } else {
+                  Text("--")
+                    .font(.system(.largeTitle, weight: .bold))
+                }
               }
-              
-              Text("회")
-                .font(.subheadline)
+              .padding(.trailing, 16)
             }
-            .padding(.trailing, 16)
+            .padding(.vertical, 20)
           }
-          .padding(.vertical, 20)
-        }
-        .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-        
-        Spacer()
-        
-        ZStack {
-          RoundedRectangle(cornerRadius: 20)
-            .foregroundColor(.brandColor)
-            .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+          .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
           
-          VStack {
-            HStack {
-              Text("직관 승률")
-                .font(.callout)
-              
-              Spacer()
-            }.padding(.leading, 16)
+          Spacer()
+          
+          ZStack {
+            RoundedRectangle(cornerRadius: 20)
+              .foregroundColor(.brandColor)
+              .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
             
-            Spacer()
-            
-            HStack {
-              Spacer()
-              
-              // 직관 승률
-              if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
-                Text("\(winRate.map{ String($0) } ?? "--")")
-                  .font(.system(.largeTitle, weight: .bold))
+            VStack {
+              HStack {
+                Text("직관 승률")
+                  .font(.callout)
                 
-              } else {
-                Text("--")
-                  .font(.system(.largeTitle, weight: .bold))
-              }
+                Spacer()
+              }.padding(.leading, 16)
               
-              Text("%")
-                .font(.subheadline)
+              Spacer()
+              
+              HStack {
+                Spacer()
+                
+                // 직관 승률
+                if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
+                  Text("\(winRate.map{ String($0) } ?? "--")")
+                    .font(.system(.largeTitle, weight: .bold))
+                  
+                } else {
+                  Text("--")
+                    .font(.system(.largeTitle, weight: .bold))
+                }
+                
+                Text("%")
+                  .font(.subheadline)
+              }
+              .padding(.trailing, 16)
             }
-            .padding(.trailing, 16)
+            .padding(.vertical, 20)
           }
-          .padding(.vertical, 20)
+          .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
         }
-        .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
       }
       .padding(.horizontal, 16)
       
@@ -125,31 +123,37 @@ struct VsTeamDetailView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
       } else {
-        List {
-          ForEach(
-            recordUseCase
-              .state
-              .recordList
-              .filter{ list in
-                list.vsTeam == detailTeam
-              },
+          VStack {
+            ForEach(
+              recordUseCase
+                .state
+                .recordList
+                .filter{ list in
+                  list.vsTeam == detailTeam
+                },
             id: \.id
-          ) { list in
-            Button(
-              action: {
-                // 커식 씨 View 추가 필요
-              },
-              label: {
-                LargeVsTeamCell(record: list)
-              }
-            )
-            .listRowSeparator(.hidden)
-          }
+            ) { list in
+              NavigationLink(
+                destination: {
+                  DetailRecordView(
+                    to: .edit,
+                    record: list,
+                    usecase: recordUseCase
+                  )
+                  .navigationBarBackButtonHidden()
+                },
+                label: {
+                  LargeVsTeamCell(record: list)
+                }
+             )
+           }
+          Spacer()
+         }
         }
-        .listStyle(.plain)
       }
+      .padding(.top, 30)
+      .padding(.horizontal, 16)
     }
-    .padding(.top, 30)
   }
 }
 

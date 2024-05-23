@@ -70,7 +70,7 @@ struct AppView: View {
               Button(
                 action: {
                   recordUseCase
-                    .effect(.tappedAddButton)
+                    .effect(.tappedCreateRecordSheet(true))
                 },
                 label: {
                   Image(
