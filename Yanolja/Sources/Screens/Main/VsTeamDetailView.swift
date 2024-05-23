@@ -56,6 +56,9 @@ struct VsTeamDetailView: View {
                   Text("--")
                     .font(.system(.largeTitle, weight: .bold))
                 }
+                
+                Text("회")
+                  .font(.subheadline)
               }
               .padding(.trailing, 16)
             }
@@ -103,7 +106,6 @@ struct VsTeamDetailView: View {
           .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
         }
       }
-      .padding(.horizontal, 16)
       
       let filteredList = recordUseCase
         .state
