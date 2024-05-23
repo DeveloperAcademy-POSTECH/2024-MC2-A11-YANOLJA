@@ -19,16 +19,19 @@ struct DetailRecordView: View {
   @Environment (\.dismiss) var dismiss
   @State var recording: GameRecordModel = .init() // 수정할 때
   private let editType: RecordViewEditType
-  var usecase: RecordUseCase
+  private let changeRecords: ([GameRecordModel]) -> Void
+  var recordUseCase: RecordUseCase
   
   init(
     to editType: RecordViewEditType,
     record: GameRecordModel = .init(),
-    usecase: RecordUseCase
+    usecase: RecordUseCase,
+    changeRecords: @escaping ([GameRecordModel]) -> Void
   ) {
     self.editType = editType
     self._recording = State(initialValue: record)
-    self.usecase = usecase
+    self.recordUseCase = usecase
+    self.changeRecords = changeRecords
   }
   
   var body: some View {
@@ -84,7 +87,9 @@ struct DetailRecordView: View {
         if editType == .edit {
           Button(
             action: {
-              usecase.effect(.tappedDeleteRecord(recording.id))
+              recordUseCase.effect(.tappedDeleteRecord(recording.id))
+              changeRecords(recordUseCase.state.recordList)
+              dismiss()
             },
             label: {
               Text("삭제")
@@ -98,9 +103,11 @@ struct DetailRecordView: View {
             Button(
               action: {
                 if editType == .create { // 생성 시
-                  usecase.effect(.tappedSaveNewRecord(recording))
+                  recordUseCase.effect(.tappedSaveNewRecord(recording))
+                  changeRecords(recordUseCase.state.recordList)
                 } else { // 수정 시
-                  usecase.effect(.tappedEditNewRecord(recording))
+                  recordUseCase.effect(.tappedEditNewRecord(recording))
+                  changeRecords(recordUseCase.state.recordList)
                   dismiss()
                 }
               },
@@ -113,9 +120,9 @@ struct DetailRecordView: View {
             Button(
               action: {
                 if editType == .create { // 생성 시
-                  usecase.effect(.tappedCreateRecordSheet(false))
+                  recordUseCase.effect(.tappedCreateRecordSheet(false))
                 } else { // 수정 시
-                  usecase.effect(.tappedRecordCellToEditRecordSheet(false))
+                  recordUseCase.effect(.tappedRecordCellToEditRecordSheet(false))
                   dismiss()
                 }
               },
@@ -147,6 +154,6 @@ struct DetailRecordView: View {
     // 현재 보여지는 뷰는 편집(삭제 버튼 추가)
     to: .edit,
     // usecase는 RecordUseCase를 사용
-    usecase: RecordUseCase()
+    usecase: RecordUseCase(dataService: CoreDataService()), changeRecords: { _ in }
   )
 }
