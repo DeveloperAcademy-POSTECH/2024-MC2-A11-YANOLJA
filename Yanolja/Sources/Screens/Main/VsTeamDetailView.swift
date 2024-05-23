@@ -27,32 +27,23 @@ struct VsTeamDetailView: View {
   
   var body: some View {
     NavigationStack {
-      VStack {
-        HStack {
-          Text(detailTeam.name) // 구단 이름
-            .font(.system(.title2, weight: .bold))
-          Spacer()
-        }
-        .padding(.leading, 16) // 수정 예정
-        .padding(.bottom, 20)
-        
-        HStack {
-          ZStack {
-            RoundedRectangle(cornerRadius: 20)
-              .foregroundColor(.brandColor)
-              .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-            
-            VStack {
-              HStack {
-                Text("총 직관 횟수")
-                  .font(.callout)
-                
-                Spacer()
-              }
-              .padding(.leading, 16)
+    VStack {
+      HStack {
+        ZStack {
+          RoundedRectangle(cornerRadius: 20)
+            .foregroundColor(.brandColor)
+            .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+          
+          VStack {
+            HStack {
+              Text("총 직관 횟수")
+                .font(.callout)
               
               Spacer()
-              
+            }
+            .padding(.leading, 16)
+            
+            Spacer()
               HStack {
                 Spacer()
                 
@@ -66,9 +57,6 @@ struct VsTeamDetailView: View {
                   Text("--")
                     .font(.system(.largeTitle, weight: .bold))
                 }
-                
-                Text("회")
-                  .font(.subheadline)
               }
               .padding(.trailing, 16)
             }
@@ -115,39 +103,57 @@ struct VsTeamDetailView: View {
           }
           .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
         }
-        .padding(.bottom, 20)
-        
-        VStack {
-          ForEach(
-            recordUseCase
-              .state
-              .recordList
-              .filter{ list in
-                list.vsTeam == detailTeam
-              },
-            id: \.id
-          ) { list in
-            NavigationLink(
-              destination: {
-                DetailRecordView(
-                  to: .edit,
-                  record: list,
-                  usecase: recordUseCase
-                )
-                .navigationBarBackButtonHidden()
-              },
-              label: {
-                LargeVsTeamCell(record: list)
-              }
-            )
-          }
+      }
+      .padding(.horizontal, 16)
+      
+      let filteredList = recordUseCase
+        .state
+        .recordList
+        .filter{ list in
+          list.vsTeam == detailTeam
+        }
+      
+      if filteredList.isEmpty {
+        HStack{
           Spacer()
+          Text("\(detailTeam.name)와의 직관 기록이 없습니다.")
+            .foregroundColor(.gray)
+            .font(.callout)
+          Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+      } else {
+          VStack {
+            ForEach(
+              recordUseCase
+                .state
+                .recordList
+                .filter{ list in
+                  list.vsTeam == detailTeam
+                },
+            id: \.id
+            ) { list in
+              NavigationLink(
+                destination: {
+                  DetailRecordView(
+                    to: .edit,
+                    record: list,
+                    usecase: recordUseCase
+                  )
+                  .navigationBarBackButtonHidden()
+                },
+                label: {
+                  LargeVsTeamCell(record: list)
+                }
+             )
+           }
+          Spacer()
+         }
         }
       }
       .padding(.top, 30)
       .padding(.horizontal, 16)
     }
-    
   }
 }
 

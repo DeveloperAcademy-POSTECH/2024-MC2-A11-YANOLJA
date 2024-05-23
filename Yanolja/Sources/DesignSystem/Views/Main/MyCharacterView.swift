@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MyCharacterView: View {
   let characterModel: CharacterModel
+  @State private var isBouncing = false
   
   var body: some View {
     VStack {
@@ -20,6 +21,15 @@ struct MyCharacterView: View {
       characterModel.image
         .resizable()
         .scaledToFit()
+//        .offset(y: isBouncing ? -20 : 35)
+//        .onAppear {
+//            withAnimation(
+//              Animation.easeInOut(duration: 1.4)
+//                    .repeatForever(autoreverses: true)
+//            ) {
+//                isBouncing.toggle()
+//            }
+//        }
     }
   }
 }
