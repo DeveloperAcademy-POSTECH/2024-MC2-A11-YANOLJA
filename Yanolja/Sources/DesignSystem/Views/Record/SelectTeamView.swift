@@ -52,6 +52,7 @@ struct SelectTeamView: View {
             }
           }
         )
+        .accentColor(.gray)
         .labelsHidden()
         .pickerStyle(MenuPickerStyle())
         .accentColor(.gray)

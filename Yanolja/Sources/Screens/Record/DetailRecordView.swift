@@ -31,6 +31,9 @@ struct DetailRecordView: View {
     self.usecase = usecase
   }
   
+  let texts = ["a", "b", "c"]
+  @State private var selected: String = "a"
+  
   var body: some View {
     NavigationStack {
       List {
@@ -38,6 +41,7 @@ struct DetailRecordView: View {
           "직관 정보",
           content: {
             selectDate
+
               HStack(spacing: 10) {
                 SelectTeamView(
                     type: .my,
@@ -69,8 +73,8 @@ struct DetailRecordView: View {
                 Text($0.name)
               }
             }
-            .pickerStyle(.menu)
             .accentColor(.gray)
+            .pickerStyle(.menu)
           }
         )
         // 직관 결과 선택 picker
@@ -80,15 +84,17 @@ struct DetailRecordView: View {
           }
         }
         .pickerStyle(.inline)
-        
-        
         if editType == .edit {
           Button(
             action: {
               usecase.effect(.tappedDeleteRecord(recording.id))
             },
             label: {
-              Text("삭제")
+              HStack{
+                Spacer()
+                Text("기록 삭제").foregroundStyle(.red)
+                Spacer()
+              }
             }
           )
         }
@@ -106,7 +112,7 @@ struct DetailRecordView: View {
                 }
               },
               label: {
-                Text("완료")
+                Text("완료").bold()
               }
             )
           }
@@ -122,7 +128,6 @@ struct DetailRecordView: View {
               },
               label: {
                 Text("취소")
-                  .foregroundStyle(.red)
               }
             )
           }
