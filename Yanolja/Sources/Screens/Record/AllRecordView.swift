@@ -9,17 +9,19 @@
 import SwiftUI
 
 struct AllRecordView: View {
+  @Bindable var winRateUseCase: WinRateUseCase
+  @Bindable var recordUseCase: RecordUseCase
   @State var selectedRecord: GameRecordModel?
-  @Bindable var useCase: RecordUseCase
   
   var body: some View {
     VStack(spacing: 0) {
       ScrollView {
-        ForEach(useCase.state.recordList, id: \.id) { record in
+        ForEach(
+          recordUseCase.state.recordList.sorted { $0.date > $1.date }, id: \.id) { record in
           Button(
             action: {
               selectedRecord = record
-              useCase.effect(.tappedRecordCellToEditRecordSheet(true))
+              recordUseCase.effect(.tappedRecordCellToEditRecordSheet(true))
             },
             label: {
               // MARK: - 로셸
@@ -35,10 +37,10 @@ struct AllRecordView: View {
       isPresented:
         .init(
           get: {
-            useCase.state.editRecordSheet
+            recordUseCase.state.editRecordSheet
           },
           set: { result in
-            useCase
+            recordUseCase
               .effect(.tappedRecordCellToEditRecordSheet(result))
           }
         )
@@ -47,7 +49,8 @@ struct AllRecordView: View {
         DetailRecordView(
           to: .edit,
           record: selectedRecord,
-          usecase: useCase
+          usecase: recordUseCase, 
+          changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords)) }
         )
       }
     }
@@ -55,20 +58,35 @@ struct AllRecordView: View {
       isPresented:
         .init(
           get: {
-            useCase.state.createRecordSheet
+            recordUseCase.state.createRecordSheet
           },
           set: { result in
-            useCase
+            recordUseCase
               .effect(.tappedCreateRecordSheet(result))
             if !result { selectedRecord = nil }
           }
         )
     ) {
-      DetailRecordView(to: .create, usecase: useCase)
+      DetailRecordView(
+        to: .create,
+        record: .init(
+          myTeam: winRateUseCase.state.myTeam,
+          vsTeam: winRateUseCase.state.myTeam.anyOtherTeam()
+        ),
+        usecase: recordUseCase,
+        changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords))
+        }
+      )
     }
   }
 }
 
 #Preview {
-  AllRecordView(useCase: .init())
+  AllRecordView(
+    winRateUseCase: .init(
+      dataService: CoreDataService(),
+      myTeamService: UserDefaultsService()
+    ),
+    recordUseCase: .init(dataService: CoreDataService())
+  )
 }
