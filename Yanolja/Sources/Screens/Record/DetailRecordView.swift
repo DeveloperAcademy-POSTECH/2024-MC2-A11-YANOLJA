@@ -41,30 +41,28 @@ struct DetailRecordView: View {
           "직관 정보",
           content: {
             selectDate
-            HStack(spacing: 10) {
-              SelectTeamView(
-                type: .my,
-                selectedTeam: recording.myTeam,
-                tappedAction: { selectedTeam in
-                  recording.myTeam = selectedTeam
-                }
-              )
-              
-              Text("VS")
-                .font(.title2)
-                .foregroundStyle(.gray)
-              
-              // 드는 의문점. 여기는 accentColor 안줘도 회색인데
-              // 경기장은 accentColor를 줘야만 회색으로 바뀜
-              // 자동으로 회색 picker가 된 이유가 뭘까?
-              SelectTeamView(
-                type: .vs,
-                selectedTeam: recording.vsTeam,
-                tappedAction: { selectedTeam in
-                  recording.vsTeam = selectedTeam
-                }
-              )
-            }
+
+              HStack(spacing: 10) {
+                SelectTeamView(
+                    type: .my,
+                    selectedTeam: recording.myTeam,
+                    
+                    tappedAction: { selectedTeam in
+                      recording.myTeam = selectedTeam
+                    }
+                )
+                Text("VS")
+                  .font(.title2)
+                  .foregroundStyle(.gray)
+                
+                SelectTeamView(
+                  type: .vs,
+                  selectedTeam: recording.vsTeam,
+                  tappedAction: { selectedTeam in
+                    recording.vsTeam = selectedTeam
+                  }
+                )
+              }
             
             // 경기장 Picker
             Picker(
@@ -77,7 +75,6 @@ struct DetailRecordView: View {
             }
             .accentColor(.gray)
             .pickerStyle(.menu)
-            
           }
         )
         // 직관 결과 선택 picker
