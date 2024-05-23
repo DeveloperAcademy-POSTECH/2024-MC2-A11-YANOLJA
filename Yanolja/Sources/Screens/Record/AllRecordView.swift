@@ -14,34 +14,51 @@ struct AllRecordView: View {
   
   var body: some View {
     VStack(spacing: 0) {
-      ScrollView {
-        ForEach(useCase.state.recordList, id: \.id) { record in
-          Button(
-            action: {
-              selectedRecord = record
-              useCase.effect(.tappedRecordCellToEditRecordSheet(true))
-            },
-            label: {
-              // MARK: - 로셸
-              LargeVsTeamCell(record: record)
-            }
-          )
+      
+      let filteredList = useCase.state.recordList
+      
+      if filteredList.isEmpty {
+        HStack{
+          Spacer()
+          Text("직관 기록이 없습니다. \n직관 기록을 추가하세요!")
+            .multilineTextAlignment(.center)
+            .foregroundColor(.gray)
+            .font(.callout)
+          Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16)
+        .padding(.bottom, 100)
+      } else {
+        ScrollView {
+          ForEach(useCase.state.recordList, id: \.id) { record in
+            Button(
+              action: {
+                selectedRecord = record
+                useCase.effect(.tappedRecordCellToEditRecordSheet(true))
+              },
+              label: {
+                // MARK: - 로셸
+                LargeVsTeamCell(record: record)
+              }
+            )
+          }
+          .padding(.horizontal, 16)
+        }
+        .padding(.top, 16)
       }
-      .padding(.top, 16)
     }
     .sheet(
       isPresented:
-        .init(
-          get: {
-            useCase.state.editRecordSheet
-          },
-          set: { result in
-            useCase
-              .effect(.tappedRecordCellToEditRecordSheet(result))
-          }
-        )
+          .init(
+            get: {
+              useCase.state.editRecordSheet
+            },
+            set: { result in
+              useCase
+                .effect(.tappedRecordCellToEditRecordSheet(result))
+            }
+          )
     ) {
       if let selectedRecord = selectedRecord {
         DetailRecordView(
@@ -53,16 +70,16 @@ struct AllRecordView: View {
     }
     .sheet(
       isPresented:
-        .init(
-          get: {
-            useCase.state.createRecordSheet
-          },
-          set: { result in
-            useCase
-              .effect(.tappedCreateRecordSheet(result))
-            if !result { selectedRecord = nil }
-          }
-        )
+          .init(
+            get: {
+              useCase.state.createRecordSheet
+            },
+            set: { result in
+              useCase
+                .effect(.tappedCreateRecordSheet(result))
+              if !result { selectedRecord = nil }
+            }
+          )
     ) {
       DetailRecordView(to: .create, usecase: useCase)
     }
