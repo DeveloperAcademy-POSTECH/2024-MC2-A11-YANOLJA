@@ -17,10 +17,7 @@ class RecordUseCase {
     var editRecordSheet: Bool = false
     
     // MARK: - Data State
-    var recordList: [GameRecordModel] = [
-      .init(vsTeam: .kia, gameResult: .draw),
-        .init(vsTeam: .ssg, stadiums: .jamsil)
-    ] // 테스트 위한 더미 데이터 한 개
+    var recordList: [GameRecordModel] = []
   }
   
   // MARK: - Action
@@ -32,9 +29,21 @@ class RecordUseCase {
     case tappedDeleteRecord(UUID)
   }
   
+  private var dataService: DataServiceInterface
   private var _state: State = .init() // 실제 원본 State, Usecase 내부에서만 접근가능
   var state: State { // View에서 접근하는 state
     return _state
+  }
+  
+  init(dataService: DataServiceInterface) {
+    self.dataService = dataService
+    
+    switch dataService.readAllRecord() {
+    case .success(let dataList):
+      _state.recordList = dataList
+    case .failure:
+      return
+    }
   }
   
   // MARK: - View Action
@@ -46,17 +55,27 @@ class RecordUseCase {
       
     case let .tappedRecordCellToEditRecordSheet(result):
       self._state.editRecordSheet = result
+      
+      // 데이터 저장 요청
     case let .tappedSaveNewRecord(newRecord):
-      // 데이터에 저장
+      _ = dataService.saveRecord(newRecord)
+      _state.recordList.append(newRecord)
       self._state.createRecordSheet = false
-    case let .tappedEditNewRecord(editRecord):
+      
       // 데이터 수정 요청
+    case let .tappedEditNewRecord(editRecord):
+      _ = dataService.editRecord(editRecord)
+      if let index = _state.recordList.map({ $0.id }).firstIndex(of: editRecord.id) {
+        _state.recordList[index] = editRecord
+      }
       self._state.editRecordSheet = false
-    case let .tappedDeleteRecord(id):
+      
       // 데이터 삭제 요청
+    case let .tappedDeleteRecord(id):
+      _ = dataService.removeRecord(id: id)
+      _state.recordList = _state.recordList.filter { $0.id != id }
       self._state.editRecordSheet = false
       return
     }
-    
   }
 }
