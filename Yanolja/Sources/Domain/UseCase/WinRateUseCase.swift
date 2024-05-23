@@ -16,17 +16,19 @@ class WinRateUseCase {
     var tappedTeamWinRateCell: Bool = false
     
     // MARK: - Data State
-    var myTeam: BaseballTeam = BaseballTeam.myTeam
+    var myTeam: BaseballTeam = .doosan
     var myWinRate: WinRateModel = .init(totalWinRate: 40)
   }
   
   // MARK: - Action
   enum Action {
     // MARK: - User Action
-    case requestTeamChange(BaseballTeam)
+    case tappedTeamChange(BaseballTeam)
     case tappedTeamWinRateCell
-    case saveNewRecord(GameRecordModel) // 새로운 기록이 추가되면 WinRate 다시 계산
+    case updateRecords([GameRecordModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
+    case sendMyTeamInfo(BaseballTeam)
   }
+
   
   private var dataService: DataServiceInterface
   private var _state: State = .init() // 원본 State, Usecase 내부에서만 접근가능
@@ -34,35 +36,38 @@ class WinRateUseCase {
     _state
   }
   
-  init(dataService: DataServiceInterface) {
+  init(
+    dataService: DataServiceInterface,
+    myTeamService: MyTeamServiceInterface
+  ) {
     self.dataService = dataService
+
+    _state.myTeam = myTeamService.readMyTeam() ?? .doosan
+    
     switch dataService.readAllRecord() {
     case .success(let allList):
       self.totalWinRate(recordList: allList)
       self.vsAllTeamWinRate(recordList: allList)
       
     case .failure:
-      return
-      
+      break
     }
   }
   
   func effect(_ action: Action) {
     switch action {
-    case .requestTeamChange(let team):
-      BaseballTeam.myTeam = team
+    case let .tappedTeamChange(team):
       _state.myTeam = team
       
     case .tappedTeamWinRateCell:
       _state.tappedTeamWinRateCell.toggle()
       
-    case .saveNewRecord(let new):
-      switch self.dataService.saveRecord(new) {
-      case .success: return
-//      self.editWinRate(add: new) // 변경하고
-//      self.editVsTeamWinRate(add: new) // 변경하고
-      case .failure: return
-      }
+    case .updateRecords(let records):
+      self.totalWinRate(recordList: records)
+      self.vsAllTeamWinRate(recordList: records)
+      
+    case let .sendMyTeamInfo(myTeam):
+      _state.myTeam = myTeam
     }
   }
   
