@@ -137,7 +137,7 @@ extension CoreDataService {
     else { print("창원 변경 후 데이터 불러오기 실패"); return }
     print("창원 변경 후 불러 온 데이터 리스트 \(list)")
     
-    guard case .success(let list) = dataService.removeRecord(id: id)
+    guard case .success = dataService.removeRecord(id: id)
     else { print("id로 데이터 삭제 실패"); return }
     print("id로 데이터 삭제 요청 성공")
     
