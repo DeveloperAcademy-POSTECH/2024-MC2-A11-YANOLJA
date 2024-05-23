@@ -54,6 +54,7 @@ struct SelectTeamView: View {
             }
           }
         )
+        .accentColor(.gray)
         .labelsHidden()
       }
       

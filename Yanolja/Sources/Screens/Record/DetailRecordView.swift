@@ -31,6 +31,9 @@ struct DetailRecordView: View {
     self.usecase = usecase
   }
   
+  let texts = ["a", "b", "c"]
+  @State private var selected: String = "a"
+  
   var body: some View {
     NavigationStack {
       List {
@@ -38,7 +41,6 @@ struct DetailRecordView: View {
           "직관 정보",
           content: {
             selectDate
-
             HStack(spacing: 10) {
               SelectTeamView(
                 type: .my,
@@ -52,6 +54,9 @@ struct DetailRecordView: View {
                 .font(.title2)
                 .foregroundStyle(.gray)
               
+              // 드는 의문점. 여기는 accentColor 안줘도 회색인데
+              // 경기장은 accentColor를 줘야만 회색으로 바뀜
+              // 자동으로 회색 picker가 된 이유가 뭘까?
               SelectTeamView(
                 type: .vs,
                 selectedTeam: recording.vsTeam,
@@ -60,6 +65,7 @@ struct DetailRecordView: View {
                 }
               )
             }
+            
             // 경기장 Picker
             Picker(
               "경기장",
@@ -69,7 +75,9 @@ struct DetailRecordView: View {
                 Text($0.name)
               }
             }
+            .accentColor(.gray)
             .pickerStyle(.menu)
+            
           }
         )
         // 직관 결과 선택 picker
@@ -79,15 +87,17 @@ struct DetailRecordView: View {
           }
         }
         .pickerStyle(.inline)
-        
-        
         if editType == .edit {
           Button(
             action: {
               usecase.effect(.tappedDeleteRecord(recording.id))
             },
             label: {
-              Text("삭제")
+              HStack{
+                Spacer()
+                Text("기록 삭제").foregroundStyle(.red)
+                Spacer()
+              }
             }
           )
         }
@@ -105,7 +115,7 @@ struct DetailRecordView: View {
                 }
               },
               label: {
-                Text("완료")
+                Text("완료").bold()
               }
             )
           }
@@ -121,7 +131,6 @@ struct DetailRecordView: View {
               },
               label: {
                 Text("취소")
-                  .foregroundStyle(.red)
               }
             )
           }
