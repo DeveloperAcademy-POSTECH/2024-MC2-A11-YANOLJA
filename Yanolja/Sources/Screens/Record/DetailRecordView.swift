@@ -38,28 +38,28 @@ struct DetailRecordView: View {
           "직관 정보",
           content: {
             selectDate
-
-            HStack(spacing: 10) {
-              SelectTeamView(
-                type: .my,
-                selectedTeam: recording.myTeam,
-                tappedAction: { selectedTeam in
-                  recording.myTeam = selectedTeam
-                }
-              )
-              
-              Text("VS")
-                .font(.title2)
-                .foregroundStyle(.gray)
-              
-              SelectTeamView(
-                type: .vs,
-                selectedTeam: recording.vsTeam,
-                tappedAction: { selectedTeam in
-                  recording.vsTeam = selectedTeam
-                }
-              )
-            }
+              HStack(spacing: 10) {
+                SelectTeamView(
+                    type: .my,
+                    selectedTeam: recording.myTeam,
+                    
+                    tappedAction: { selectedTeam in
+                      recording.myTeam = selectedTeam
+                    }
+                )
+                Text("VS")
+                  .font(.title2)
+                  .foregroundStyle(.gray)
+                
+                SelectTeamView(
+                  type: .vs,
+                  selectedTeam: recording.vsTeam,
+                  tappedAction: { selectedTeam in
+                    recording.vsTeam = selectedTeam
+                  }
+                )
+              }
+            
             // 경기장 Picker
             Picker(
               "경기장",
@@ -70,6 +70,7 @@ struct DetailRecordView: View {
               }
             }
             .pickerStyle(.menu)
+            .accentColor(.gray)
           }
         )
         // 직관 결과 선택 picker
