@@ -17,9 +17,9 @@ enum RecordViewEditType {
 // MARK: - 고스트 꺼
 struct DetailRecordView: View {
   @Environment (\.dismiss) var dismiss
-  var usecase: RecordUseCase
-  @State var recording: GameRecordModel // 수정할 때
+  @State var recording: GameRecordModel = .init() // 수정할 때
   private let editType: RecordViewEditType
+  var usecase: RecordUseCase
   
   init(
     to editType: RecordViewEditType,
@@ -27,13 +27,13 @@ struct DetailRecordView: View {
     usecase: RecordUseCase
   ) {
     self.editType = editType
-    self.recording = record
+    self._recording = State(initialValue: record)
     self.usecase = usecase
   }
   
   var body: some View {
     NavigationStack {
-      List() {
+      List {
         Section(
           "직관 정보",
           content: {
@@ -130,7 +130,6 @@ struct DetailRecordView: View {
       .navigationTitle("오늘의 직관")
       .navigationBarTitleDisplayMode(.inline)
     }
-    
   }
   
   var selectDate: some View {
