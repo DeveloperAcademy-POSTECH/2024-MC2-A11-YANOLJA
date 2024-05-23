@@ -56,6 +56,9 @@ struct VsTeamDetailView: View {
                   Text("--")
                     .font(.system(.largeTitle, weight: .bold))
                 }
+                
+                Text("회")
+                  .font(.subheadline)
               }
               .padding(.trailing, 16)
             }
