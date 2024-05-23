@@ -34,7 +34,7 @@ struct SelectTeamView: View {
         .resizable()
         .scaledToFit()
       
-      HStack() {
+      HStack {
         Picker(
           "",
           selection: .init(

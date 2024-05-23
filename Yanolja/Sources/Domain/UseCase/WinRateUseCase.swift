@@ -81,7 +81,7 @@ class WinRateUseCase {
       return
     }
     let winRate = Int(Double(winCount) / Double(winRateGames) * 100)
-        _state.myWinRate.totalWinRate = winRate
+    _state.myWinRate.totalWinRate = winRate
     // recordList를 토대로 총 승률 계산
     // _state.myWinRate.totalWinRate = 계산값 입력
   }

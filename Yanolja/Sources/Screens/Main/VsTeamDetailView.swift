@@ -22,28 +22,27 @@ struct VsTeamDetailView: View {
     self.winRateUseCase = winRateUseCase
     self.recordUseCase = recordUseCase
     self.detailTeam = detailTeam
-    print(detailTeam)
   }
   
   var body: some View {
     NavigationStack {
-    VStack {
-      HStack {
-        ZStack {
-          RoundedRectangle(cornerRadius: 20)
-            .foregroundColor(.brandColor)
-            .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-          
-          VStack {
-            HStack {
-              Text("총 직관 횟수")
-                .font(.callout)
+      VStack {
+        HStack {
+          ZStack {
+            RoundedRectangle(cornerRadius: 20)
+              .foregroundColor(.brandColor)
+              .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+            
+            VStack {
+              HStack {
+                Text("총 직관 횟수")
+                  .font(.callout)
+                
+                Spacer()
+              }
+              .padding(.leading, 16)
               
               Spacer()
-            }
-            .padding(.leading, 16)
-            
-            Spacer()
               HStack {
                 Spacer()
                 
@@ -123,39 +122,39 @@ struct VsTeamDetailView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
       } else {
-          VStack {
-            ForEach(
-              recordUseCase
-                .state
-                .recordList
-                .filter{ list in
-                  list.vsTeam == detailTeam
-                },
+        VStack {
+          ForEach(
+            recordUseCase
+              .state
+              .recordList
+              .filter{ list in
+                list.vsTeam == detailTeam
+              },
             id: \.id
-            ) { list in
-              NavigationLink(
-                destination: {
-                  DetailRecordView(
-                    to: .edit,
-                    record: list,
-                    usecase: recordUseCase
-                  )
-                  .navigationBarBackButtonHidden()
-                },
-                label: {
-                  LargeVsTeamCell(record: list)
-                }
-             )
-           }
+          ) { list in
+            NavigationLink(
+              destination: {
+                DetailRecordView(
+                  to: .edit,
+                  record: list,
+                  usecase: recordUseCase
+                )
+                .navigationBarBackButtonHidden()
+              },
+              label: {
+                LargeVsTeamCell(record: list)
+              }
+            )
+          }
           Spacer()
-         }
         }
       }
-      .padding(.top, 30)
-      .padding(.horizontal, 16)
     }
+    .padding(.top, 30)
+    .padding(.horizontal, 16)
   }
 }
+
 
 #Preview {
   VsTeamDetailView(
