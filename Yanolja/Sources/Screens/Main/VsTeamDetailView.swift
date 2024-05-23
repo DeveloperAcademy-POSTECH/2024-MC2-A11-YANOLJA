@@ -103,7 +103,6 @@ struct VsTeamDetailView: View {
           .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
         }
       }
-      .padding(.horizontal, 16)
       
       let filteredList = recordUseCase
         .state
