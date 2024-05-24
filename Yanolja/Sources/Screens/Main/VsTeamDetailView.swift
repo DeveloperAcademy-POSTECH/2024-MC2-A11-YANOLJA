@@ -128,35 +128,39 @@ struct VsTeamDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16)
       } else {
-        VStack {
-          ForEach(
-            recordUseCase
-              .state
-              .recordList
-              .filter{ list in
-                list.vsTeam == detailTeam
-              },
-            id: \.id
-          ) { list in
-            NavigationLink(
-              destination: {
-                DetailRecordView(
-                  to: .edit,
-                  record: list,
-                  usecase: recordUseCase,
-                  changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords))
-                  }
-                )
-                .navigationBarBackButtonHidden()
-              },
-              label: {
-                LargeVsTeamCell(record: list)
-              }
-            )
+        ScrollView() {
+          VStack {
+            ForEach(
+              recordUseCase
+                .state
+                .recordList
+                .filter{ list in
+                  list.vsTeam == detailTeam
+                },
+              id: \.id
+            ) { list in
+              NavigationLink(
+                destination: {
+                  DetailRecordView(
+                    to: .edit,
+                    record: list,
+                    usecase: recordUseCase,
+                    changeRecords: { updateRecords in
+                      winRateUseCase.effect(.updateRecords(updateRecords)
+                      )
+                    }
+                  )
+                  .navigationBarBackButtonHidden()
+                },
+                label: {
+                  LargeVsTeamCell(record: list)
+                }
+              )
+            }
+            Spacer()
           }
-          Spacer()
+          .padding(.horizontal, 16)
         }
-        .padding(.horizontal, 16)
       }
     }
   }
