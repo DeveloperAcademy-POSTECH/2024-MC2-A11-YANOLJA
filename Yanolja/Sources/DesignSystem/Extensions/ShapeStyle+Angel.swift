@@ -23,8 +23,8 @@ extension ShapeStyle where Self == Color {
   static var kiwoom1: Color { .init(hex: 0x820024) }
   static var kiwoom2: Color { .init(hex: 0xEC008F) }
   
-  static var hanhwa1: Color { .init(hex: 0xF37321) }
-  static var hanhwa2: Color { .init(hex: 0xFFFFFF) }
+  static var hanwha1: Color { .init(hex: 0xF37321) }
+  static var hanwha2: Color { .init(hex: 0xFFFFFF) }
   
   static var lg1: Color { .init(hex: 0xC30136) }
   static var lg2: Color { .init(hex: 0xFFFFFF) }
