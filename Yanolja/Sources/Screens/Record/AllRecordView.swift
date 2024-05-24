@@ -44,7 +44,7 @@ struct AllRecordView: View {
           }
           .padding(.horizontal, 16)
         }
-        .padding(.top, 16)
+        .padding(.top, 25)
       }
     }
     .sheet(
