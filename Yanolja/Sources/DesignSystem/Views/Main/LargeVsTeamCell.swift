@@ -35,10 +35,14 @@ struct LargeVsTeamCell: View {
               .padding(.leading, 20)
               .padding(.bottom, 5)
             
-            HStack{
-              Text("\(record.date.gameDate()) / \(record.stadiums.name)")
-                .font(.body)
-                .foregroundStyle(.black)
+            VStack(alignment: .leading) {
+              Text("\(record.date.gameDate(with: "yyyy년 MM월 dd일"))")
+                .font(.callout)
+                .foregroundStyle(.gray)
+                .padding(.leading, 20)
+              Text("\(record.stadiums.name)")
+                .font(.callout)
+                .foregroundStyle(.gray)
                 .padding(.leading, 20)
             }
           }
