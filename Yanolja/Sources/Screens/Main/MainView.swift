@@ -15,14 +15,17 @@ struct MainView: View {
   @State var selectedTeam: BaseballTeam?
   
   var body: some View {
-    VStack(spacing: 30) {
+    VStack(spacing: 0) {
       MyCharacterView(
         characterModel: .init(
           myTeam: myTeamUseCase.state.myTeam ?? .doosan,
           totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
         )
       )
-      .padding(.horizontal, 20)
+      .padding(.top, 25)
+      .padding(.horizontal, 30)
+      
+      Spacer()
       
       VStack(spacing: 3) {
         Text("평균 직관 승리 기여도")
@@ -31,6 +34,8 @@ struct MainView: View {
           .font(.title)
           .fontWeight(.bold)
       }
+      
+      Spacer()
       
       ScrollView(.horizontal) {
         HStack(spacing: 10) {
@@ -57,14 +62,14 @@ struct MainView: View {
       .scrollIndicators(.never)
       .sheet(
         isPresented:
-          .init(
-            get: {
-              winRateUseCase.state.tappedTeamWinRateCell
-            },
-            set: { _ in
-              winRateUseCase.effect(.tappedTeamWinRateCell)
-            }
-          ),
+            .init(
+              get: {
+                winRateUseCase.state.tappedTeamWinRateCell
+              },
+              set: { _ in
+                winRateUseCase.effect(.tappedTeamWinRateCell)
+              }
+            ),
         content: {
           if let team = selectedTeam {
             VsTeamDetailView(
@@ -78,6 +83,7 @@ struct MainView: View {
         }
       )
     }
+    .padding(.bottom, 40)
   }
 }
 

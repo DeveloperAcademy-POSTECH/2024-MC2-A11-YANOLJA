@@ -23,11 +23,12 @@ struct AppView: View {
   )
   
   var body: some View {
+
     NavigationStack {
       TabView(selection: $selection) {
         MainView(
           winRateUseCase: winRateUseCase,
-          recordUseCase: recordUseCase, 
+          recordUseCase: recordUseCase,
           myTeamUseCase: myTeamUseCase
         )
         .tag(0)
@@ -37,6 +38,7 @@ struct AppView: View {
         )
         .tag(1)
       }
+      .ignoresSafeArea(edges: .bottom)
       .tabViewStyle(PageTabViewStyle())
       .indexViewStyle(
         PageIndexViewStyle(backgroundDisplayMode: .always)
@@ -120,4 +122,8 @@ struct AppView: View {
       }
     }
   }
+}
+
+#Preview {
+  AppView()
 }
