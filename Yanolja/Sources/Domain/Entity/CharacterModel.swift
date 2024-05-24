@@ -69,7 +69,7 @@ struct CharacterModel {
         return YanoljaAsset.samsungEmotion5.swiftUIImage
       }
       
-    case .hanhwa:
+    case .hanwha:
       switch emotionByWinRate {
       case .none:
         return YanoljaAsset.hanwhaEmotion1.swiftUIImage

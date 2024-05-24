@@ -14,7 +14,7 @@ enum BaseballTeam: String, CaseIterable {
   case doosan
   case lotte
   case samsung
-  case hanhwa
+  case hanwha
   case kiwoom
   case kia
   case kt
@@ -32,7 +32,7 @@ extension BaseballTeam {
       return "롯데 자이언츠"
     case .samsung:
       return "삼성 라이온즈"
-    case .hanhwa:
+    case .hanwha:
       return "한화 이글스"
     case .kiwoom:
       return "키움 히어로즈"
@@ -57,8 +57,8 @@ extension BaseballTeam {
       return .lotte1
     case .samsung:
       return .samsung1
-    case .hanhwa:
-      return .hanhwa1
+    case .hanwha:
+      return .hanwha1
     case .kiwoom:
       return .kiwoom1
     case .kia:
@@ -82,8 +82,8 @@ extension BaseballTeam {
       return .lotte2
     case .samsung:
       return .samsung2
-    case .hanhwa:
-      return .hanhwa2
+    case .hanwha:
+      return .hanwha2
     case .kiwoom:
       return .kiwoom2
     case .kia:
@@ -107,7 +107,7 @@ extension BaseballTeam {
       return YanoljaAsset.lotte.swiftUIImage
     case .samsung:
       return YanoljaAsset.samsung.swiftUIImage
-    case .hanhwa:
+    case .hanwha:
       return YanoljaAsset.hanwha.swiftUIImage
     case .kiwoom:
       return YanoljaAsset.kiwoom.swiftUIImage
