@@ -29,8 +29,8 @@ extension ShapeStyle where Self == Color {
   static var lg1: Color { .init(hex: 0xC30136) }
   static var lg2: Color { .init(hex: 0xFFFFFF) }
   
-  static var nc1: Color { .init(hex: 0x1F477A) }
-  static var nc2: Color { .init(hex: 0xC59F7B) }
+  static var nc1: Color { .init(hex: 0xC59F7B) }
+  static var nc2: Color { .init(hex: 0x1F477A) }
   
   static var ssg1: Color { .init(hex: 0xCE142C) }
   static var ssg2: Color { .init(hex: 0xFDBB2F) }
