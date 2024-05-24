@@ -6,8 +6,8 @@ import Foundation
 /// Create your own conventions, e.g: a func that makes sure all shared targets are "static frameworks"
 /// See https://docs.tuist.io/guides/helpers/
 
-let teamName: String = "Yanolja"
-let yanoljaOrganizationName: String = "com.mc2.yanolja"
+let teamName: String = "yanolja"
+let yanoljaOrganizationName: String = "com.mc2"
 let commonScripts: [TargetScript] = [
   .pre(
     script: """
@@ -71,6 +71,14 @@ extension Project {
       "CFBundleShortVersionString": "1.0",
       "CFBundleVersion": "1",
       "UILaunchStoryboardName": "LaunchScreen",
+      "UIUserInterfaceStyle": "Light",
+      "UISupportedInterfaceOrientations": [
+        "Item 0": "UIInterfaceOrientationPortrait"
+      ],
+      "CFBundleDevelopmentRegion": "ko",
+      "CFBundleDisplayName": "승리지쿄",
+      "CFBundleName": "승리지쿄",
+      "ITSAppUsesNonExemptEncryption": false, // 수출 규정
       "CFBundleIcons": [
         "CFBundleAlternateIcons": [
           "DOOSAN": [
@@ -124,9 +132,10 @@ extension Project {
       
       let mainTarget = Target(
         name: name,
-        destinations: destinations,
+        platform: .iOS,
         product: .app,
-        bundleId: "\(yanoljaOrganizationName).\(name)",
+        bundleId: "\(yanoljaOrganizationName).\(teamName)",
+        deploymentTarget: .iOS(targetVersion: "17.0", devices: [.iphone]),
         infoPlist: .extendingDefault(with: infoPlist),
         sources: ["\(name)/Sources/**"],
         resources: ["\(name)/Resources/**"],
@@ -146,7 +155,8 @@ extension Project {
         sources: ["\(name)/Tests/**"],
         dependencies: [
           .target(name: "\(name)")
-        ])
+        ]
+      )
       return [mainTarget, testTarget]
       }
       }
