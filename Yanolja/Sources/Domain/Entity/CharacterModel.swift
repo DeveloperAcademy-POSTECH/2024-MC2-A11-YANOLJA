@@ -160,7 +160,7 @@ struct CharacterModel {
     }
   }
   
-  private var emotionByWinRate: CharacterEmotionType {
+  var emotionByWinRate: CharacterEmotionType {
     switch self.totalWinRate {
     case .none:
       return .none

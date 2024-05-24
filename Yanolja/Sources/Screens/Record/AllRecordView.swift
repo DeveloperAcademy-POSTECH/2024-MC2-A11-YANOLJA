@@ -15,23 +15,37 @@ struct AllRecordView: View {
   
   var body: some View {
     VStack(spacing: 0) {
-      ScrollView {
-        ForEach(
-          recordUseCase.state.recordList.sorted { $0.date > $1.date }, id: \.id) { record in
-          Button(
-            action: {
-              selectedRecord = record
-              recordUseCase.effect(.tappedRecordCellToEditRecordSheet(true))
-            },
-            label: {
-              // MARK: - 로셸
-              LargeVsTeamCell(record: record)
-            }
-          )
+      let filteredList = recordUseCase.state.recordList
+      if filteredList.isEmpty {
+        HStack{
+          Spacer()
+          Text("직관 기록이 없습니다. \n직관 기록을 추가하세요!")
+            .multilineTextAlignment(.center)
+            .foregroundColor(.gray)
+            .font(.callout)
+          Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16)
+        .padding(.bottom, 100)
+      } else {
+        ScrollView {
+          ForEach(recordUseCase.state.recordList.sorted { $0.date > $1.date }, id: \.id) { record in
+            Button(
+              action: {
+                selectedRecord = record
+                recordUseCase.effect(.tappedRecordCellToEditRecordSheet(true))
+              },
+              label: {
+                // MARK: - 로셸
+                LargeVsTeamCell(record: record)
+              }
+            )
+          }
+          .padding(.horizontal, 16)
+        }
+        .padding(.top, 16)
       }
-      .padding(.top, 16)
     }
     .sheet(
       isPresented:
@@ -44,6 +58,7 @@ struct AllRecordView: View {
               .effect(.tappedRecordCellToEditRecordSheet(result))
           }
         )
+
     ) {
       if let selectedRecord = selectedRecord {
         DetailRecordView(

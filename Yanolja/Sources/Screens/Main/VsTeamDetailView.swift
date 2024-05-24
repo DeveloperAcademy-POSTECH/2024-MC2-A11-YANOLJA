@@ -56,6 +56,9 @@ struct VsTeamDetailView: View {
                   Text("--")
                     .font(.system(.largeTitle, weight: .bold))
                 }
+                
+                Text("회")
+                  .font(.subheadline)
               }
               .padding(.trailing, 16)
             }
@@ -103,6 +106,8 @@ struct VsTeamDetailView: View {
           .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
         }
       }
+      .padding(.top, 30)
+      .padding(.bottom, 12)
       .padding(.horizontal, 16)
       
       let filteredList = recordUseCase
@@ -121,6 +126,7 @@ struct VsTeamDetailView: View {
           Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 16)
       } else {
         VStack {
           ForEach(
@@ -150,10 +156,9 @@ struct VsTeamDetailView: View {
           }
           Spacer()
         }
+        .padding(.horizontal, 16)
       }
     }
-    .padding(.top, 30)
-    .padding(.horizontal, 16)
   }
 }
 

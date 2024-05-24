@@ -34,6 +34,9 @@ struct DetailRecordView: View {
     self.changeRecords = changeRecords
   }
   
+  let texts = ["a", "b", "c"]
+  @State private var selected: String = "a"
+  
   var body: some View {
     NavigationStack {
       List {
@@ -42,27 +45,28 @@ struct DetailRecordView: View {
           content: {
             selectDate
 
-            HStack(spacing: 10) {
-              SelectTeamView(
-                type: .my,
-                selectedTeam: recording.myTeam,
-                tappedAction: { selectedTeam in
-                  recording.myTeam = selectedTeam
-                }
-              )
-              
-              Text("VS")
-                .font(.title2)
-                .foregroundStyle(.gray)
-              
-              SelectTeamView(
-                type: .vs,
-                selectedTeam: recording.vsTeam,
-                tappedAction: { selectedTeam in
-                  recording.vsTeam = selectedTeam
-                }
-              )
-            }
+              HStack(spacing: 10) {
+                SelectTeamView(
+                    type: .my,
+                    selectedTeam: recording.myTeam,
+                    
+                    tappedAction: { selectedTeam in
+                      recording.myTeam = selectedTeam
+                    }
+                )
+                Text("VS")
+                  .font(.title2)
+                  .foregroundStyle(.gray)
+                
+                SelectTeamView(
+                  type: .vs,
+                  selectedTeam: recording.vsTeam,
+                  tappedAction: { selectedTeam in
+                    recording.vsTeam = selectedTeam
+                  }
+                )
+              }
+            
             // 경기장 Picker
             Picker(
               "경기장",
@@ -72,6 +76,7 @@ struct DetailRecordView: View {
                 Text($0.name)
               }
             }
+            .accentColor(.gray)
             .pickerStyle(.menu)
           }
         )
@@ -82,8 +87,6 @@ struct DetailRecordView: View {
           }
         }
         .pickerStyle(.inline)
-        
-        
         if editType == .edit {
           Button(
             action: {
@@ -92,7 +95,11 @@ struct DetailRecordView: View {
               dismiss()
             },
             label: {
-              Text("삭제")
+              HStack{
+                Spacer()
+                Text("기록 삭제").foregroundStyle(.red)
+                Spacer()
+              }
             }
           )
         }
@@ -112,7 +119,7 @@ struct DetailRecordView: View {
                 }
               },
               label: {
-                Text("완료")
+                Text("완료").bold()
               }
             )
           }
@@ -128,7 +135,6 @@ struct DetailRecordView: View {
               },
               label: {
                 Text("취소")
-                  .foregroundStyle(.red)
               }
             )
           }

@@ -13,22 +13,20 @@ struct SelectTeamView: View {
   private let type: SelectType
   private let tappedAction: (BaseballTeam) -> Void
   
-  
   init(
     type: SelectType,
     selectedTeam: BaseballTeam,
     tappedAction: @escaping (BaseballTeam
     ) -> Void) {
+    
     self.type = type
     self.selectedTeam = selectedTeam
     self.tappedAction = tappedAction
   }
   
-  
   var body: some View {
     VStack(spacing: 0) {
       Text(type.title)
-      
       selectedTeam
         .image
         .resizable()
@@ -54,9 +52,11 @@ struct SelectTeamView: View {
             }
           }
         )
+        .accentColor(.gray)
         .labelsHidden()
+        .pickerStyle(MenuPickerStyle())
+        .accentColor(.gray)
       }
-      
     }
   }
 }
@@ -84,3 +84,4 @@ extension SelectTeamView {
     tappedAction: { team in print(team) }
   )
 }
+
