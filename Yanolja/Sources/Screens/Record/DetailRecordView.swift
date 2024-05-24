@@ -18,6 +18,9 @@ enum RecordViewEditType {
 struct DetailRecordView: View {
   @Environment (\.dismiss) var dismiss
   @State var recording: GameRecordModel = .init() // 수정할 때
+  @State private var showingAlert: Bool = false
+  @State private var changeMyTeam: BaseballTeam?
+  
   private let editType: RecordViewEditType
   private let changeRecords: ([GameRecordModel]) -> Void
   var recordUseCase: RecordUseCase
@@ -34,9 +37,6 @@ struct DetailRecordView: View {
     self.changeRecords = changeRecords
   }
   
-  let texts = ["a", "b", "c"]
-  @State private var selected: String = "a"
-  
   var body: some View {
     NavigationStack {
       List {
@@ -44,28 +44,49 @@ struct DetailRecordView: View {
           "직관 정보",
           content: {
             selectDate
-
-              HStack(spacing: 10) {
-                SelectTeamView(
-                    type: .my,
-                    selectedTeam: recording.myTeam,
-                    
-                    tappedAction: { selectedTeam in
-                      recording.myTeam = selectedTeam
-                    }
-                )
-                Text("VS")
-                  .font(.title2)
-                  .foregroundStyle(.gray)
-                
-                SelectTeamView(
-                  type: .vs,
-                  selectedTeam: recording.vsTeam,
-                  tappedAction: { selectedTeam in
-                    recording.vsTeam = selectedTeam
+            
+            HStack(spacing: 10) {
+              SelectTeamView(
+                type: .my, // 나의 팀
+                selectedTeam: .init( // 이미지와 팀이름 선택
+                  get: { recording.myTeam },
+                  set: { selectedMyTeam in
+                    showingAlert = true
+                    changeMyTeam = selectedMyTeam
+//                    recording.myTeam = selectedMyTeam
                   }
                 )
+              )
+              .alert(isPresented: $showingAlert) {
+                Alert(
+                  title: Text("알림"),
+                  message: Text("모든 직관 기록은 \n 나의 직관 승률에 반영됩니다. \n 그래도 나의 팀을 변경하시겠습니까?"),
+                  primaryButton:
+                      .destructive(Text("취소")) {
+                        
+                      },
+                  secondaryButton:
+                      .default(Text("확인")) {
+                        // MARK: - 나의 팀 변경: 동시에 상태 팀 선택 리스트 제한
+                        if let myTeam = changeMyTeam {
+                          recording.myTeam = myTeam
+                          guard recording.vsTeam == myTeam else { return }
+                          recording.vsTeam = recording.vsTeam.anyOtherTeam()
+                        }
+                      }
+                )
               }
+              
+              Text("VS")
+                .font(.title2)
+                .foregroundStyle(.gray)
+              
+              SelectTeamView(
+                type: .vs(myteam: recording.myTeam),
+                selectedTeam: $recording.vsTeam
+                // 예외 처리 하고 싶어요. 두산 베어스가 없게(나랑 같은팀은 표시 안되게)
+              )
+            }
             
             // 경기장 Picker
             Picker(
@@ -97,7 +118,8 @@ struct DetailRecordView: View {
             label: {
               HStack{
                 Spacer()
-                Text("기록 삭제").foregroundStyle(.red)
+                Text("기록 삭제")
+                  .foregroundStyle(.red)
                 Spacer()
               }
             }
@@ -119,7 +141,8 @@ struct DetailRecordView: View {
                 }
               },
               label: {
-                Text("완료").bold()
+                Text("완료")
+                  .bold()
               }
             )
           }

@@ -9,19 +9,19 @@
 import SwiftUI
 
 struct SelectTeamView: View {
-  @State var selectedTeam: BaseballTeam
+  @Binding var selectedTeam: BaseballTeam
   private let type: SelectType
-  private let tappedAction: (BaseballTeam) -> Void
+//  private let tappedAction: (BaseballTeam) -> Void
   
   init(
     type: SelectType,
-    selectedTeam: BaseballTeam,
-    tappedAction: @escaping (BaseballTeam
-    ) -> Void) {
-    
+    selectedTeam: Binding<BaseballTeam>
+//    tappedAction: @escaping (BaseballTeam
+//    ) -> Void) 
+  ) {
     self.type = type
-    self.selectedTeam = selectedTeam
-    self.tappedAction = tappedAction
+    self._selectedTeam = selectedTeam
+//    self.tappedAction = tappedAction
   }
   
   var body: some View {
@@ -35,19 +35,29 @@ struct SelectTeamView: View {
       HStack {
         Picker(
           "",
-          selection: .init(
-            get: { selectedTeam },
-            set: { team in
-              selectedTeam = team
-              tappedAction(team)
-            }
-          ),
+          selection: $selectedTeam
+//              .init(
+//            get: { selectedTeam },
+//            set: { team in
+//              selectedTeam = team
+//              tappedAction(team)
+//            }
+//              )
+          ,
           content: {
-            ForEach(BaseballTeam.allCases, id: \.self) { team in
-              HStack {
-                Text(team.name)
-                Spacer()
-                
+            if case let .vs(myteam) = type {
+              ForEach(BaseballTeam.allCases.filter{ $0 != myteam }, id: \.self) { team in
+                HStack {
+                  Text(team.name)
+                  Spacer()
+                }
+              }
+            } else {
+              ForEach(BaseballTeam.allCases, id: \.self) { team in
+                HStack {
+                  Text(team.name)
+                  Spacer()
+                }
               }
             }
           }
@@ -62,9 +72,9 @@ struct SelectTeamView: View {
 }
 
 extension SelectTeamView {
-  enum SelectType {
+  enum SelectType: Equatable {
     case my
-    case vs
+    case vs(myteam: BaseballTeam)
     
     var title: String {
       switch self {
@@ -80,8 +90,9 @@ extension SelectTeamView {
 #Preview {
   SelectTeamView(
     type: .my,
-    selectedTeam: .doosan,
-    tappedAction: { team in print(team) }
+    selectedTeam: .constant(.doosan)
+//    ,
+//    tappedAction: { team in print(team) }
   )
 }
 
