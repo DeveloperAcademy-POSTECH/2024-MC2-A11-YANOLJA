@@ -140,7 +140,6 @@ struct DetailRecordView: View {
           }
         }
       )
-      .padding(.horizontal, 10)
       .navigationTitle("오늘의 직관")
       .navigationBarTitleDisplayMode(.inline)
     }
