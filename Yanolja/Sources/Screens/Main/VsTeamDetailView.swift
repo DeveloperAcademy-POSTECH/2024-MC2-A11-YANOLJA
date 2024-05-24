@@ -143,7 +143,9 @@ struct VsTeamDetailView: View {
                 DetailRecordView(
                   to: .edit,
                   record: list,
-                  usecase: recordUseCase
+                  usecase: recordUseCase,
+                  changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords))
+                  }
                 )
                 .navigationBarBackButtonHidden()
               },
@@ -163,8 +165,11 @@ struct VsTeamDetailView: View {
 
 #Preview {
   VsTeamDetailView(
-    winRateUseCase: WinRateUseCase(dataService: CoreDataService()),
-    recordUseCase: RecordUseCase(),
+    winRateUseCase: WinRateUseCase(
+      dataService: CoreDataService(),
+      myTeamService: UserDefaultsService()
+    ),
+    recordUseCase: RecordUseCase(dataService: CoreDataService()),
     detailTeam: .kia
   )
 }

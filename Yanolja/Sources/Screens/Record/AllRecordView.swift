@@ -9,14 +9,13 @@
 import SwiftUI
 
 struct AllRecordView: View {
+  @Bindable var winRateUseCase: WinRateUseCase
+  @Bindable var recordUseCase: RecordUseCase
   @State var selectedRecord: GameRecordModel?
-  @Bindable var useCase: RecordUseCase
   
   var body: some View {
     VStack(spacing: 0) {
-      
-      let filteredList = useCase.state.recordList
-      
+      let filteredList = recordUseCase.state.recordList
       if filteredList.isEmpty {
         HStack{
           Spacer()
@@ -31,11 +30,11 @@ struct AllRecordView: View {
         .padding(.bottom, 100)
       } else {
         ScrollView {
-          ForEach(useCase.state.recordList, id: \.id) { record in
+          ForEach(recordUseCase.state.recordList.sorted { $0.date > $1.date }, id: \.id) { record in
             Button(
               action: {
                 selectedRecord = record
-                useCase.effect(.tappedRecordCellToEditRecordSheet(true))
+                recordUseCase.effect(.tappedRecordCellToEditRecordSheet(true))
               },
               label: {
                 // MARK: - 로셸
@@ -50,42 +49,59 @@ struct AllRecordView: View {
     }
     .sheet(
       isPresented:
-          .init(
-            get: {
-              useCase.state.editRecordSheet
-            },
-            set: { result in
-              useCase
-                .effect(.tappedRecordCellToEditRecordSheet(result))
-            }
-          )
+        .init(
+          get: {
+            recordUseCase.state.editRecordSheet
+          },
+          set: { result in
+            recordUseCase
+              .effect(.tappedRecordCellToEditRecordSheet(result))
+          }
+        )
+
     ) {
       if let selectedRecord = selectedRecord {
         DetailRecordView(
           to: .edit,
           record: selectedRecord,
-          usecase: useCase
+          usecase: recordUseCase, 
+          changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords)) }
         )
       }
     }
     .sheet(
       isPresented:
-          .init(
-            get: {
-              useCase.state.createRecordSheet
-            },
-            set: { result in
-              useCase
-                .effect(.tappedCreateRecordSheet(result))
-              if !result { selectedRecord = nil }
-            }
-          )
+        .init(
+          get: {
+            recordUseCase.state.createRecordSheet
+          },
+          set: { result in
+            recordUseCase
+              .effect(.tappedCreateRecordSheet(result))
+            if !result { selectedRecord = nil }
+          }
+        )
     ) {
-      DetailRecordView(to: .create, usecase: useCase)
+      DetailRecordView(
+        to: .create,
+        record: .init(
+          myTeam: winRateUseCase.state.myTeam,
+          vsTeam: winRateUseCase.state.myTeam.anyOtherTeam()
+        ),
+        usecase: recordUseCase,
+        changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords))
+        }
+      )
     }
   }
 }
 
 #Preview {
-  AllRecordView(useCase: .init())
+  AllRecordView(
+    winRateUseCase: .init(
+      dataService: CoreDataService(),
+      myTeamService: UserDefaultsService()
+    ),
+    recordUseCase: .init(dataService: CoreDataService())
+  )
 }

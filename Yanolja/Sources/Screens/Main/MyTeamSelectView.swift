@@ -9,9 +9,15 @@
 import SwiftUI
 
 struct MyTeamSelectView: View {
-  
+  private let completeSelectionAction: (BaseballTeam) -> Void
   @State var selectedTeam: BaseballTeam?
-  var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
+  private var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
+  
+  init(
+    completeSelectionAction: @escaping (BaseballTeam) -> Void
+  ) {
+    self.completeSelectionAction = completeSelectionAction
+  }
   
   var body: some View {
     
@@ -49,6 +55,9 @@ struct MyTeamSelectView: View {
     Button(
       action: {
         // MARK: - 첫 화면으로 이동
+        if let team = selectedTeam {
+          completeSelectionAction(team)
+        }
       },
       label: {
         ZStack {
@@ -67,5 +76,7 @@ struct MyTeamSelectView: View {
 }
 
 #Preview {
-  MyTeamSelectView()
+  MyTeamSelectView(
+    completeSelectionAction: { _ in }
+  )
 }

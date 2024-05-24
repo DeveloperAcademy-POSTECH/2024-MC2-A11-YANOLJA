@@ -70,34 +70,83 @@ extension Project {
     let infoPlist: [String: Plist.Value] = [
       "CFBundleShortVersionString": "1.0",
       "CFBundleVersion": "1",
-      "UILaunchStoryboardName": "LaunchScreen"
-    ]
-    
-    let mainTarget = Target(
-      name: name,
-      destinations: destinations,
-      product: .app,
-      bundleId: "\(yanoljaOrganizationName).\(name)",
-      infoPlist: .extendingDefault(with: infoPlist),
-      sources: ["\(name)/Sources/**"],
-      resources: ["\(name)/Resources/**"],
-      scripts: commonScripts,
-      dependencies: dependencies,
-      coreDataModels: [
-        CoreDataModel("\(name)/Sources/Data/Baseball.xcdatamodeld")
+      "UILaunchStoryboardName": "LaunchScreen",
+      "CFBundleIcons": [
+        "CFBundleAlternateIcons": [
+          "DOOSAN": [
+            "CFBundleIconFiles": ["DOOSAN AppIcon"]
+          ],
+          "HANWHA": [
+            "CFBundleIconFiles": ["HANWHA AppIcon"]
+          ],
+          "KIA": [
+            "CFBundleIconFiles": ["KIA AppIcon"]
+          ],
+          "KIWOOM": [
+            "CFBundleIconFiles": ["KIWOOM AppIcon"]
+          ],
+          "KT": [
+            "CFBundleIconFiles": ["KT AppIcon"]
+          ],
+          "LG": [
+            "CFBundleIconFiles": ["LG AppIcon"]
+          ],
+          "LOTTE": [
+            "CFBundleIconFiles": ["LOTTE AppIcon"]
+          ],
+          "NC": [
+            "CFBundleIconFiles": ["NC AppIcon"]
+          ],
+          "SAMSUNG": [
+            "CFBundleIconFiles": ["SAMSUNG AppIcon"]
+          ],
+          "SSG": [
+            "CFBundleIconFiles": ["SSG AppIcon"]
+          ]
+        ],
+        "CFBundlePrimaryIcon": [
+          "CFBundleIconName": "NONE",
+          "CFBundleIconFiles": [
+            "NONEAppIcon"
+          ],
+          "UIPrerenderedIcon": false
+        ]
+//        ,
+//        "UINewsstandIcon": [
+//          "CFBundleIconFiles": [
+//            ""
+//          ],
+//          "UINewsstandBindingType": "UINewsstandBindingTypeMagazine",
+//          "UINewsstandBindingEdge": "UINewsstandBindingEdgeLeft"
+//        ]
       ]
-    )
-    
-    let testTarget = Target(
-      name: "\(name)Tests",
-      destinations: destinations,
-      product: .unitTests,
-      bundleId: "\(yanoljaOrganizationName).\(name)Tests",
-      infoPlist: .default,
-      sources: ["\(name)/Tests/**"],
-      dependencies: [
-        .target(name: "\(name)")
-      ])
-    return [mainTarget, testTarget]
-  }
-}
+    ]
+      
+      let mainTarget = Target(
+        name: name,
+        destinations: destinations,
+        product: .app,
+        bundleId: "\(yanoljaOrganizationName).\(name)",
+        infoPlist: .extendingDefault(with: infoPlist),
+        sources: ["\(name)/Sources/**"],
+        resources: ["\(name)/Resources/**"],
+        //      scripts: commonScripts,
+        dependencies: dependencies,
+        coreDataModels: [
+          CoreDataModel("\(name)/Sources/Data/Baseball.xcdatamodeld")
+        ]
+      )
+      
+      let testTarget = Target(
+        name: "\(name)Tests",
+        destinations: destinations,
+        product: .unitTests,
+        bundleId: "\(yanoljaOrganizationName).\(name)Tests",
+        infoPlist: .default,
+        sources: ["\(name)/Tests/**"],
+        dependencies: [
+          .target(name: "\(name)")
+        ])
+      return [mainTarget, testTarget]
+      }
+      }

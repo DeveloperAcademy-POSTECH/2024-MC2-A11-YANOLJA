@@ -11,9 +11,6 @@ import SwiftUI
 
 // MARK: - 고유명사라 예외적 대문자, _ 표기
 enum BaseballTeam: String, CaseIterable {
-  static var myTeam: Self = .doosan // 앱 최초 진입 시 설정 
-  static var otherTeams: [Self] = Self.allCases.filter { $0 != .myTeam }
-  
   case doosan
   case lotte
   case samsung
@@ -125,5 +122,9 @@ extension BaseballTeam {
     case .ssg:
       return YanoljaAsset.ssg.swiftUIImage
     }
+  }
+  
+  func anyOtherTeam() -> BaseballTeam {
+    return BaseballTeam.allCases.filter { $0 != self }.first ?? .doosan
   }
 }

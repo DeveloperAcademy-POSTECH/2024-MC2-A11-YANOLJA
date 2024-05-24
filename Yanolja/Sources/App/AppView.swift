@@ -10,18 +10,31 @@ import SwiftUI
 
 struct AppView: View {
   @State var selection = 0
-  var winRateUseCase: WinRateUseCase = .init(dataService: CoreDataService())
-  var recordUseCase: RecordUseCase = .init()
+  var winRateUseCase: WinRateUseCase = .init(
+    dataService: CoreDataService(), 
+    myTeamService: UserDefaultsService()
+  )
+  var recordUseCase: RecordUseCase = .init(
+    dataService: CoreDataService()
+  )
+  var myTeamUseCase: MyTeamUseCase = .init(
+    myTeamService: UserDefaultsService(),
+    changeIconService: ChangeAppIconService()
+  )
   
   var body: some View {
     NavigationStack {
       TabView(selection: $selection) {
         MainView(
           winRateUseCase: winRateUseCase,
-          recordUseCase: recordUseCase
+          recordUseCase: recordUseCase, 
+          myTeamUseCase: myTeamUseCase
         )
         .tag(0)
-        AllRecordView(useCase: recordUseCase)
+        AllRecordView(
+          winRateUseCase: winRateUseCase,
+          recordUseCase: recordUseCase
+        )
         .tag(1)
       }
       .tabViewStyle(PageTabViewStyle())
@@ -30,6 +43,22 @@ struct AppView: View {
       )
       .navigationTitle(
         selection == 0 ? "나의 직관 승률" : "나의 직관 리스트"
+      )
+      .fullScreenCover(
+        isPresented: .init(
+          get: {
+            return myTeamUseCase.state.myTeam == nil
+          },
+          set: { _ in }
+        ),
+        content: {
+          MyTeamSelectView(
+            completeSelectionAction: { myTeam in
+              myTeamUseCase.effect(.changeMyTeam(myTeam))
+              winRateUseCase.effect(.tappedTeamChange(myTeam))
+            }
+          )
+        }
       )
       .toolbar {
         ToolbarItem(
@@ -42,10 +71,11 @@ struct AppView: View {
                     "나의 팀 변경",
                     selection: .init(
                       get: {
-                        winRateUseCase.state.myTeam
+                        myTeamUseCase.state.myTeam ?? .doosan
                       },
                       set: { team in
-                        winRateUseCase.effect(.requestTeamChange(team))
+                        myTeamUseCase.effect(.changeMyTeam(team))
+                        winRateUseCase.effect(.tappedTeamChange(team))
                       }
                     )
                   ) {
@@ -58,11 +88,17 @@ struct AppView: View {
                 label: {
                   Circle()
                     .frame(width: 40)
-                    .foregroundStyle(winRateUseCase.state.myTeam.mainColor)
+                    .foregroundStyle((myTeamUseCase.state.myTeam ?? .doosan).mainColor)
                     .overlay{
-                      Text(winRateUseCase.state.myTeam.name.split(separator: " ").first ?? "")
-                        .foregroundStyle(.white)
-                        .font(.callout)
+                      Text(
+                        myTeamUseCase
+                          .state
+                          .myTeam?
+                          .name
+                          .split(separator: " ").first ?? ""
+                      )
+                      .foregroundStyle(.white)
+                      .font(.callout)
                     }
                 }
               )

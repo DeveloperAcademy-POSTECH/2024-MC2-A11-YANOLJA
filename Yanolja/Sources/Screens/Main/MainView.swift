@@ -11,13 +11,14 @@ import SwiftUI
 struct MainView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
+  @Bindable var myTeamUseCase: MyTeamUseCase
   @State var selectedTeam: BaseballTeam?
   
   var body: some View {
     VStack(spacing: 30) {
       MyCharacterView(
         characterModel: .init(
-          myTeam: winRateUseCase.state.myTeam,
+          myTeam: myTeamUseCase.state.myTeam ?? .doosan,
           totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
         )
       )
@@ -34,7 +35,7 @@ struct MainView: View {
       ScrollView(.horizontal) {
         HStack(spacing: 10) {
           ForEach(winRateUseCase.state.myWinRate.sortedTeams, id: \.self.name) { team in
-            if winRateUseCase.state.myTeam != team {
+            if myTeamUseCase.state.myTeam != team {
               Button(
                 action: {
                   winRateUseCase.effect(.tappedTeamWinRateCell)
@@ -82,7 +83,14 @@ struct MainView: View {
 
 #Preview {
   MainView(
-    winRateUseCase: WinRateUseCase(dataService: CoreDataService()),
-    recordUseCase: RecordUseCase()
+    winRateUseCase: WinRateUseCase(
+      dataService: CoreDataService(),
+      myTeamService: UserDefaultsService()
+    ),
+    recordUseCase: RecordUseCase(dataService: CoreDataService()),
+    myTeamUseCase: .init(
+      myTeamService: UserDefaultsService(),
+      changeIconService: ChangeAppIconService()
+    )
   )
 }
