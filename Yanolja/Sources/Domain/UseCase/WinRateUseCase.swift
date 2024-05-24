@@ -81,14 +81,12 @@ class WinRateUseCase {
     let winRateGames = totalGames - drawCount // 무승부를 제외한 전체 게임 수
     _state.myWinRate.totalRecordCount = winRateGames
     
-    guard totalGames > 0 else {
+    guard winRateGames > 0 else {
       _state.myWinRate.totalWinRate = nil
       return
     }
     let winRate = Int(Double(winCount) / Double(winRateGames) * 100)
     _state.myWinRate.totalWinRate = winRate
-    // recordList를 토대로 총 승률 계산
-    // _state.myWinRate.totalWinRate = 계산값 입력
   }
   /// 직관 기록을 통해 구단 별 승률을 계산하고 입력합니다
   private func vsAllTeamWinRate(recordList: [GameRecordModel]) {

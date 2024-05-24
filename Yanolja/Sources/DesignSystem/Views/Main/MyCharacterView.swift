@@ -19,9 +19,12 @@ struct ShakingImageView: View {
       .scaledToFit()
       .aspectRatio(contentMode: .fit)
       .offset(x: isShaking ? -10 : 0)
-      .animation(isShaking ?
-                 Animation.linear(duration: 0.05).repeatForever(autoreverses: true) :
-          .default, value: isShaking)
+      .animation(
+        isShaking ? Animation
+          .linear(duration: 0.05)
+          .repeatForever(autoreverses: true) :
+          .default, value: isShaking
+      )
       .onAppear {
         startShaking()
       }
@@ -118,8 +121,11 @@ struct MyCharacterView: View {
       )
       
       if characterModel.emotionByWinRate == .veryBad {
-        ScalingImageView(image: characterModel.image)
-      } else if characterModel.emotionByWinRate == .bad {
+        ScalingImageView(
+          image: characterModel.image
+        )
+      } else if characterModel.emotionByWinRate == .bad 
+      {
         ShakingImageView(image: characterModel.image)
       } else if characterModel.emotionByWinRate == .excellent {
         HappyImageView(image: characterModel.image)

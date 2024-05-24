@@ -13,7 +13,16 @@ struct CharacterModel {
   var totalWinRate: Int?
   
   var message: String {
-    return "대체 언제 이길래?" // 추후 구간에 따라 수정
+    switch self.totalWinRate {
+    case .none: return "직관을 기록하고 나의 승리 기여도를 확인하세요"
+    case .some(let num):
+      switch num {
+      case 0..<26: return "언제 이길래?"
+      case 26..<51: return "나 직관오지 말까…?"
+      case 51..<76: return "그래 이 정도면 직관 올만해"
+      default: return "나 어쩌면 승리요정일지도?"
+      }
+    }
   }
   
   var image: Image {
