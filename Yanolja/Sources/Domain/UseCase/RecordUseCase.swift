@@ -27,6 +27,7 @@ class RecordUseCase {
     case tappedSaveNewRecord(GameRecordModel)
     case tappedEditNewRecord(GameRecordModel)
     case tappedDeleteRecord(UUID)
+//    case tappedChangeTeamRecord(Bool) // 제가 만들엇어요
   }
   
   private var dataService: DataServiceInterface
@@ -76,6 +77,7 @@ class RecordUseCase {
       _state.recordList = _state.recordList.filter { $0.id != id }
       self._state.editRecordSheet = false
       return
+      
     }
   }
 }
