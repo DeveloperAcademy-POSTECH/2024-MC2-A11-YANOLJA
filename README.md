@@ -1,5 +1,12 @@
 # Team 야놀자  
 
+| 고스트 |  에디  |  구름  |  로셸  |  브리  |  보노  |
+| :-------------------: | :-------------------: | :-------------------: | :-------------------: | :-------------------: | :-------------------: |
+| ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/33447511-a79e-43fe-b20b-1133f0f000e6) | ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/d972c04c-b023-4384-8739-8445b3cc04aa?s=150) | ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/953e1404-20c2-4a58-ba1b-83d09d396664?s=150) | ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/2d506087-f2c3-4c71-b0b6-62ed3ada9e4b?s=150) | ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/82e636ea-9331-4413-ba61-26aa295d2a08?s=150) | ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/05a58c39-657e-424e-b758-4bafe75a587d)|
+| 📝도메인📝 | 📝도메인📝 | 🎨디자인🎨 | 🎨디자인🎨 |  🍎테크🍎  | 🍎테크🍎 |
+| @ksikk | @penum1227 | @tkfkd1364 | @rochelle0922 |  @wltnryu  | @shippingpark |
+| 빠라바라밤 | 빰빰빠라빰 | 야놀자두둥 | 야놀자빠밤 | 줏대있게해 | 개발재밌죠? |
+
 
 
 # 우리는 모두가 개발에 참여할 것 입니다! 
