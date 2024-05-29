@@ -1,5 +1,8 @@
-# 2024-MC2-A11-YANOLJA
-언제 이길래 ⚾️⚾️💢
+# Team 야놀자  
+
+
+
+# 우리는 모두가 개발에 참여할 것 입니다! 
 | ![Image 1](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/46643180-a4af-45bb-bde6-11620c0b922e) | ![Image 2](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/dbf9382d-7ec2-4f7f-bf07-2b68d7f20b53) |
 | :-----------------------------------------------: | :-----------------------------------------------: |
 | ![Image 3](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/4fdf8c02-0ebb-4300-b966-1df5fd4ab304) | ![Image 4](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/2c4541e7-6096-426f-9b76-0eb6de300e8d) |
