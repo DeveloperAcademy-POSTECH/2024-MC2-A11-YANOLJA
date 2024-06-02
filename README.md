@@ -9,8 +9,8 @@
 
 
 # 앱 기능
-![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/01c69486-e5f9-41fd-ae33-2db0974c9343)
 ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/abbb2ba1-080f-4051-97c5-c77bf32b4a64)
+![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/01c69486-e5f9-41fd-ae33-2db0974c9343)
 ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/2764a21b-1df2-4896-a041-d84f446ad16f)
 ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/800a6a9a-da69-4fd7-aa67-4a725f693105)
 ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/52d8eeec-8302-4d75-bbc5-f4881419d5b7)
