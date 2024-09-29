@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>ko_KR</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(BUNDLE_DISPLAY_NAME)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>DOOSAN</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>DOOSAN AppIcon</string>
+				</array>
+			</dict>
+			<key>HANWHA</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>HANWHA AppIcon</string>
+				</array>
+			</dict>
+			<key>KIA</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>KIA AppIcon</string>
+				</array>
+			</dict>
+			<key>KIWOOM</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>KIWOOM AppIcon</string>
+				</array>
+			</dict>
+			<key>KT</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>KT AppIcon</string>
+				</array>
+			</dict>
+			<key>LG</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>LG AppIcon</string>
+				</array>
+			</dict>
+			<key>LOTTE</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>LOTTE AppIcon</string>
+				</array>
+			</dict>
+			<key>NC</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>NC AppIcon</string>
+				</array>
+			</dict>
+			<key>SAMSUNG</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>SAMSUNG AppIcon</string>
+				</array>
+			</dict>
+			<key>SSG</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>SSG AppIcon</string>
+				</array>
+			</dict>
+		</dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>NONEAppIcon</string>
+			</array>
+			<key>CFBundleIconName</key>
+			<string>NONE</string>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+	</dict>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(BUNDLE_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(BUNDLE_VERSION_SHORT)</string>
+	<key>CFBundleVersion</key>
+	<string>$(BUNDLE_VERSION_STRING)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
+</dict>
+</plist>
