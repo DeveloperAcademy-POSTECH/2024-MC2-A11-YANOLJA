@@ -8,18 +8,6 @@ import Foundation
 
 let teamName: String = "yanolja"
 let yanoljaOrganizationName: String = "com.mc2"
-let commonScripts: [TargetScript] = [
-  .pre(
-    script: """
-    ROOT_DIR=\(ProcessInfo.processInfo.environment["TUIST_ROOT_DIR"] ?? "")
-    
-    ${ROOT_DIR}/swiftlint --config ${ROOT_DIR}/.swiftlint.yml
-    
-    """,
-    name: "SwiftLint",
-    basedOnDependencyAnalysis: false
-  )
-]
 
 extension Project {
   /// Helper function to create the Project for this ExampleApp
