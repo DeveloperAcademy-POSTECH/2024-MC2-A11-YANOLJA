@@ -23,7 +23,6 @@ struct AppView: View {
   )
   
   var body: some View {
-
     NavigationStack {
       TabView(selection: $selection) {
         MainView(

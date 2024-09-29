@@ -9,7 +9,6 @@
 import Foundation
 
 struct UserDefaultsService: MyTeamServiceInterface {
-  
   func readMyTeam() -> BaseballTeam? {
     let team: String? = UserDefaults.standard.value(forKey: "myTeam") as? String
     return BaseballTeam(rawValue: team ?? "")

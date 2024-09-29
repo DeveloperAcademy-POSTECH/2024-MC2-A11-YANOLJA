@@ -27,7 +27,7 @@ extension ChangeAppIconService {
       if let error = iconChangeError {
         print(error.localizedDescription)
       } else {
-        print("Success")
+        // print("Success")
       }
     }
   }
