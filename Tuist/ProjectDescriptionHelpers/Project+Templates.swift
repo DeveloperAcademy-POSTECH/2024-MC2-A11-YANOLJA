@@ -55,66 +55,7 @@ extension Project {
   
   /// Helper function to create the application target and the unit test target.
   private static func makeAppTargets(name: String, destinations: Destinations, dependencies: [TargetDependency]) -> [Target] {
-    let infoPlist: [String: Plist.Value] = [
-      "CFBundleShortVersionString": "1.0",
-      "CFBundleVersion": "1",
-      "UILaunchStoryboardName": "LaunchScreen",
-      "UIUserInterfaceStyle": "Light",
-      "UISupportedInterfaceOrientations": [
-        "Item 0": "UIInterfaceOrientationPortrait"
-      ],
-      "CFBundleDevelopmentRegion": "ko",
-      "CFBundleDisplayName": "승리지쿄",
-      "CFBundleName": "승리지쿄",
-      "ITSAppUsesNonExemptEncryption": false, // 수출 규정
-      "CFBundleIcons": [
-        "CFBundleAlternateIcons": [
-          "DOOSAN": [
-            "CFBundleIconFiles": ["DOOSAN AppIcon"]
-          ],
-          "HANWHA": [
-            "CFBundleIconFiles": ["HANWHA AppIcon"]
-          ],
-          "KIA": [
-            "CFBundleIconFiles": ["KIA AppIcon"]
-          ],
-          "KIWOOM": [
-            "CFBundleIconFiles": ["KIWOOM AppIcon"]
-          ],
-          "KT": [
-            "CFBundleIconFiles": ["KT AppIcon"]
-          ],
-          "LG": [
-            "CFBundleIconFiles": ["LG AppIcon"]
-          ],
-          "LOTTE": [
-            "CFBundleIconFiles": ["LOTTE AppIcon"]
-          ],
-          "NC": [
-            "CFBundleIconFiles": ["NC AppIcon"]
-          ],
-          "SAMSUNG": [
-            "CFBundleIconFiles": ["SAMSUNG AppIcon"]
-          ],
-          "SSG": [
-            "CFBundleIconFiles": ["SSG AppIcon"]
-          ]
-        ],
-        "CFBundlePrimaryIcon": [
-          "CFBundleIconName": "NONE",
-          "CFBundleIconFiles": [
-            "NONEAppIcon"
-          ],
-          "UIPrerenderedIcon": false
-        ]
-//        ,
-//        "UINewsstandIcon": [
-//          "CFBundleIconFiles": [
-//            ""
-//          ],
-//          "UINewsstandBindingType": "UINewsstandBindingTypeMagazine",
-//          "UINewsstandBindingEdge": "UINewsstandBindingEdgeLeft"
-//        ]
+      infoPlist: .file(path: "InfoPlist/Info.plist"),
       ]
     ]
       
@@ -124,7 +65,6 @@ extension Project {
         product: .app,
         bundleId: "\(yanoljaOrganizationName).\(teamName)",
         deploymentTarget: .iOS(targetVersion: "17.0", devices: [.iphone]),
-        infoPlist: .extendingDefault(with: infoPlist),
         sources: ["\(name)/Sources/**"],
         resources: ["\(name)/Resources/**"],
         //      scripts: commonScripts,
@@ -139,7 +79,6 @@ extension Project {
         destinations: destinations,
         product: .unitTests,
         bundleId: "\(yanoljaOrganizationName).\(name)Tests",
-        infoPlist: .default,
         sources: ["\(name)/Tests/**"],
         dependencies: [
           .target(name: "\(name)")
@@ -148,3 +87,4 @@ extension Project {
       return [mainTarget, testTarget]
       }
       }
+      infoPlist: .file(path: "\(fileName)/Tests/Resources/Tests-Info.plist"),
