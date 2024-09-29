@@ -92,18 +92,21 @@ class WinRateUseCase {
   private func vsAllTeamWinRate(recordList: [GameRecordModel]) {
     var teamWins: [BaseballTeam: Int] = [:]
     var teamGames: [BaseballTeam: Int] = [:]
+    var teamDraws: [BaseballTeam: Int] = [:]
     
     for record in recordList {
       let team = record.vsTeam
+
+      teamGames[team, default: 0] += 1
       
-      if record.result != .draw {
-        // 무승부가 아닌 경우에만 전체 게임 수 증가
-        teamGames[team, default: 0] += 1
-        
-        if record.result == .win {
-          // 승리한 경우에만 승리 수 증가
-          teamWins[team, default: 0] += 1
-        }
+      if record.result == .win {
+        // 승리한 경우에만 승리 수 증가
+        teamWins[team, default: 0] += 1
+      }
+       
+      if record.result == .draw {
+        // 무승부인 경우 무승부 수 증가
+        teamDraws[team, default: 0] += 1
       }
     }
     
@@ -114,27 +117,16 @@ class WinRateUseCase {
     for team in BaseballTeam.allCases {
       let wins = teamWins[team] ?? 0
       let games = teamGames[team] ?? 0
+      let draws = teamDraws[team] ?? 0
       
-      if games > 0 {
-        vsTeamWinRate[team] = Int((Double(wins) / Double(games)) * 100)
-        vsTeamRecordCount[team] = games
-      } else {
-        vsTeamWinRate[team] = nil
-        vsTeamRecordCount[team] = nil
+      vsTeamRecordCount[team] = games
+      
+      if games-draws > 0 {
+        vsTeamWinRate[team] = Int((Double(wins) / Double(games-draws)) * 100)
       }
     }
     
     _state.myWinRate.vsTeamWinRate = vsTeamWinRate
     _state.myWinRate.vsTeamRecordCount = vsTeamRecordCount
   }
-  
-//  private func editWinRate(add: GameRecordModel) {
-//    
-//    // 추가된 기록을 토대로 전체 승률 변경
-//  }
-//  
-//  private func editVsTeamWinRate(add: GameRecordModel) {
-//    // 구단 확인 후 특정 구단 승률 갱신
-//    // _state.myWinRate.vsTeamWinRate[특정구단] = 계산값 입력
-//  }
 }
