@@ -1,5 +1,5 @@
 //
-//  SaveMyTeamInterface.swift
+//  MyTeamServiceInterface.swift
 //  Yanolja
 //
 //  Created by 박혜운 on 5/23/24.
