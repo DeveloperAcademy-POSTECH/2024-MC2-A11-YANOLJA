@@ -102,6 +102,7 @@ extension Project {
       destinations: destinations,
       product: .unitTests,
       bundleId: "\(yanoljaOrganizationName).\(teamName)Tests",
+      deploymentTargets: .iOS("17.0"),
       infoPlist: .file(path: "\(fileName)/Tests/Resources/Tests-Info.plist"),
       sources: ["\(fileName)/Tests/**"],
       dependencies: [
