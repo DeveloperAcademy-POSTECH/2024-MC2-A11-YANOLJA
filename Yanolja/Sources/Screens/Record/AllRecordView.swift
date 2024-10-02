@@ -11,11 +11,39 @@ import SwiftUI
 struct AllRecordView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
-  @State var selectedRecord: GameRecordModel?
+  @State var selectedRecord: GameRecordWithScoreModel?
+  
+  @Binding var selectedYearFilter: String // 년도 별 필터 기준 
+  @State var selectedRecordFilter: String = RecordFilter.initialValue
   
   var body: some View {
     VStack(spacing: 0) {
       let filteredList = recordUseCase.state.recordList
+      HStack {
+        Menu {
+          ForEach(RecordFilter.list, id: \.self) { selectedFilter in
+            Button(
+              action: {
+                selectedRecordFilter = selectedFilter
+              }
+            ) {
+              HStack {
+                if selectedRecordFilter == selectedFilter {
+                  Image(systemName: "checkmark")
+                }
+                Text(selectedFilter)
+              }
+            }
+          }
+        } label: {
+          HStack(spacing: 4) {
+            Text(selectedRecordFilter)
+            Image(systemName: "chevron.down")
+          }
+        }
+        Spacer()
+      }
+      
       if filteredList.isEmpty {
         HStack{
           Spacer()
@@ -37,8 +65,7 @@ struct AllRecordView: View {
                 recordUseCase.effect(.tappedRecordCellToEditRecordSheet(true))
               },
               label: {
-                // MARK: - 로셸
-                LargeVsTeamCell(record: record)
+                RecordCell(record: record)
               }
             )
           }
@@ -49,38 +76,38 @@ struct AllRecordView: View {
     }
     .sheet(
       isPresented:
-        .init(
-          get: {
-            recordUseCase.state.editRecordSheet
-          },
-          set: { result in
-            recordUseCase
-              .effect(.tappedRecordCellToEditRecordSheet(result))
-          }
-        )
-
+          .init(
+            get: {
+              recordUseCase.state.editRecordSheet
+            },
+            set: { result in
+              recordUseCase
+                .effect(.tappedRecordCellToEditRecordSheet(result))
+            }
+          )
+      
     ) {
       if let selectedRecord = selectedRecord {
         DetailRecordView(
           to: .edit,
           record: selectedRecord,
-          usecase: recordUseCase, 
+          usecase: recordUseCase,
           changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords)) }
         )
       }
     }
     .sheet(
       isPresented:
-        .init(
-          get: {
-            recordUseCase.state.createRecordSheet
-          },
-          set: { result in
-            recordUseCase
-              .effect(.tappedCreateRecordSheet(result))
-            if !result { selectedRecord = nil }
-          }
-        )
+          .init(
+            get: {
+              recordUseCase.state.createRecordSheet
+            },
+            set: { result in
+              recordUseCase
+                .effect(.tappedCreateRecordSheet(result))
+              if !result { selectedRecord = nil }
+            }
+          )
     ) {
       DetailRecordView(
         to: .create,
@@ -97,11 +124,14 @@ struct AllRecordView: View {
 }
 
 #Preview {
-  AllRecordView(
-    winRateUseCase: .init(
-      dataService: CoreDataService(),
-      myTeamService: UserDefaultsService()
-    ),
-    recordUseCase: .init(dataService: CoreDataService())
-  )
+  NavigationStack {
+    AllRecordView(
+      winRateUseCase: .init(
+        recordService: RecordDataService(),
+        myTeamService: UserDefaultsService()
+      ),
+      recordUseCase: .init(recordService: RecordDataService()),
+      selectedYearFilter: .constant("전체")
+    )
+  }
 }
