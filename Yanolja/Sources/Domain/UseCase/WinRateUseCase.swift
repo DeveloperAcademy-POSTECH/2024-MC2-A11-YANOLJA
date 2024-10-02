@@ -18,6 +18,9 @@ class WinRateUseCase {
     // MARK: - Data State
     var myTeam: BaseballTeam = .doosan
     var myWinRate: WinRateModel = .init(totalWinRate: 40)
+    var myWinCount: Int = 0
+    var myLoseCount: Int = 0
+    var myDrawCount: Int = 0
   }
   
   // MARK: - Action
