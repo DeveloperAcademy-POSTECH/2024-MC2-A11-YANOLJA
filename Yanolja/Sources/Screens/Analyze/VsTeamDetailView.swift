@@ -138,12 +138,12 @@ struct VsTeamDetailView: View {
                   list.vsTeam == detailTeam
                 },
               id: \.id
-            ) { list in
+            ) { record in
               NavigationLink(
                 destination: {
                   DetailRecordView(
                     to: .edit,
-                    record: list,
+                    record: record,
                     usecase: recordUseCase,
                     changeRecords: { updateRecords in
                       winRateUseCase.effect(.updateRecords(updateRecords)
@@ -153,7 +153,7 @@ struct VsTeamDetailView: View {
                   .navigationBarBackButtonHidden()
                 },
                 label: {
-                  LargeVsTeamCell(record: list)
+                  RecordCell(record: record)
                 }
               )
             }
@@ -170,10 +170,10 @@ struct VsTeamDetailView: View {
 #Preview {
   VsTeamDetailView(
     winRateUseCase: WinRateUseCase(
-      dataService: CoreDataService(),
+      recordService: RecordDataService(),
       myTeamService: UserDefaultsService()
     ),
-    recordUseCase: RecordUseCase(dataService: CoreDataService()),
+    recordUseCase: RecordUseCase(recordService: RecordDataService()),
     detailTeam: .kia
   )
 }
