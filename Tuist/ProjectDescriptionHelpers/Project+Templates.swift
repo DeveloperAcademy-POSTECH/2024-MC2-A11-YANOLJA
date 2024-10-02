@@ -1,37 +1,46 @@
 import ProjectDescription
 import Foundation
+import ConfigPlugin
 
 /// Project helpers are functions that simplify the way you define your project.
 /// Share code to create targets, settings, dependencies,
 /// Create your own conventions, e.g: a func that makes sure all shared targets are "static frameworks"
 /// See https://docs.tuist.io/guides/helpers/
 
+let fileName: String = "Yanolja"
 let teamName: String = "yanolja"
 let yanoljaOrganizationName: String = "com.mc2"
-let commonScripts: [TargetScript] = [
-  .pre(
-    script: """
-    ROOT_DIR=\(ProcessInfo.processInfo.environment["TUIST_ROOT_DIR"] ?? "")
-    
-    ${ROOT_DIR}/swiftlint --config ${ROOT_DIR}/.swiftlint.yml
-    
-    """,
-    name: "SwiftLint",
-    basedOnDependencyAnalysis: false
-  )
-]
 
 extension Project {
   /// Helper function to create the Project for this ExampleApp
   public static func app(name: String, destinations: Destinations, additionalTargets: [String]) -> Project {
-    var targets = makeAppTargets(name: name,
-                                 destinations: destinations,
-                                 dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
-    targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, destinations: destinations) })
+    var targets = makeAppTargets(
+      name: name,
+      destinations: destinations,
+      dependencies: additionalTargets.map { TargetDependency.target(name: $0) }
+    )
+    targets += additionalTargets.flatMap({
+      makeFrameworkTargets(
+        name: $0,
+        destinations: destinations
+      )
+    })
+    
     return Project(
       name: name,
       organizationName: yanoljaOrganizationName,
-      targets: targets
+      settings: .settings(configurations: [
+        .build(.release, name: name),
+        .build(.debug, name: name)
+      ]),
+      targets: targets,
+      schemes: [
+        .makeScheme(.release, name: name),
+        .makeScheme(.debug, name: name)
+      ],
+      additionalFiles: [
+        .sharedConfigPath
+      ]
     )
   }
   
@@ -61,102 +70,49 @@ extension Project {
                        infoPlist: .default,
                        sources: ["\(name)/Tests/**"],
                        resources: [],
-                       dependencies: [.target(name: name)])
+                       dependencies: [.target(name: name)]
+    )
     return [sources, tests]
   }
   
   /// Helper function to create the application target and the unit test target.
   private static func makeAppTargets(name: String, destinations: Destinations, dependencies: [TargetDependency]) -> [Target] {
-    let infoPlist: [String: Plist.Value] = [
-      "CFBundleShortVersionString": "1.0",
-      "CFBundleVersion": "1",
-      "UILaunchStoryboardName": "LaunchScreen",
-      "UIUserInterfaceStyle": "Light",
-      "UISupportedInterfaceOrientations": [
-        "Item 0": "UIInterfaceOrientationPortrait"
-      ],
-      "CFBundleDevelopmentRegion": "ko",
-      "CFBundleDisplayName": "승리지쿄",
-      "CFBundleName": "승리지쿄",
-      "ITSAppUsesNonExemptEncryption": false, // 수출 규정
-      "CFBundleIcons": [
-        "CFBundleAlternateIcons": [
-          "DOOSAN": [
-            "CFBundleIconFiles": ["DOOSAN AppIcon"]
-          ],
-          "HANWHA": [
-            "CFBundleIconFiles": ["HANWHA AppIcon"]
-          ],
-          "KIA": [
-            "CFBundleIconFiles": ["KIA AppIcon"]
-          ],
-          "KIWOOM": [
-            "CFBundleIconFiles": ["KIWOOM AppIcon"]
-          ],
-          "KT": [
-            "CFBundleIconFiles": ["KT AppIcon"]
-          ],
-          "LG": [
-            "CFBundleIconFiles": ["LG AppIcon"]
-          ],
-          "LOTTE": [
-            "CFBundleIconFiles": ["LOTTE AppIcon"]
-          ],
-          "NC": [
-            "CFBundleIconFiles": ["NC AppIcon"]
-          ],
-          "SAMSUNG": [
-            "CFBundleIconFiles": ["SAMSUNG AppIcon"]
-          ],
-          "SSG": [
-            "CFBundleIconFiles": ["SSG AppIcon"]
-          ]
-        ],
-        "CFBundlePrimaryIcon": [
-          "CFBundleIconName": "NONE",
-          "CFBundleIconFiles": [
-            "NONEAppIcon"
-          ],
-          "UIPrerenderedIcon": false
-        ]
-//        ,
-//        "UINewsstandIcon": [
-//          "CFBundleIconFiles": [
-//            ""
-//          ],
-//          "UINewsstandBindingType": "UINewsstandBindingTypeMagazine",
-//          "UINewsstandBindingEdge": "UINewsstandBindingEdgeLeft"
-//        ]
+    
+    let mainTarget = Target(
+      name: name,
+      platform: .iOS,
+      product: .app,
+      bundleId: "\(yanoljaOrganizationName).\(teamName)",
+      deploymentTarget: .iOS(targetVersion: "17.0", devices: [.iphone]),
+      infoPlist: .file(path: "InfoPlist/Info.plist"),
+      sources: ["\(fileName)/Sources/**"],
+      resources: ["\(fileName)/Resources/**"],
+      dependencies: dependencies,
+      settings: .settings(configurations: [
+        .build(.release, name: name),
+        .build(.debug, name: name)
+      ]),
+      coreDataModels: [
+        CoreDataModel("\(fileName)/Sources/Data/Baseball.xcdatamodeld")
       ]
-    ]
-      
-      let mainTarget = Target(
-        name: name,
-        platform: .iOS,
-        product: .app,
-        bundleId: "\(yanoljaOrganizationName).\(teamName)",
-        deploymentTarget: .iOS(targetVersion: "17.0", devices: [.iphone]),
-        infoPlist: .extendingDefault(with: infoPlist),
-        sources: ["\(name)/Sources/**"],
-        resources: ["\(name)/Resources/**"],
-        //      scripts: commonScripts,
-        dependencies: dependencies,
-        coreDataModels: [
-          CoreDataModel("\(name)/Sources/Data/Baseball.xcdatamodeld")
-        ]
-      )
-      
-      let testTarget = Target(
-        name: "\(name)Tests",
-        destinations: destinations,
-        product: .unitTests,
-        bundleId: "\(yanoljaOrganizationName).\(name)Tests",
-        infoPlist: .default,
-        sources: ["\(name)/Tests/**"],
-        dependencies: [
-          .target(name: "\(name)")
-        ]
-      )
-      return [mainTarget, testTarget]
-      }
-      }
+    )
+    
+    let testTarget = Target(
+      name: "\(name)Tests",
+      destinations: destinations,
+      product: .unitTests,
+      bundleId: "\(yanoljaOrganizationName).\(teamName)Tests",
+      deploymentTargets: .iOS("17.0"),
+      infoPlist: .file(path: "\(fileName)/Tests/Resources/Tests-Info.plist"),
+      sources: ["\(fileName)/Tests/**"],
+      dependencies: [
+        .target(name: "\(name)")
+      ],
+      settings: .settings(configurations: [
+        .build(.release, name: name),
+        .build(.debug, name: name)
+      ])
+    )
+    return [mainTarget, testTarget]
+  }
+}

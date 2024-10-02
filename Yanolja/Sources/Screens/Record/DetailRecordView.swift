@@ -14,22 +14,21 @@ enum RecordViewEditType {
   case edit
 }
 
-// MARK: - 고스트 꺼
 struct DetailRecordView: View {
   @Environment (\.dismiss) var dismiss
-  @State var recording: GameRecordModel = .init() // 수정할 때
+  @State var recording: GameRecordWithScoreModel = .init() // 수정할 때
   @State private var showingAlert: Bool = false
   @State private var changeMyTeam: BaseballTeam?
   
   private let editType: RecordViewEditType
-  private let changeRecords: ([GameRecordModel]) -> Void
+  private let changeRecords: ([GameRecordWithScoreModel]) -> Void
   var recordUseCase: RecordUseCase
   
   init(
     to editType: RecordViewEditType,
-    record: GameRecordModel = .init(),
+    record: GameRecordWithScoreModel = .init(),
     usecase: RecordUseCase,
-    changeRecords: @escaping ([GameRecordModel]) -> Void
+    changeRecords: @escaping ([GameRecordWithScoreModel]) -> Void
   ) {
     self.editType = editType
     self._recording = State(initialValue: record)
@@ -53,7 +52,6 @@ struct DetailRecordView: View {
                   set: { selectedMyTeam in
                     showingAlert = true
                     changeMyTeam = selectedMyTeam
-//                    recording.myTeam = selectedMyTeam
                   }
                 )
               )
@@ -84,7 +82,6 @@ struct DetailRecordView: View {
               SelectTeamView(
                 type: .vs(myteam: recording.myTeam),
                 selectedTeam: $recording.vsTeam
-                // 예외 처리 하고 싶어요. 두산 베어스가 없게(나랑 같은팀은 표시 안되게)
               )
             }
             
@@ -101,13 +98,7 @@ struct DetailRecordView: View {
             .pickerStyle(.menu)
           }
         )
-        // 직관 결과 선택 picker
-        Picker("직관 결과", selection: $recording.result) {
-          ForEach(GameResult.allCases, id: \.self) {
-            Text($0.label)
-          }
-        }
-        .pickerStyle(.inline)
+        
         if editType == .edit {
           Button(
             action: {
@@ -177,12 +168,13 @@ struct DetailRecordView: View {
   }
 }
 
-// 화면을 보이는 뷰
 #Preview {
   DetailRecordView(
     // 현재 보여지는 뷰는 편집(삭제 버튼 추가)
     to: .edit,
-    // usecase는 RecordUseCase를 사용
-    usecase: RecordUseCase(dataService: CoreDataService()), changeRecords: { _ in }
+    usecase: RecordUseCase(
+      recordService: RecordDataService()
+    ),
+    changeRecords: { _ in }
   )
 }

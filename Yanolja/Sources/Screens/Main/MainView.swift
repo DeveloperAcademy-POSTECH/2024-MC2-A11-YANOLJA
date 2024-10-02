@@ -10,93 +10,79 @@ import SwiftUI
 
 struct MainView: View {
   @Bindable var winRateUseCase: WinRateUseCase
-  @Bindable var recordUseCase: RecordUseCase
-  @Bindable var myTeamUseCase: MyTeamUseCase
-  @State var selectedTeam: BaseballTeam?
+  @Bindable var userInfoUseCase: UserInfoUseCase
   
   var body: some View {
     VStack(spacing: 0) {
-      MyCharacterView(
+      WinRatePercentage(winRateUseCase: winRateUseCase)
+        .foregroundColor(userInfoUseCase.state.myTeam?.mainColor)
+        .padding(.top, 20)
+        .padding(.bottom, 8)
+      
+      MainCharacterView(
         characterModel: .init(
-          myTeam: myTeamUseCase.state.myTeam ?? .doosan,
+          myTeam: userInfoUseCase.state.myTeam,
           totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
         )
       )
-      .padding(.top, 25)
-      .padding(.horizontal, 30)
+      .frame(width: 280, height: 280)
+      .padding(.bottom, 8)
+      
+      NameBox(userInfoUseCase: userInfoUseCase)
       
       Spacer()
-      
-      VStack(spacing: 3) {
-        Text("평균 직관 승리 기여도")
-          .font(.footnote)
-        Text("\(winRateUseCase.state.myWinRate.totalWinRate.map{ String($0) } ?? "--")%")
-          .font(.title)
-          .fontWeight(.bold)
-      }
-      
-      Spacer()
-      
-      ScrollView(.horizontal) {
-        HStack(spacing: 10) {
-          ForEach(winRateUseCase.state.myWinRate.sortedTeams, id: \.self.name) { team in
-            if myTeamUseCase.state.myTeam != team {
-              Button(
-                action: {
-                  winRateUseCase.effect(.tappedTeamWinRateCell)
-                  selectedTeam = team
-                },
-                label: {
-                  // MARK: - 구름
-                  MediumVsTeamCell(
-                    team: team,
-                    winRate: winRateUseCase.state.myWinRate.vsTeamWinRate[team] ?? nil
-                  )
-                }
-              )
-            }
-          }
-        }
-        .padding(.horizontal, 15)
-      }
-      .scrollIndicators(.never)
-      .sheet(
-        isPresented:
-            .init(
-              get: {
-                winRateUseCase.state.tappedTeamWinRateCell
-              },
-              set: { _ in
-                winRateUseCase.effect(.tappedTeamWinRateCell)
-              }
-            ),
-        content: {
-          if let team = selectedTeam {
-            VsTeamDetailView(
-              winRateUseCase: winRateUseCase,
-              recordUseCase: recordUseCase,
-              detailTeam: team
-            )
-            .presentationDetents([.fraction(0.8)])
-            .presentationDragIndicator(.visible)
-          }
-        }
-      )
     }
-    .padding(.bottom, 40)
+  }
+}
+
+private struct WinRatePercentage: View {
+  @Bindable var winRateUseCase: WinRateUseCase
+  
+  var body: some View {
+    HStack(alignment: .top, spacing: 13.5) {
+      // MARK: - myWinRate에 따라 이미지 적용 / 현재 단일 이미지로 테스트
+      Image(.homeWinRate)
+    }
+  }
+}
+
+private struct NameBox: View {
+  @Bindable var userInfoUseCase: UserInfoUseCase
+  
+  var body: some View {
+    VStack(spacing: 8) {
+      HStack(spacing: 4) {
+        Image(systemName: "sparkle")
+          .resizable()
+          .scaledToFit()
+          .frame(height: 10)
+        Text(userInfoUseCase.state.myTeam?.name ?? "무직")
+          .font(.footnote)
+        Image(systemName: "sparkle")
+          .resizable()
+          .scaledToFit()
+          .frame(height: 10)
+      }
+      .foregroundStyle(.gray)
+      
+      Text(userInfoUseCase.state.myNickname)
+        .font(.title2)
+        .bold()
+    }
   }
 }
 
 #Preview {
-  MainView(
-    winRateUseCase: WinRateUseCase(
-      dataService: CoreDataService(),
-      myTeamService: UserDefaultsService()
-    ),
-    recordUseCase: RecordUseCase(dataService: CoreDataService()),
-    myTeamUseCase: .init(
-      myTeamService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService()
+  NavigationStack {
+    MainView(
+      winRateUseCase: WinRateUseCase(
+        recordService: RecordDataService(),
+        myTeamService: UserDefaultsService()
+      ),
+      userInfoUseCase: .init(
+        myTeamService: UserDefaultsService(), myNicknameService: UserDefaultsService(),
+        changeIconService: ChangeAppIconService()
+      )
     )
-  )
+  }
 }

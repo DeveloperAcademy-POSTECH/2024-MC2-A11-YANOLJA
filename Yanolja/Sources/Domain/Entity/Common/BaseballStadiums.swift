@@ -9,6 +9,8 @@
 import Foundation
 
 enum BaseballStadiums: String, CaseIterable {
+  static let nameList: [String] = ["고척스카이돔", "사직야구장", "잠실야구장", "수원KT위즈파크", "인천SSG랜더스필드", "대전한화생명이글스파크", "대구삼성라이온즈파크", "창원NC파크", "광주기아챔피언스필드", "포항야구장"]
+  
   case gocheok
   case sagik
   case jamsil
