@@ -9,18 +9,6 @@
 import SwiftUI
 
 struct AppView: View {
-  @State var selection = 0
-  var winRateUseCase: WinRateUseCase = .init(
-    dataService: CoreDataService(), 
-    myTeamService: UserDefaultsService()
-  )
-  var recordUseCase: RecordUseCase = .init(
-    dataService: CoreDataService()
-  )
-  var myTeamUseCase: MyTeamUseCase = .init(
-    myTeamService: UserDefaultsService(),
-    changeIconService: ChangeAppIconService()
-  )
   
   var body: some View {
     NavigationStack {
@@ -124,5 +112,18 @@ struct AppView: View {
 }
 
 #Preview {
-  AppView()
+  AppView(
+    winRateUseCase: .init(
+      recordService: RecordDataService(),
+      myTeamService: UserDefaultsService()
+    ),
+    recordUseCase: .init(
+      recordService: RecordDataService()
+    ),
+    userInfoUseCase: .init(
+      myTeamService: UserDefaultsService(),
+      myNicknameService: UserDefaultsService(),
+      changeIconService: ChangeAppIconService()
+    )
+  )
 }
