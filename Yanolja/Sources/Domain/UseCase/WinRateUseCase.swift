@@ -26,31 +26,28 @@ class WinRateUseCase {
   // MARK: - Action
   enum Action {
     // MARK: - User Action
-    case tappedTeamChange(BaseballTeam)
+    case tappedTeamChange(BaseballTeam) // MARK: - 팀 변경 시 다른 형태로 값 주입 필요 (현재 기존 형태)
     case tappedTeamWinRateCell
-    case updateRecords([GameRecordModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
+    case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
     case sendMyTeamInfo(BaseballTeam)
   }
 
-  
-  private var dataService: DataServiceInterface
-  private var _state: State = .init() // 원본 State, Usecase 내부에서만 접근가능
-  var state: State { // View에서 접근하는 state
-    _state
-  }
+  private var _state: State = .init()
+  var state: State { _state }
   
   init(
-    dataService: DataServiceInterface,
+    recordService: RecordDataServiceInterface,
     myTeamService: MyTeamServiceInterface
   ) {
-    self.dataService = dataService
-
     _state.myTeam = myTeamService.readMyTeam() ?? .doosan
     
-    switch dataService.readAllRecord() {
+    switch recordService.readAllRecord() {
     case .success(let allList):
+      // MARK: - 기존 Data 값 있다면, 변경해서 저장하고 다시 불러와서 진행
+      // MARK: - 기존 Data 값 없다면, 정상 진행
       self.totalWinRate(recordList: allList)
       self.vsAllTeamWinRate(recordList: allList)
+      self.allRecordResult(recordList: allList)
       
     case .failure:
       break
@@ -68,6 +65,7 @@ class WinRateUseCase {
     case .updateRecords(let records):
       self.totalWinRate(recordList: records)
       self.vsAllTeamWinRate(recordList: records)
+      self.allRecordResult(recordList: records)
       
     case let .sendMyTeamInfo(myTeam):
       _state.myTeam = myTeam
@@ -76,7 +74,7 @@ class WinRateUseCase {
   
   // MARK: - Usecase Logic
   /// 직관 기록을 통해 총 승률을 계산하고 입력합니다
-  private func totalWinRate(recordList: [GameRecordModel])  {
+  private func totalWinRate(recordList: [GameRecordWithScoreModel])  {
     
     let totalGames = recordList.count // 무승부를 포함한 전체 게임 수
     let drawCount = recordList.filter{ $0.result == .draw}.count // 무승부 수
@@ -92,7 +90,7 @@ class WinRateUseCase {
     _state.myWinRate.totalWinRate = winRate
   }
   /// 직관 기록을 통해 구단 별 승률을 계산하고 입력합니다
-  private func vsAllTeamWinRate(recordList: [GameRecordModel]) {
+  private func vsAllTeamWinRate(recordList: [GameRecordWithScoreModel]) {
     var teamWins: [BaseballTeam: Int] = [:]
     var teamGames: [BaseballTeam: Int] = [:]
     var teamDraws: [BaseballTeam: Int] = [:]
@@ -131,5 +129,26 @@ class WinRateUseCase {
     
     _state.myWinRate.vsTeamWinRate = vsTeamWinRate
     _state.myWinRate.vsTeamRecordCount = vsTeamRecordCount
+  }
+  
+  /// 직관 기록을 통해 승, 패, 무 숫자를 갱신합니다
+  private func allRecordResult(recordList: [GameRecordWithScoreModel]) {
+    var winCount: Int = 0
+    var loseCount: Int = 0
+    var drawCount: Int = 0
+    for record in recordList {
+      guard !record.isCancel else { continue }
+      switch record.result {
+      case .win:
+        winCount += 1
+      case .lose:
+        loseCount += 1
+      case .draw:
+        drawCount += 1
+      }
+    }
+    _state.myWinCount = winCount
+    _state.myLoseCount = loseCount
+    _state.myDrawCount = drawCount
   }
 }
