@@ -102,25 +102,25 @@ extension BaseballTeam {
   var image: Image {
     switch self {
     case .doosan:
-      return YanoljaAsset.doosan.swiftUIImage
+      return Image(.doosan)
     case .lotte:
-      return YanoljaAsset.lotte.swiftUIImage
+      return Image(.lotte)
     case .samsung:
-      return YanoljaAsset.samsung.swiftUIImage
+      return Image(.samsung)
     case .hanwha:
-      return YanoljaAsset.hanwha.swiftUIImage
+      return Image(.hanwha)
     case .kiwoom:
-      return YanoljaAsset.kiwoom.swiftUIImage
+      return Image(.kiwoom)
     case .kia:
-      return YanoljaAsset.kia.swiftUIImage
+      return Image(.KIA)
     case .kt:
-      return YanoljaAsset.kt.swiftUIImage
+      return Image(.KT)
     case .lg:
-      return YanoljaAsset.lg.swiftUIImage
+      return Image(.LG)
     case .nc:
-      return YanoljaAsset.nc.swiftUIImage
+      return Image(.NC)
     case .ssg:
-      return YanoljaAsset.ssg.swiftUIImage
+      return Image(.SSG)
     }
   }
   
