@@ -9,104 +9,169 @@
 import SwiftUI
 
 struct AppView: View {
+  @State private var path = NavigationPath()  // 네비게이션 경로 관리
+  
+  var winRateUseCase: WinRateUseCase
+  var recordUseCase: RecordUseCase
+  var userInfoUseCase: UserInfoUseCase
+  
+  @State var selection: Tab = .main
+  @State var selectedRecordYearFilter: String = YearFilter.initialValue
+  @State var selectedAnalyzeYearFilter: String = YearFilter.initialValue
   
   var body: some View {
-    NavigationStack {
+    NavigationStack(path: $path) {
       TabView(selection: $selection) {
         MainView(
           winRateUseCase: winRateUseCase,
-          recordUseCase: recordUseCase,
-          myTeamUseCase: myTeamUseCase
+          userInfoUseCase: userInfoUseCase
         )
-        .tag(0)
+        .tabItem {
+          Image(systemName: "1.square.fill")
+          Text("홈")
+        }
+        .tag(Tab.main)
+        
         AllRecordView(
           winRateUseCase: winRateUseCase,
-          recordUseCase: recordUseCase
+          recordUseCase: recordUseCase,
+          selectedYearFilter: $selectedRecordYearFilter
         )
-        .tag(1)
+        .tabItem {
+          Image(systemName: "2.square.fill")
+          Text("기록")
+        }
+        .tag(Tab.record)
+        
+        AllAnalyzeView(
+          winRateUseCase: winRateUseCase,
+          recordUseCase: recordUseCase,
+          userInfoUseCase: userInfoUseCase,
+          selectedYearFilter: $selectedAnalyzeYearFilter
+        )
+        .tag(Tab.analyze)
+        .tabItem {
+          Image(systemName: "3.square.fill")
+          Text("분석")
+        }
       }
-      .ignoresSafeArea(edges: .bottom)
-      .tabViewStyle(PageTabViewStyle())
-      .indexViewStyle(
-        PageIndexViewStyle(backgroundDisplayMode: .always)
-      )
       .navigationTitle(
-        selection == 0 ? "나의 직관 승률" : "나의 직관 리스트"
+        {
+          switch selection {
+          case .main: return "나의 직관 승률"
+          case .record: return "\(selectedRecordYearFilter) 직관 기록"
+          case .analyze: return "\(selectedAnalyzeYearFilter) 직관 분석"
+          }
+        }()
       )
+      .navigationBarTitleDisplayMode(.large)
+      .toolbar {
+        ToolbarItem(
+          placement: .topBarTrailing,
+          content: {
+            Group {
+              switch selection {
+              case .main:
+                HStack(alignment: .top, spacing: 16) {
+                  Button(
+                    action: { print("이미지 다운로드") },
+                    label: { Image(systemName: "square.and.arrow.down")
+                      .offset(y: -2) }
+                  )
+                  Button(
+                    action: { path.append(NavigationDestination.settings) },
+                    label: { Image(systemName: "gearshape") }
+                  )
+                }
+              case .record:
+                HStack(alignment: .top, spacing: 16) {
+                  Button(
+                    action: {
+                      recordUseCase
+                        .effect(.tappedCreateRecordSheet(true))
+                    },
+                    label: { Image(systemName: "plus") }
+                  )
+                  Menu {
+                    ForEach(YearFilter.list, id: \.self) { selectedFilter in
+                      Button(
+                        action: {
+                          selectedRecordYearFilter = selectedFilter
+                        }
+                      ) {
+                        HStack {
+                          if selectedRecordYearFilter == selectedFilter {
+                            Image(systemName: "checkmark")
+                          }
+                          Text(selectedFilter)
+                        }
+                      }
+                    }
+                  } label: {
+                    Image(systemName: "calendar")
+                  }
+                }
+              case .analyze:
+                Menu {
+                  ForEach(YearFilter.list, id: \.self) { selectedFilter in
+                    Button(
+                      action: {
+                        selectedAnalyzeYearFilter = selectedFilter
+                      }
+                    ) {
+                      HStack {
+                        if selectedAnalyzeYearFilter == selectedFilter {
+                          Image(systemName: "checkmark")
+                        }
+                        Text(selectedFilter)
+                      }
+                    }
+                  }
+                } label: {
+                  Image(systemName: "calendar")
+                }
+              }
+            }
+            .tint(.black)
+          }
+        )
+      }
+      .navigationDestination(for: NavigationDestination.self) { destination in
+        switch destination {
+        case .settings:
+          SettingsView()
+            .navigationTitle("마이페이지")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+              ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                  path.removeLast()
+                }) {
+                  Image(systemName: "chevron.left")
+                    .font(.system(size: 18, weight: .semibold))
+                }
+                .tint(.black)
+              }
+            }
+        }
+      }
       .fullScreenCover(
         isPresented: .init(
           get: {
-            return myTeamUseCase.state.myTeam == nil
+            return userInfoUseCase.state.myTeam == nil
           },
           set: { _ in }
         ),
         content: {
-          MyTeamSelectView(
-            completeSelectionAction: { myTeam in
-              myTeamUseCase.effect(.changeMyTeam(myTeam))
+          OnboardingView(
+            onBoardingResultInfo: { (myTeam, nickname) in
+              userInfoUseCase.effect(.changeMyTeam(myTeam))
+              userInfoUseCase.effect(.changeMyNickname(nickname))
               winRateUseCase.effect(.tappedTeamChange(myTeam))
             }
           )
         }
       )
-      .toolbar {
-        ToolbarItem(
-          placement: .topBarTrailing,
-          content: {
-            if selection == 0 {
-              Menu(
-                content: {
-                  Picker(
-                    "나의 팀 변경",
-                    selection: .init(
-                      get: {
-                        myTeamUseCase.state.myTeam ?? .doosan
-                      },
-                      set: { team in
-                        myTeamUseCase.effect(.changeMyTeam(team))
-                        winRateUseCase.effect(.tappedTeamChange(team))
-                      }
-                    )
-                  ) {
-                    ForEach(BaseballTeam.allCases, id: \.self) { team in
-                      Text(team.name)
-                    }
-                  }
-                  .pickerStyle(.menu)
-                },
-                label: {
-                  Circle()
-                    .frame(width: 40)
-                    .foregroundStyle((myTeamUseCase.state.myTeam ?? .doosan).mainColor)
-                    .overlay{
-                      Text(
-                        myTeamUseCase
-                          .state
-                          .myTeam?
-                          .name
-                          .split(separator: " ").first ?? ""
-                      )
-                      .foregroundStyle(.white)
-                      .font(.callout)
-                    }
-                }
-              )
-            } else {
-              Button(
-                action: {
-                  recordUseCase
-                    .effect(.tappedCreateRecordSheet(true))
-                },
-                label: {
-                  Image(
-                    systemName: "plus"
-                  )
-                }
-              )
-            }
-          }
-        )
-      }
     }
   }
 }
