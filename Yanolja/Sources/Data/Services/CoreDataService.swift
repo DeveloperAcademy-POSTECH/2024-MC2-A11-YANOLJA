@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 
-// MARK: - 에디꺼
+// MARK: - v1.0 이전 에디꺼
 /// Service: 코어 데이터에 접근하는 로직이 존재하는 공간
 struct CoreDataService: DataServiceInterface {
   private let container: NSPersistentContainer
