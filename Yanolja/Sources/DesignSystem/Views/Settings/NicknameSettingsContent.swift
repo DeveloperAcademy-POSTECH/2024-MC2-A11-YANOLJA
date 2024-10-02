@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct NicknameSettingsContentView: View {
+struct NicknameSettingsContent: View {
   @Binding var inputText: String
   
   var body: some View {
@@ -37,5 +37,5 @@ struct NicknameSettingsContentView: View {
 }
 
 #Preview {
-  NicknameSettingsContentView(inputText: .constant(""))
+  NicknameSettingsContent(inputText: .constant(""))
 }
