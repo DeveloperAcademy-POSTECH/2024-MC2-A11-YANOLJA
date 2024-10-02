@@ -11,17 +11,13 @@ import SwiftUI
 struct SelectTeamView: View {
   @Binding var selectedTeam: BaseballTeam
   private let type: SelectType
-//  private let tappedAction: (BaseballTeam) -> Void
   
   init(
     type: SelectType,
     selectedTeam: Binding<BaseballTeam>
-//    tappedAction: @escaping (BaseballTeam
-//    ) -> Void) 
   ) {
     self.type = type
     self._selectedTeam = selectedTeam
-//    self.tappedAction = tappedAction
   }
   
   var body: some View {
@@ -35,15 +31,7 @@ struct SelectTeamView: View {
       HStack {
         Picker(
           "",
-          selection: $selectedTeam
-//              .init(
-//            get: { selectedTeam },
-//            set: { team in
-//              selectedTeam = team
-//              tappedAction(team)
-//            }
-//              )
-          ,
+          selection: $selectedTeam,
           content: {
             if case let .vs(myteam) = type {
               ForEach(BaseballTeam.allCases.filter{ $0 != myteam }, id: \.self) { team in
@@ -91,8 +79,6 @@ extension SelectTeamView {
   SelectTeamView(
     type: .my,
     selectedTeam: .constant(.doosan)
-//    ,
-//    tappedAction: { team in print(team) }
   )
 }
 
