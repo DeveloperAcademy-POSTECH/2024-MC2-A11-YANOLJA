@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct SelectTeamView: View {
+struct SelectTeamBlock: View {
   @Binding var selectedTeam: BaseballTeam
   private let type: SelectType
   
@@ -59,7 +59,7 @@ struct SelectTeamView: View {
   }
 }
 
-extension SelectTeamView {
+extension SelectTeamBlock {
   enum SelectType: Equatable {
     case my
     case vs(myteam: BaseballTeam)
@@ -76,7 +76,7 @@ extension SelectTeamView {
 }
 
 #Preview {
-  SelectTeamView(
+  SelectTeamBlock(
     type: .my,
     selectedTeam: .constant(.doosan)
   )

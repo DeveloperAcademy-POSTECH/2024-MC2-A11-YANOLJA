@@ -45,7 +45,7 @@ struct DetailRecordView: View {
             selectDate
             
             HStack(spacing: 10) {
-              SelectTeamView(
+              SelectTeamBlock(
                 type: .my, // 나의 팀
                 selectedTeam: .init( // 이미지와 팀이름 선택
                   get: { recording.myTeam },
@@ -79,7 +79,7 @@ struct DetailRecordView: View {
                 .font(.title2)
                 .foregroundStyle(.gray)
               
-              SelectTeamView(
+              SelectTeamBlock(
                 type: .vs(myteam: recording.myTeam),
                 selectedTeam: $recording.vsTeam
               )

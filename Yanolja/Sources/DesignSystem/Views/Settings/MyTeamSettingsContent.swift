@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct MyTeamSettingsContentView: View {
+struct MyTeamSettingsContent: View {
   @Binding var selectedTeam: BaseballTeam?
   private var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
   
@@ -41,7 +41,7 @@ struct MyTeamSettingsContentView: View {
 }
 
 #Preview {
-  MyTeamSettingsContentView(
+  MyTeamSettingsContent(
     selectedTeam: .constant(nil)
   )
 }

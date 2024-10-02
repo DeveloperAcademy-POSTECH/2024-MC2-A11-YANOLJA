@@ -26,7 +26,7 @@ struct OnboardingView: View {
       .padding(.top, 20)
       
       VStack(spacing: 0) {
-        MyTeamSettingsContentView(selectedTeam: $selectedTeam)
+        MyTeamSettingsContent(selectedTeam: $selectedTeam)
         
         Spacer()
         
@@ -59,7 +59,7 @@ struct OnboardingView: View {
             }
             .padding(.top, 3)
             
-            NicknameSettingsContentView(inputText: $selectedUserNickname)
+            NicknameSettingsContent(inputText: $selectedUserNickname)
               .padding(.top, 28)
             
             Spacer()
