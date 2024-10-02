@@ -49,7 +49,6 @@ class UserInfoUseCase {
     case let .changeMyNickname(newName):
       myNicknameService.saveNickname(to: newName)
       _state.myNickname = newName
-      print(newName)
     }
   }
 }
