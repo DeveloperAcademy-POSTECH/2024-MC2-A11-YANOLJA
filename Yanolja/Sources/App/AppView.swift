@@ -27,7 +27,9 @@ struct AppView: View {
           userInfoUseCase: userInfoUseCase
         )
         .tabItem {
-          Image(systemName: "1.square.fill")
+          Image(systemName: "house")
+          // SFsymbol이 자동으로 .fill 처리되는 것 제어
+            .environment(\.symbolVariants, .none)
           Text("홈")
         }
         .tag(Tab.main)
@@ -38,7 +40,9 @@ struct AppView: View {
           selectedYearFilter: $selectedRecordYearFilter
         )
         .tabItem {
-          Image(systemName: "2.square.fill")
+          Image(systemName: "plus.app")
+          // SFsymbol이 자동으로 .fill 처리되는 것 제어
+            .environment(\.symbolVariants, .none)
           Text("기록")
         }
         .tag(Tab.record)
@@ -51,7 +55,7 @@ struct AppView: View {
         )
         .tag(Tab.analyze)
         .tabItem {
-          Image(systemName: "3.square.fill")
+          Image(systemName: "chart.line.uptrend.xyaxis")
           Text("분석")
         }
       }
