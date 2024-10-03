@@ -13,12 +13,19 @@ struct AllRecordView: View {
   @Bindable var recordUseCase: RecordUseCase
   @State var selectedRecord: GameRecordWithScoreModel?
   
-  @Binding var selectedYearFilter: String // 년도 별 필터 기준 
+  @Binding var selectedYearFilter: String // 년도 별 필터 기준
   @State var selectedRecordFilter: String = RecordFilter.initialValue
   
   var body: some View {
     VStack(spacing: 0) {
       let filteredList = recordUseCase.state.recordList
+      
+      Spacer()
+        .frame(height: 30)
+      
+      TotalRecordCell(winRateUseCase: winRateUseCase, recordUseCase: recordUseCase)
+        .padding(.bottom, 24)
+      
       HStack {
         Menu {
           ForEach(RecordFilter.list, id: \.self) { selectedFilter in
@@ -38,10 +45,25 @@ struct AllRecordView: View {
         } label: {
           HStack(spacing: 4) {
             Text(selectedRecordFilter)
+              .font(.subheadline)
+              .foregroundStyle(.gray)
+              .bold()
             Image(systemName: "chevron.down")
+              .font(.subheadline)
+              .foregroundStyle(.gray)
+              .bold()
           }
         }
         Spacer()
+        
+        Button(action: {
+          // 정렬 순서 변경 포인트
+        }) {
+          Image(systemName: "arrow.up.arrow.down")
+            .font(.subheadline)
+            .foregroundStyle(.gray)
+            .bold()
+        }
       }
       
       if filteredList.isEmpty {
@@ -69,11 +91,11 @@ struct AllRecordView: View {
               }
             )
           }
-          .padding(.horizontal, 16)
         }
         .padding(.top, 25)
       }
     }
+    .padding(.horizontal, 16)
     .sheet(
       isPresented:
           .init(
