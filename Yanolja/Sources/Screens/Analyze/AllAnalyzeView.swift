@@ -41,6 +41,7 @@ struct AllAnalyzeView: View {
         .background {
           RoundedRectangle(cornerRadius: 14)
             .stroke(lineWidth: 0.33)
+            .foregroundStyle(.gray)
         }
         
         VStack(alignment: .leading, spacing: 8) {
@@ -65,6 +66,7 @@ struct AllAnalyzeView: View {
         .background {
           RoundedRectangle(cornerRadius: 14)
             .stroke(lineWidth: 0.33)
+            .foregroundStyle(.gray)
         }
       }
       
@@ -75,11 +77,19 @@ struct AllAnalyzeView: View {
         HStack {
           HStack(spacing: 4) {
             Text("구단별")
+              .font(.subheadline)
+              .bold()
             Image(systemName: "chevron.down")
+              .font(.subheadline)
+              .bold()
           }
+          .foregroundStyle(.gray)
           
           Spacer()
           Image(systemName: "arrow.up.arrow.down")
+            .font(.subheadline)
+            .bold()
+            .foregroundStyle(.gray)
         }
         .padding(.bottom, 16)
         
