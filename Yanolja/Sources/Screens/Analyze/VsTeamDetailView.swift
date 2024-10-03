@@ -26,88 +26,71 @@ struct VsTeamDetailView: View {
   
   var body: some View {
     NavigationStack {
-      VStack {
+      VStack(spacing: 0) {
         HStack {
-          ZStack {
-            RoundedRectangle(cornerRadius: 20)
-              .foregroundColor(.brandColor)
-              .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-            
-            VStack {
-              HStack {
-                Text("총 직관 횟수")
-                  .font(.callout)
-                
-                Spacer()
-              }
-              .padding(.leading, 16)
-              
-              Spacer()
-              HStack {
-                Spacer()
-                
-                // 총 직관 횟수
-                if let recordCount = winRateUseCase.state.myWinRate
-                  .vsTeamRecordCount[detailTeam] {
-                  
-                  Text("\(recordCount.map { String($0) } ?? "--")")
-                    .font(.system(.largeTitle, weight: .bold))
-                } else {
-                  Text("--")
-                    .font(.system(.largeTitle, weight: .bold))
-                }
-                
-                Text("회")
-                  .font(.subheadline)
-              }
-              .padding(.trailing, 16)
-            }
-            .padding(.vertical, 20)
-          }
-          .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-          
+          Text("\(detailTeam.name)")
+            .foregroundStyle(.date)
+            .bold()
           Spacer()
-          
-          ZStack {
-            RoundedRectangle(cornerRadius: 20)
-              .foregroundColor(.brandColor)
-              .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-            
-            VStack {
-              HStack {
-                Text("직관 승률")
-                  .font(.callout)
-                
-                Spacer()
-              }.padding(.leading, 16)
-              
+        }
+        .padding(.bottom, 8)
+        
+        HStack(spacing: 11) {
+          VStack(alignment: .leading, spacing: 8) {
+            Text("직관 승률")
+              .font(.footnote)
+            HStack {
               Spacer()
-              
-              HStack {
-                Spacer()
+              if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
+                Text("\(winRate.map{ String($0) } ?? "--")")
+                  .font(.title2)
+                  .bold()
                 
-                // 직관 승률
-                if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
-                  Text("\(winRate.map{ String($0) } ?? "--")")
-                    .font(.system(.largeTitle, weight: .bold))
-                  
-                } else {
-                  Text("--")
-                    .font(.system(.largeTitle, weight: .bold))
-                }
-                
-                Text("%")
-                  .font(.subheadline)
+              } else {
+                Text("--")
+                  .font(.title2)
+                  .bold()
               }
-              .padding(.trailing, 16)
+              Text("%")
+                .font(.title2)
+                .bold()
             }
-            .padding(.vertical, 20)
           }
-          .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+          .padding(16)
+          .background {
+            RoundedRectangle(cornerRadius: 14)
+              .stroke(lineWidth: 0.33)
+              .foregroundStyle(.gray)
+          }
+          
+          VStack(alignment: .leading, spacing: 8) {
+            if let recordCount = winRateUseCase.state.myWinRate
+              .vsTeamRecordCount[detailTeam] {
+              
+              Text("총 \(recordCount.map { String($0) } ?? "--")경기")
+                .font(.footnote)
+            } else {
+              Text("총 --경기")
+                .font(.footnote)
+            }
+            HStack {
+              Spacer()
+              // 각 팀의 승무패 횟수 - 수정 필요
+              Text("0승 0패 0무")
+            }
+            .font(.title2)
+            .bold()
+          }
+          .padding(16)
+          .background {
+            RoundedRectangle(cornerRadius: 14)
+              .stroke(lineWidth: 0.33)
+              .foregroundStyle(.gray)
+          }
         }
       }
       .padding(.top, 30)
-      .padding(.bottom, 12)
+      .padding(.bottom, 20)
       .padding(.horizontal, 16)
       
       let filteredList = recordUseCase
@@ -123,6 +106,7 @@ struct VsTeamDetailView: View {
           Text("\(detailTeam.name)와의 직관 기록이 없습니다.")
             .foregroundColor(.gray)
             .font(.callout)
+            .padding(.bottom, 12)
           Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
