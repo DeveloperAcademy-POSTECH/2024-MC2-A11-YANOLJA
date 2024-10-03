@@ -47,4 +47,6 @@ extension ShapeStyle where Self == Color {
   static var bg: Color { .init(hex: 0xF9F9FB) }
   
   static var bubble: Color { .init(hex: 0xF2F2F7) }
+  
+  static var date: Color { .init(hex: 0x818181) }
 }

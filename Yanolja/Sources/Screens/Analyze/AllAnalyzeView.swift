@@ -21,25 +21,7 @@ struct AllAnalyzeView: View {
       Spacer()
         .frame(height: 30)
       
-      VStack(alignment: .leading, spacing: 0) {
-        Text("총 \(recordUseCase.state.recordList.count)경기")
-          .font(.footnote)
-        Spacer()
-          .frame(height: 8)
-          .frame(maxWidth: .infinity)
-        HStack(spacing: 6) {
-          Text("\(winRateUseCase.state.myWinCount)승")
-          Text("\(winRateUseCase.state.myLoseCount)패")
-          Text("\(winRateUseCase.state.myDrawCount)무")
-        }
-          .font(.title)
-          .bold()
-      }
-      .padding(16)
-      .background {
-        RoundedRectangle(cornerRadius: 14)
-          .stroke(lineWidth: 0.33)
-      }
+      TotalRecordCell(winRateUseCase: winRateUseCase, recordUseCase: recordUseCase)
       
       Spacer()
         .frame(height: 10)
