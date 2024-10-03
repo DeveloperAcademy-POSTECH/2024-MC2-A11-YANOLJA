@@ -1,0 +1,11 @@
+//
+//  Release.xcconfig
+//  WINEY
+//
+//  Created by 박혜운 on 9/15/24.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include "Shared.xcconfig"
