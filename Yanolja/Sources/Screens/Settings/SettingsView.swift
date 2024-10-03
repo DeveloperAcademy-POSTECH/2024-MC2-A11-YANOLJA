@@ -9,9 +9,11 @@
 import SwiftUI
 
 struct SettingsView: View {
+  @Bindable var userInfoUseCase: UserInfoUseCase
+  
   var body: some View {
     VStack(spacing: 0) {
-      ContentView()
+      ContentView(userInfoUseCase: userInfoUseCase)
         .offset(y: -20)
       Text("승리지쿄 | ver \(BundleInfo.getVersion ?? "0.0")")
         .font(.caption)
@@ -23,8 +25,13 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView()
+  SettingsView(userInfoUseCase: .init(
+    myTeamService: UserDefaultsService(),
+    myNicknameService: UserDefaultsService(),
+    changeIconService: ChangeAppIconService())
+  )
 }
+
 // Enum으로 각 버튼 구분
 enum ActiveSheet: Identifiable {
   case teamChange, nicknameChange, terms, privacyPolicy, creators, announcements
@@ -36,6 +43,7 @@ enum ActiveSheet: Identifiable {
 
 struct ContentView: View {
   @State private var activeSheet: ActiveSheet?
+  @Bindable var userInfoUseCase: UserInfoUseCase
   
   var body: some View {
     List {
@@ -43,7 +51,7 @@ struct ContentView: View {
         Circle()
           .stroke(lineWidth: 1)
           .frame(width: 120)
-        Text("닉네임")
+        Text("\(userInfoUseCase.state.myNickname)")
           .font(.title2)
           .fontWeight(.black)
           .frame(maxWidth: .infinity)
@@ -96,9 +104,11 @@ struct ContentView: View {
     .sheet(item: $activeSheet) { item in
       switch item {
       case .teamChange:
-        TeamChangeView()  // '팀 변경' 화면
+        TeamChangeView(userInfoUseCase: userInfoUseCase)  // '팀 변경' 화면
+          .presentationDetents([.fraction(0.9)])
       case .nicknameChange:
-        NicknameChangeView()  // '닉네임 변경' 화면
+        NicknameChangeView(userInfoUseCase: userInfoUseCase)  // '닉네임 변경' 화면
+          .presentationDetents([.fraction(0.9)])
       case .terms:
         TermsView()  // '이용약관' 화면
       case .privacyPolicy:
@@ -114,14 +124,87 @@ struct ContentView: View {
 
 // 각 시트에 대한 뷰들 (여기서는 Placeholder로 간단히 정의)
 struct TeamChangeView: View {
+  @Environment(\.dismiss) var dismiss
+  @Bindable var userInfoUseCase: UserInfoUseCase
+  @State var selectedTeam: BaseballTeam? = nil
+  
   var body: some View {
-    Text("팀 변경 화면")
+    HStack(spacing: 0) {
+      Button(action: {
+        dismiss()
+      }) {
+        Text("취소")
+      }
+      Spacer()
+      Text("팀 변경")
+        .bold()
+      Spacer()
+      Button(action: {
+        // 팀 변경 - 수정 필요
+      }) {
+        Text("완료")
+          .bold()
+      }
+    }
+    .frame(height: 44)
+    .padding(.top, 16)
+    .padding(.horizontal, 16)
+    VStack(spacing: 0) {
+      if let myTeam = userInfoUseCase.state.myTeam {
+        MyTeamSettingsContent(selectedTeam: .constant(myTeam))
+          .presentationDragIndicator(.visible)
+      } else {
+        MyTeamSettingsContent(selectedTeam: $selectedTeam)
+          .presentationDragIndicator(.visible)
+      }
+      Spacer()
+    }
   }
 }
 
 struct NicknameChangeView: View {
+  @Environment(\.dismiss) var dismiss
+  @Bindable var userInfoUseCase: UserInfoUseCase
+  @State var selectedUserNickname: String = ""
+  
   var body: some View {
-    Text("닉네임 변경 화면")
+    VStack(spacing: 0) {
+      HStack(spacing: 0) {
+        Button(action: {
+          dismiss()
+        }) {
+          Text("취소")
+        }
+        Spacer()
+        Text("닉네임 변경")
+          .bold()
+        Spacer()
+        Button(action: {
+          // 닉네임 변경 - 수정 필요
+        }) {
+          Text("완료")
+            .bold()
+        }
+      }
+      .frame(height: 44)
+      .padding(.top, 16)
+      .padding(.bottom, 20)
+      
+      // 지정한 닉네임이 없으면 그대로 실행
+      if userInfoUseCase.state.myNickname.isEmpty {
+        NicknameSettingsContent(inputText: $selectedUserNickname)
+          .presentationDragIndicator(.visible)
+      } else {
+        // 지정한 닉네임이 있다면 사용하던 닉네임이 보인다
+        NicknameSettingsContent(inputText: $selectedUserNickname)
+          .onAppear {
+            selectedUserNickname = userInfoUseCase.state.myNickname
+          }
+          .presentationDragIndicator(.visible)
+      }
+      Spacer()
+    }
+    .padding(.horizontal, 16)
   }
 }
 
