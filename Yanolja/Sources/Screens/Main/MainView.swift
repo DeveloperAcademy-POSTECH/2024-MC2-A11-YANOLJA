@@ -41,7 +41,11 @@ private struct WinRatePercentage: View {
   var body: some View {
     HStack(alignment: .top, spacing: 13.5) {
       // MARK: - myWinRate에 따라 이미지 적용 / 현재 단일 이미지로 테스트
-      Image(.homeWinRate)
+      if let totalWinRate = winRateUseCase.state.myWinRate.totalWinRate {
+        Image(String(totalWinRate), bundle: .main)
+      } else {
+        Image(.noneWinRate)
+      }
     }
   }
 }
