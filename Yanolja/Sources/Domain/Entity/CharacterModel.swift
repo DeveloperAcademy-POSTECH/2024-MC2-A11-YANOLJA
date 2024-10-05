@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct CharacterModel {
-  var myTeam: BaseballTeam?
+  var myTeam: BaseballTeam
   var totalWinRate: Int?
 
   var emotionByWinRate: CharacterEmotionType {

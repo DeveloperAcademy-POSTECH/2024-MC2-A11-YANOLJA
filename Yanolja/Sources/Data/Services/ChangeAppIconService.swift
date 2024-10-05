@@ -20,7 +20,7 @@ extension ChangeAppIconService {
   func changeICon(iconName: String) {
     // 1. 필수 체크 (멀티 icon 지원여부 체크), 현재 변경하려는 아이콘과 같은지 체크
     guard UIApplication.shared.supportsAlternateIcons,
-          iconName != UIApplication.shared.alternateIconName 
+          iconName != UIApplication.shared.alternateIconName
     else { return }
     // 2. 변경하기
     UIApplication.shared.setAlternateIconName(iconName) { iconChangeError in

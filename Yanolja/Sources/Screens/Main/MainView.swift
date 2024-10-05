@@ -18,13 +18,13 @@ struct MainView: View {
         totalWinRate: winRateUseCase.state.myWinRate.totalWinRate,
         myTeam: userInfoUseCase.state.myTeam
       )
-      .foregroundColor(userInfoUseCase.state.myTeam?.mainColor)
+      .foregroundColor(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
       .padding(.top, 20)
       .padding(.bottom, 8)
       
       MainCharacterView(
         characterModel: .init(
-          myTeam: userInfoUseCase.state.myTeam,
+          myTeam: userInfoUseCase.state.myTeam ?? .noTeam,
           totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
         )
       )
@@ -53,7 +53,7 @@ private struct WinRatePercentage: View {
             .renderingMode(.template)
         }
       }
-      .foregroundStyle(myTeam?.mainColor ?? .none1)
+      .foregroundStyle(myTeam?.mainColor ?? .noTeam1)
     }
   }
 }
@@ -68,7 +68,7 @@ private struct NameBox: View {
           .resizable()
           .scaledToFit()
           .frame(height: 10)
-        Text(userInfoUseCase.state.myTeam?.name ?? "무직")
+        Text(userInfoUseCase.state.myTeam?.name ?? BaseballTeam.noTeam.name)
           .font(.footnote)
         Image(systemName: "sparkle")
           .resizable()

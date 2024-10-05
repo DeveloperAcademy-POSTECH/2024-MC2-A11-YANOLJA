@@ -41,8 +41,8 @@ extension ShapeStyle where Self == Color {
   static var kia1: Color { .init(hex: 0xEA0029) }
   static var kia2: Color { .init(hex: 0xFED2D4) }
   
-  static var none1: Color { .init(hex: 0x8E8E93) }
-  static var none2: Color { .init(hex: 0xEAEAEA) }
+  static var noTeam1: Color { .init(hex: 0x8E8E93) }
+  static var noTeam2: Color { .init(hex: 0xEAEAEA) }
   
   static var bg: Color { .init(hex: 0xF9F9FB) }
   

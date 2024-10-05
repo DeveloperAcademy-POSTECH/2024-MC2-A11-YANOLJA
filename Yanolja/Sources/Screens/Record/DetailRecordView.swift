@@ -166,7 +166,7 @@ struct DetailRecordView: View {
               .frame(width: 94, height: 32)
               .background(
                 RoundedRectangle(cornerRadius: 8)
-                  .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
+                  .foregroundStyle(recording.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
               )
               .font(.headline)
               .foregroundStyle(recording.isCancel ? .gray : .black)
@@ -188,7 +188,7 @@ struct DetailRecordView: View {
               .frame(width: 94, height: 32)
               .background(
                 RoundedRectangle(cornerRadius: 8)
-                  .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
+                  .foregroundStyle(recording.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
               )
               .font(.headline)
               .foregroundStyle(recording.isCancel ? .gray : .black)

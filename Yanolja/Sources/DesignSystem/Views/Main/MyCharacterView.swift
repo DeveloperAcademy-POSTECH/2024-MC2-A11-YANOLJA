@@ -47,7 +47,7 @@ struct MainCharacterView: View {
           Image(.mainCharacter4Line)
         }
       }
-      .foregroundColor(characterModel.myTeam?.mainColor ?? .none1)
+      .foregroundColor(characterModel.myTeam.mainColor)
     }
   }
 }
