@@ -23,6 +23,8 @@ struct SelectTeamBlock: View {
   var body: some View {
     VStack(spacing: 0) {
       Text(type.title)
+        .font(.caption)
+        .foregroundStyle(.gray)
       selectedTeam
         .image
         .resizable()
@@ -37,6 +39,8 @@ struct SelectTeamBlock: View {
               ForEach(BaseballTeam.allCases.filter{ $0 != myteam }, id: \.self) { team in
                 HStack {
                   Text(team.name)
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
                   Spacer()
                 }
               }
@@ -44,6 +48,8 @@ struct SelectTeamBlock: View {
               ForEach(BaseballTeam.allCases, id: \.self) { team in
                 HStack {
                   Text(team.name)
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
                   Spacer()
                 }
               }
