@@ -9,11 +9,15 @@
 import SwiftUI
 
 struct SettingsView: View {
+  @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var userInfoUseCase: UserInfoUseCase
   
   var body: some View {
     VStack(spacing: 0) {
-      ContentView(userInfoUseCase: userInfoUseCase)
+      ContentView(
+        winRateUseCase: winRateUseCase,
+        userInfoUseCase: userInfoUseCase
+      )
         .offset(y: -20)
       Text("승리지쿄 | ver \(BundleInfo.getVersion ?? "0.0")")
         .font(.caption)
@@ -25,10 +29,16 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView(userInfoUseCase: .init(
-    myTeamService: UserDefaultsService(),
-    myNicknameService: UserDefaultsService(),
-    changeIconService: ChangeAppIconService())
+  SettingsView(
+    winRateUseCase: .init(
+      recordService: RecordDataService(),
+      myTeamService: UserDefaultsService()
+    ),
+    userInfoUseCase: .init(
+      myTeamService: UserDefaultsService(),
+      myNicknameService: UserDefaultsService(),
+      changeIconService: ChangeAppIconService()
+    )
   )
 }
 
@@ -42,8 +52,10 @@ enum ActiveSheet: Identifiable {
 }
 
 struct ContentView: View {
-  @State private var activeSheet: ActiveSheet?
+  @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var userInfoUseCase: UserInfoUseCase
+  
+  @State private var activeSheet: ActiveSheet?
   
   var body: some View {
     List {
@@ -119,7 +131,10 @@ struct ContentView: View {
     .sheet(item: $activeSheet) { item in
       switch item {
       case .teamChange:
-        TeamChangeView(userInfoUseCase: userInfoUseCase)  // '팀 변경' 화면
+        TeamChangeView(
+          winRateUseCase: winRateUseCase,
+          userInfoUseCase: userInfoUseCase
+        )  // '팀 변경' 화면
           .presentationDetents([.fraction(0.9)])
       case .nicknameChange:
         NicknameChangeView(userInfoUseCase: userInfoUseCase)  // '닉네임 변경' 화면
@@ -140,7 +155,9 @@ struct ContentView: View {
 // 각 시트에 대한 뷰들 (여기서는 Placeholder로 간단히 정의)
 struct TeamChangeView: View {
   @Environment(\.dismiss) var dismiss
+  @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var userInfoUseCase: UserInfoUseCase
+  
   @State var selectedTeam: BaseballTeam? = nil
   
   var body: some View {
@@ -157,6 +174,7 @@ struct TeamChangeView: View {
       Button(action: {
         if let myTeam = selectedTeam {
           userInfoUseCase.effect(.changeMyTeam(myTeam))
+          winRateUseCase.effect(.tappedTeamChange(myTeam))
         }
         dismiss()
       }) {
