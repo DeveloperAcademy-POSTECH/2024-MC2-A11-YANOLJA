@@ -20,14 +20,13 @@ struct DetailRecordView: View {
   @State private var showingAlert: Bool = false
   @State private var changeMyTeam: BaseballTeam?
   @State private var isDH: Bool = false
-  @State private var isCanceled: Bool = false
   
   private let editType: RecordViewEditType
   private let changeRecords: ([GameRecordWithScoreModel]) -> Void
   var recordUseCase: RecordUseCase
   
-  @State private var selectedOption: String = "DH1"
-  let doubleHeader = ["DH1", "DH2"]
+  @State private var selectedOption: String = ""
+  let doubleHeader = [1: "DH1", 2: "DH2"]
   
   @State private var inputText = ""
   
@@ -108,21 +107,39 @@ struct DetailRecordView: View {
                 selectedTeam: $recording.vsTeam
               )
             }
+            .onAppear {
+              if recording.isDoubleHeader != 0 {
+                isDH = true
+              }
+            }
             
             Toggle(isOn: $isDH) {
               Text("더블헤더")
+            }
+            .onChange(of: isDH) { oldValue, newValue in
+              if newValue == false {
+                recording.isDoubleHeader = 0
+              }
             }
           }
         )
         
         // 더블헤더 선택
         if isDH {
-          Picker("더블헤더 선택", selection: $selectedOption) {
-            ForEach(doubleHeader, id: \.self) { dh in
-              Text(dh)
+          Picker("더블헤더 선택", selection: $recording.isDoubleHeader) {
+            ForEach(doubleHeader.keys.sorted(), id: \.self) { key in
+              Text(doubleHeader[key] ?? "")
             }
           }
           .pickerStyle(.inline)
+          .onSubmit {
+            // 더블헤더 선택 시 번호 전달
+            if recording.isDoubleHeader == 1 {
+              recording.isDoubleHeader = 1
+            } else {
+              recording.isDoubleHeader = 2
+            }
+          }
         }
         
         // 경기 결과 표시
@@ -144,14 +161,14 @@ struct DetailRecordView: View {
                   set: { newValue in
                     recording.myTeamScore = newValue.isEmpty ? "" : newValue
                   }))
-                .multilineTextAlignment(.center)
-                .frame(width: 94, height: 32)
-                .background(
-                  RoundedRectangle(cornerRadius: 8)
-                    .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
-                )
-                .font(.headline)
-                .foregroundStyle(recording.isCancel ? .gray : .black)
+              .multilineTextAlignment(.center)
+              .frame(width: 94, height: 32)
+              .background(
+                RoundedRectangle(cornerRadius: 8)
+                  .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
+              )
+              .font(.headline)
+              .foregroundStyle(recording.isCancel ? .gray : .black)
               
               Text(":")
                 .foregroundStyle(recording.isCancel ? .gray.opacity(0.4) : .gray)
@@ -166,14 +183,14 @@ struct DetailRecordView: View {
                   set: { newValue in
                     recording.vsTeamScore = newValue.isEmpty ? "" : newValue
                   }))
-                .multilineTextAlignment(.center)
-                .frame(width: 94, height: 32)
-                .background(
-                  RoundedRectangle(cornerRadius: 8)
-                    .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
-                )
-                .font(.headline)
-                .foregroundStyle(recording.isCancel ? .gray : .black)
+              .multilineTextAlignment(.center)
+              .frame(width: 94, height: 32)
+              .background(
+                RoundedRectangle(cornerRadius: 8)
+                  .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
+              )
+              .font(.headline)
+              .foregroundStyle(recording.isCancel ? .gray : .black)
             }
             .disabled(recording.isCancel)
             
@@ -190,22 +207,22 @@ struct DetailRecordView: View {
               get: { recording.memo ?? "" },
               set: { recording.memo = $0.isEmpty ? nil : $0 }
             ))
-              .overlay(
-                alignment: .trailing,
-                content: {
-                  Text("\(recording.memo?.count ?? 0) / 15")
-                    .font(.callout)
-                    .foregroundStyle(Color(uiColor: .systemGray2))
-                }
-              )
-              .onChange(of: recording.memo ?? "") { oldValue, newValue in
-                if newValue.count > 15 {
-                  recording.memo = String(newValue.prefix(15))
-                }
+            .overlay(
+              alignment: .trailing,
+              content: {
+                Text("\(recording.memo?.count ?? 0) / 15")
+                  .font(.callout)
+                  .foregroundStyle(Color(uiColor: .systemGray2))
               }
-              .onSubmit {
-                recording.memo = inputText
+            )
+            .onChange(of: recording.memo ?? "") { oldValue, newValue in
+              if newValue.count > 15 {
+                recording.memo = String(newValue.prefix(15))
               }
+            }
+            .onSubmit {
+              recording.memo = inputText
+            }
           })
         
         // (Optional) 사진 추가
@@ -273,7 +290,7 @@ struct DetailRecordView: View {
                   if recording.vsTeamScore.isEmpty {
                     recording.vsTeamScore = "--"
                   }
-                  if isCanceled {
+                  if recording.isCancel {
                     recording.isCancel = true
                   }
                   
@@ -287,7 +304,7 @@ struct DetailRecordView: View {
                   if recording.vsTeamScore.isEmpty {
                     recording.vsTeamScore = "--"
                   }
-                  if isCanceled {
+                  if recording.isCancel {
                     recording.isCancel = true
                   }
                   
