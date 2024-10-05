@@ -48,9 +48,24 @@ struct ContentView: View {
   var body: some View {
     List {
       VStack(spacing: 12) {
-        Circle()
-          .stroke(lineWidth: 1)
-          .frame(width: 120)
+        ZStack {
+          Circle()
+            .stroke(lineWidth: 1)
+            .frame(width: 120)
+          ZStack {
+            Image(.myPageFace)
+              .resizable()
+              .renderingMode(.template)
+              .foregroundStyle(userInfoUseCase.state.myTeam?.mainColor ?? .none1)
+            Image(.myPageLine)
+              .resizable()
+          }
+          .aspectRatio(1, contentMode: .fit)
+          .frame(width: 112)
+          .offset(y: 17)
+        }
+        .clipShape(Circle())
+        
         Text("\(userInfoUseCase.state.myNickname)")
           .font(.title2)
           .fontWeight(.black)
@@ -140,7 +155,10 @@ struct TeamChangeView: View {
         .bold()
       Spacer()
       Button(action: {
-        // 팀 변경 - 수정 필요
+        if let myTeam = selectedTeam {
+          userInfoUseCase.effect(.changeMyTeam(myTeam))
+        }
+        dismiss()
       }) {
         Text("완료")
           .bold()
@@ -150,13 +168,11 @@ struct TeamChangeView: View {
     .padding(.top, 16)
     .padding(.horizontal, 16)
     VStack(spacing: 0) {
-      if let myTeam = userInfoUseCase.state.myTeam {
-        MyTeamSettingsContent(selectedTeam: .constant(myTeam))
-          .presentationDragIndicator(.visible)
-      } else {
-        MyTeamSettingsContent(selectedTeam: $selectedTeam)
-          .presentationDragIndicator(.visible)
-      }
+      MyTeamSettingsContent(selectedTeam: $selectedTeam)
+        .presentationDragIndicator(.visible)
+        .onAppear {
+          selectedTeam = userInfoUseCase.state.myTeam
+        }
       Spacer()
     }
   }
@@ -180,7 +196,8 @@ struct NicknameChangeView: View {
           .bold()
         Spacer()
         Button(action: {
-          // 닉네임 변경 - 수정 필요
+          userInfoUseCase.effect(.changeMyNickname(selectedUserNickname))
+          dismiss()
         }) {
           Text("완료")
             .bold()

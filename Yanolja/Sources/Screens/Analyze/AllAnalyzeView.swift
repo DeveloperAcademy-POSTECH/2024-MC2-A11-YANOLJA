@@ -21,7 +21,11 @@ struct AllAnalyzeView: View {
       Spacer()
         .frame(height: 30)
       
-      TotalRecordCell(winRateUseCase: winRateUseCase, recordUseCase: recordUseCase)
+      TotalRecordCell(
+        winRateUseCase: winRateUseCase,
+        userInfoUseCase: userInfoUseCase,
+        recordUseCase: recordUseCase
+      )
       
       Spacer()
         .frame(height: 10)
