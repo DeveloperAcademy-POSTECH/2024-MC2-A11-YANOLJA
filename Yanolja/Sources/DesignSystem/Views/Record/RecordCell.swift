@@ -15,10 +15,18 @@ struct RecordCell: View {
     ZStack {
       VStack {
         HStack(spacing: 0) {
-          Text(record.myTeamScore)
-            .jikyoFont(.recordCell)
-            .foregroundStyle(myTeamScoreColor())
-            .frame(width: 70, height: 70)
+          // 경기가 취소되었을 경우 점수가 아닌 "--"로 표시
+          if record.isCancel {
+            Text("--")
+              .jikyoFont(.recordCell)
+              .foregroundStyle(myTeamScoreColor())
+              .frame(width: 70, height: 70)
+          } else {
+            Text(record.myTeamScore)
+              .jikyoFont(.recordCell)
+              .foregroundStyle(myTeamScoreColor())
+              .frame(width: 70, height: 70)
+          }
           Spacer()
           VStack {
             HStack(spacing: 8) {
@@ -41,16 +49,24 @@ struct RecordCell: View {
             Text(record.date.gameDate())
               .font(.caption2)
               .foregroundStyle(.date)
-            Text(record.stadiums)
+            Text(record.stadiums.name)
               .font(.caption2)
               .foregroundStyle(.date)
           }
           Spacer()
           ZStack(alignment: .center) {
-            Text(record.vsTeamScore)
-              .jikyoFont(.recordCell)
-              .foregroundStyle(vsTeamScoreColor())
-              .frame(width: 70, height: 70)
+            // 경기가 취소되었을 경우 점수가 아닌 "--"로 표시
+            if record.isCancel {
+              Text("--")
+                .jikyoFont(.recordCell)
+                .foregroundStyle(vsTeamScoreColor())
+                .frame(width: 70, height: 70)
+            } else {
+              Text(record.vsTeamScore)
+                .jikyoFont(.recordCell)
+                .foregroundStyle(vsTeamScoreColor())
+                .frame(width: 70, height: 70)
+            }
           }
         }
       }
@@ -83,7 +99,7 @@ struct RecordCell: View {
     case .win:
       return record.myTeam.mainColor
     case .lose:
-      return record.vsTeam.mainColor
+      return .gray
     case .draw:
       return .gray
     }

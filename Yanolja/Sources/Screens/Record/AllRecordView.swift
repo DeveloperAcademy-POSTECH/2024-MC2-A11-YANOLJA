@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AllRecordView: View {
   @Bindable var winRateUseCase: WinRateUseCase
+  @Bindable var userInfoUseCase: UserInfoUseCase
   @Bindable var recordUseCase: RecordUseCase
   @State var selectedRecord: GameRecordWithScoreModel?
   
@@ -23,8 +24,12 @@ struct AllRecordView: View {
       Spacer()
         .frame(height: 30)
       
-      TotalRecordCell(winRateUseCase: winRateUseCase, recordUseCase: recordUseCase)
-        .padding(.bottom, 24)
+      TotalRecordCell(
+        winRateUseCase: winRateUseCase,
+        userInfoUseCase: userInfoUseCase,
+        recordUseCase: recordUseCase
+      )
+      .padding(.bottom, 24)
       
       HStack {
         Menu {
@@ -151,6 +156,11 @@ struct AllRecordView: View {
       winRateUseCase: .init(
         recordService: RecordDataService(),
         myTeamService: UserDefaultsService()
+      ),
+      userInfoUseCase: UserInfoUseCase(
+        myTeamService: UserDefaultsService(),
+        myNicknameService: UserDefaultsService(),
+        changeIconService: ChangeAppIconService()
       ),
       recordUseCase: .init(recordService: RecordDataService()),
       selectedYearFilter: .constant("전체")

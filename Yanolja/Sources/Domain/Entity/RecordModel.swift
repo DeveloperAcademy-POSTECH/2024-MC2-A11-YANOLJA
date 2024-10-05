@@ -39,12 +39,12 @@ struct GameRecordWithScoreModel: Identifiable {
   init(
     id: UUID = .init(),
     date: Date = .init(),
-    stadiums: String = BaseballStadiums.nameList.first ?? "고척스카이돔",
+    stadiums: BaseballStadiums = .gocheok,
     myTeam: BaseballTeam = .doosan,
     vsTeam: BaseballTeam = .doosan.anyOtherTeam(),
     isDoubleHeader: Int = 0,
-    myTeamScore: String = "-",
-    vsTeamScore: String = "-",
+    myTeamScore: String = "",
+    vsTeamScore: String = "",
     isCancel: Bool = false,
     memo: String? = nil,
     photo: Image? = nil
@@ -64,7 +64,7 @@ struct GameRecordWithScoreModel: Identifiable {
   
   let id: UUID
   var date: Date
-  var stadiums: String
+  var stadiums: BaseballStadiums
   var isDoubleHeader: Int // 추가
   var myTeam: BaseballTeam
   var vsTeam: BaseballTeam

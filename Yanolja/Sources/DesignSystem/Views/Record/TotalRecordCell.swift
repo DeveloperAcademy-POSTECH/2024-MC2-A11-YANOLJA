@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TotalRecordCell: View {
   @Bindable var winRateUseCase: WinRateUseCase
+  @Bindable var userInfoUseCase: UserInfoUseCase
   @Bindable var recordUseCase: RecordUseCase
   
   var body: some View {
@@ -30,6 +31,14 @@ struct TotalRecordCell: View {
           .bold()
         }
         Spacer()
+        RecordFaceView(
+          characterModel: .init(
+            myTeam: userInfoUseCase.state.myTeam,
+            totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
+          )
+        )
+        .frame(width: 120, height: 120)
+        .offset(x: 10, y: 23)
       }
     }
     .padding(.leading, 16)
@@ -38,7 +47,10 @@ struct TotalRecordCell: View {
       RoundedRectangle(cornerRadius: 14)
         .stroke(style: StrokeStyle(lineWidth: 0.33))
         .foregroundStyle(.gray)
+        .frame(height: 92)
     )
+    .frame(height: 92)
+    .clipShape(RoundedRectangle(cornerRadius: 14))
   }
 }
 
@@ -48,6 +60,11 @@ struct TotalRecordCell: View {
       recordService: RecordDataService(),
       myTeamService: UserDefaultsService()
     ),
+    userInfoUseCase: UserInfoUseCase(
+      myTeamService: UserDefaultsService(),
+      myNicknameService: UserDefaultsService(),
+      changeIconService: ChangeAppIconService()
+    ), 
     recordUseCase: .init(recordService: RecordDataService())
   )
 }
