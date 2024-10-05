@@ -99,7 +99,7 @@ struct RecordCell: View {
     case .win:
       return record.myTeam.mainColor
     case .lose:
-      return record.vsTeam.mainColor
+      return .gray
     case .draw:
       return .gray
     }
