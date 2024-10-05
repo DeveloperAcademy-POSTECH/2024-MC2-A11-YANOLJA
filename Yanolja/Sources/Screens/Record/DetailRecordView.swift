@@ -131,43 +131,53 @@ struct DetailRecordView: View {
           content: {
             HStack(spacing: 0) {
               Text("스코어")
-                .foregroundStyle(isCanceled ? .gray : .black)
+                .foregroundStyle(recording.isCancel ? .gray : .black)
               Spacer()
               
               // 스코어 입력 : 취소 시 disabled
-              TextField("--", text: $recording.myTeamScore)
+              TextField(
+                "--",
+                text: Binding(
+                  get: {
+                    recording.myTeamScore.isEmpty || recording.myTeamScore == "--" ? "" : recording.myTeamScore
+                  },
+                  set: { newValue in
+                    recording.myTeamScore = newValue.isEmpty ? "" : newValue
+                  }))
                 .multilineTextAlignment(.center)
                 .frame(width: 94, height: 32)
                 .background(
                   RoundedRectangle(cornerRadius: 8)
-                    .foregroundStyle(isCanceled ? .none2.opacity(0.4) : .none2)
+                    .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
                 )
                 .font(.headline)
-                .foregroundStyle(isCanceled ? .gray : .black)
-                .onChange(of: recording.myTeamScore) { oldValue, newValue in
-                  recording.myTeamScore = newValue
-                }
+                .foregroundStyle(recording.isCancel ? .gray : .black)
               
               Text(":")
-                .foregroundStyle(isCanceled ? .gray.opacity(0.4) : .gray)
+                .foregroundStyle(recording.isCancel ? .gray.opacity(0.4) : .gray)
                 .padding(.horizontal, 21)
               
-              TextField("--", text: $recording.vsTeamScore)
+              TextField(
+                "--",
+                text: Binding(
+                  get: {
+                    recording.vsTeamScore.isEmpty || recording.vsTeamScore == "--" ? "" : recording.vsTeamScore
+                  },
+                  set: { newValue in
+                    recording.vsTeamScore = newValue.isEmpty ? "" : newValue
+                  }))
                 .multilineTextAlignment(.center)
                 .frame(width: 94, height: 32)
                 .background(
                   RoundedRectangle(cornerRadius: 8)
-                    .foregroundStyle(isCanceled ? .none2.opacity(0.4) : .none2)
+                    .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
                 )
                 .font(.headline)
-                .foregroundStyle(isCanceled ? .gray : .black)
-                .onChange(of: recording.vsTeamScore) { oldValue, newValue in
-                  recording.vsTeamScore = newValue
-                }
+                .foregroundStyle(recording.isCancel ? .gray : .black)
             }
-            .disabled(isCanceled)
+            .disabled(recording.isCancel)
             
-            Toggle(isOn: $isCanceled) {
+            Toggle(isOn: $recording.isCancel) {
               Text("취소")
             }
           })
@@ -176,19 +186,25 @@ struct DetailRecordView: View {
         Section(
           "메모 (선택)",
           content: {
-            TextField("한 줄 메모를 남겨 보세요.", text: $inputText)
+            TextField("한 줄 메모를 남겨 보세요.", text: Binding(
+              get: { recording.memo ?? "" },
+              set: { recording.memo = $0.isEmpty ? nil : $0 }
+            ))
               .overlay(
                 alignment: .trailing,
                 content: {
-                  Text("\(inputText.count) / 15")
+                  Text("\(recording.memo?.count ?? 0) / 15")
                     .font(.callout)
                     .foregroundStyle(Color(uiColor: .systemGray2))
                 }
               )
-              .onChange(of: inputText) { oldValue, newValue in
+              .onChange(of: recording.memo ?? "") { oldValue, newValue in
                 if newValue.count > 15 {
-                  inputText = String(newValue.prefix(15))
+                  recording.memo = String(newValue.prefix(15))
                 }
+              }
+              .onSubmit {
+                recording.memo = inputText
               }
           })
         
@@ -196,7 +212,7 @@ struct DetailRecordView: View {
         Section(
           "사진 (선택)",
           content: {
-            if let image = image {
+            if let image = recording.photo {
               VStack {
                 image
                   .resizable()
@@ -250,9 +266,31 @@ struct DetailRecordView: View {
             Button(
               action: {
                 if editType == .create { // 생성 시
+                  // 만약 스코어를 입력하지 않고 저장했다면 리스트에 "--" 반영
+                  if recording.myTeamScore.isEmpty {
+                    recording.myTeamScore = "--"
+                  }
+                  if recording.vsTeamScore.isEmpty {
+                    recording.vsTeamScore = "--"
+                  }
+                  if isCanceled {
+                    recording.isCancel = true
+                  }
+                  
                   recordUseCase.effect(.tappedSaveNewRecord(recording))
                   changeRecords(recordUseCase.state.recordList)
                 } else { // 수정 시
+                  // 만약 스코어를 입력하지 않고 저장했다면 리스트에 "--" 반영
+                  if recording.myTeamScore.isEmpty {
+                    recording.myTeamScore = "--"
+                  }
+                  if recording.vsTeamScore.isEmpty {
+                    recording.vsTeamScore = "--"
+                  }
+                  if isCanceled {
+                    recording.isCancel = true
+                  }
+                  
                   recordUseCase.effect(.tappedEditNewRecord(recording))
                   changeRecords(recordUseCase.state.recordList)
                   dismiss()
@@ -296,7 +334,7 @@ struct DetailRecordView: View {
   
   func loadImage() {
     guard let selectedImage = selectedUIImage else { return }
-    image = Image(uiImage: selectedImage)
+    recording.photo = Image(uiImage: selectedImage)
   }
 }
 
