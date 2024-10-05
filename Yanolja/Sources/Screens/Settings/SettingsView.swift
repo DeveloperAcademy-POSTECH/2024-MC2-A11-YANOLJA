@@ -48,9 +48,24 @@ struct ContentView: View {
   var body: some View {
     List {
       VStack(spacing: 12) {
-        Circle()
-          .stroke(lineWidth: 1)
-          .frame(width: 120)
+        ZStack {
+          Circle()
+            .stroke(lineWidth: 1)
+            .frame(width: 120)
+          ZStack {
+            Image(.myPageFace)
+              .resizable()
+              .renderingMode(.template)
+              .foregroundStyle(userInfoUseCase.state.myTeam?.mainColor ?? .none1)
+            Image(.myPageLine)
+              .resizable()
+          }
+          .aspectRatio(1, contentMode: .fit)
+          .frame(width: 112)
+          .offset(y: 17)
+        }
+        .clipShape(Circle())
+        
         Text("\(userInfoUseCase.state.myNickname)")
           .font(.title2)
           .fontWeight(.black)

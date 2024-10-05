@@ -36,6 +36,7 @@ struct AppView: View {
         
         AllRecordView(
           winRateUseCase: winRateUseCase,
+          userInfoUseCase: userInfoUseCase,
           recordUseCase: recordUseCase,
           selectedYearFilter: $selectedRecordYearFilter
         )
