@@ -14,10 +14,13 @@ struct MainView: View {
   
   var body: some View {
     VStack(spacing: 0) {
-      WinRatePercentage(winRateUseCase: winRateUseCase)
-        .foregroundColor(userInfoUseCase.state.myTeam?.mainColor)
-        .padding(.top, 20)
-        .padding(.bottom, 8)
+      WinRatePercentage(
+        totalWinRate: winRateUseCase.state.myWinRate.totalWinRate,
+        myTeam: userInfoUseCase.state.myTeam
+      )
+      .foregroundColor(userInfoUseCase.state.myTeam?.mainColor)
+      .padding(.top, 20)
+      .padding(.bottom, 8)
       
       MainCharacterView(
         characterModel: .init(
@@ -36,15 +39,21 @@ struct MainView: View {
 }
 
 private struct WinRatePercentage: View {
-  @Bindable var winRateUseCase: WinRateUseCase
+  let totalWinRate: Int?
+  let myTeam: BaseballTeam?
   
   var body: some View {
     HStack(alignment: .top, spacing: 13.5) {
-      if let totalWinRate = winRateUseCase.state.myWinRate.totalWinRate {
-        Image(String(totalWinRate), bundle: .main)
-      } else {
-        Image(.noneWinRate)
+      Group {
+        if let totalWinRate {
+          Image(String(totalWinRate), bundle: .main)
+            .renderingMode(.template)
+        } else {
+          Image(.noneWinRate)
+            .renderingMode(.template)
+        }
       }
+      .foregroundStyle(myTeam?.mainColor ?? .none1)
     }
   }
 }
