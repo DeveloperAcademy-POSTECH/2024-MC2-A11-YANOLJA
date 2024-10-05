@@ -14,10 +14,6 @@ struct VsTeamDetailView: View {
   @Bindable var recordUseCase: RecordUseCase
   let detailTeam: BaseballTeam
   
-  @State var winCount: Int = 0
-  @State var drawCount: Int = 0
-  @State var loseCount: Int = 0
-  
   init(
     winRateUseCase: WinRateUseCase,
     recordUseCase: RecordUseCase,
@@ -80,13 +76,14 @@ struct VsTeamDetailView: View {
             HStack {
               Spacer()
               // 각 팀의 승무패 횟수
+              let recordList = recordUseCase.state.recordList.filter { $0.vsTeam == detailTeam }
+              let winCount = recordList.filter { $0.result == .win }.count
+              let loseCount = recordList.filter { $0.result == .lose }.count
+              let drawCount = recordList.filter { $0.result == .draw }.count
               Text("\(winCount)승 \(loseCount)패 \(drawCount)무")
             }
             .font(.title2)
             .bold()
-            .onAppear {
-              teamRecordCount(recordList: recordUseCase.state.recordList)
-            }
           }
           .padding(16)
           .background {
@@ -152,22 +149,6 @@ struct VsTeamDetailView: View {
           }
           .padding(.horizontal, 16)
         }
-      }
-    }
-  }
-  
-  func teamRecordCount(recordList: [GameRecordWithScoreModel]) {
-    let filteredRecordList = recordList.filter { record in
-      return record.vsTeam == detailTeam && !record.isCancel
-    }
-    for record in filteredRecordList {
-      switch record.result {
-      case .win:
-        winCount += 1
-      case .lose:
-        loseCount += 1
-      case .draw:
-        drawCount += 1
       }
     }
   }
