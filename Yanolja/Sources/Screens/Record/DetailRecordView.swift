@@ -16,6 +16,8 @@ enum RecordViewEditType {
 
 struct DetailRecordView: View {
   @Environment(\.dismiss) var dismiss
+  var recordUseCase: RecordUseCase
+  
   @State var recording: GameRecordWithScoreModel = .init() // 수정할 때
   @State private var showingAlert: Bool = false
   @State private var changeMyTeam: BaseballTeam?
@@ -23,7 +25,6 @@ struct DetailRecordView: View {
   
   private let editType: RecordViewEditType
   private let changeRecords: ([GameRecordWithScoreModel]) -> Void
-  var recordUseCase: RecordUseCase
   
   @State private var selectedOption: String = ""
   let doubleHeader = [1: "DH1", 2: "DH2"]
