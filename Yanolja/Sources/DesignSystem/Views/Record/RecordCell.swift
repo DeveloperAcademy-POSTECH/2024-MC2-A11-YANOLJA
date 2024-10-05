@@ -49,7 +49,7 @@ struct RecordCell: View {
             Text(record.date.gameDate())
               .font(.caption2)
               .foregroundStyle(.date)
-            Text(record.stadiums.name)
+            Text(record.stadiums)
               .font(.caption2)
               .foregroundStyle(.date)
           }

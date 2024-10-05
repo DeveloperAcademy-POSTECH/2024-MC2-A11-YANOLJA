@@ -59,8 +59,8 @@ struct DetailRecordView: View {
               "경기장",
               selection: $recording.stadiums
             ) {
-              ForEach(BaseballStadiums.allCases, id: \.self) {
-                Text($0.name)
+              ForEach(BaseballStadiums.nameList, id: \.self) {
+                Text($0)
               }
             }
             .accentColor(.gray)
