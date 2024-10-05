@@ -43,8 +43,8 @@ struct GameRecordWithScoreModel: Identifiable {
     myTeam: BaseballTeam = .doosan,
     vsTeam: BaseballTeam = .doosan.anyOtherTeam(),
     isDoubleHeader: Int = 0,
-    myTeamScore: String = "-",
-    vsTeamScore: String = "-",
+    myTeamScore: String = "",
+    vsTeamScore: String = "",
     isCancel: Bool = false,
     memo: String? = nil,
     photo: Image? = nil

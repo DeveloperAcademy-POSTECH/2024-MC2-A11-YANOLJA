@@ -29,9 +29,6 @@ struct DetailRecordView: View {
   @State private var selectedOption: String = "DH1"
   let doubleHeader = ["DH1", "DH2"]
   
-  @State private var myTeamScore = ""
-  @State private var vsTeamScore = ""
-  
   @State private var inputText = ""
   
   @State private var showImagePicker = false
@@ -138,7 +135,7 @@ struct DetailRecordView: View {
               Spacer()
               
               // 스코어 입력 : 취소 시 disabled
-              TextField("--", text: $myTeamScore)
+              TextField("--", text: $recording.myTeamScore)
                 .multilineTextAlignment(.center)
                 .frame(width: 94, height: 32)
                 .background(
@@ -147,12 +144,15 @@ struct DetailRecordView: View {
                 )
                 .font(.headline)
                 .foregroundStyle(isCanceled ? .gray : .black)
+                .onChange(of: recording.myTeamScore) { oldValue, newValue in
+                  recording.myTeamScore = newValue
+                }
               
               Text(":")
                 .foregroundStyle(isCanceled ? .gray.opacity(0.4) : .gray)
                 .padding(.horizontal, 21)
               
-              TextField("--", text: $vsTeamScore)
+              TextField("--", text: $recording.vsTeamScore)
                 .multilineTextAlignment(.center)
                 .frame(width: 94, height: 32)
                 .background(
@@ -161,6 +161,9 @@ struct DetailRecordView: View {
                 )
                 .font(.headline)
                 .foregroundStyle(isCanceled ? .gray : .black)
+                .onChange(of: recording.vsTeamScore) { oldValue, newValue in
+                  recording.vsTeamScore = newValue
+                }
             }
             .disabled(isCanceled)
             
