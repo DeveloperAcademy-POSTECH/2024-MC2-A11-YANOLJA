@@ -139,8 +139,8 @@ struct AllRecordView: View {
       DetailRecordView(
         to: .create,
         record: .init(
-          myTeam: winRateUseCase.state.myTeam,
-          vsTeam: winRateUseCase.state.myTeam.anyOtherTeam()
+          myTeam: winRateUseCase.state.myTeam != .noTeam ? winRateUseCase.state.myTeam : .doosan,
+          vsTeam: winRateUseCase.state.myTeam != .noTeam ? winRateUseCase.state.myTeam.anyOtherTeam() : .doosan.anyOtherTeam()
         ),
         usecase: recordUseCase,
         changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords))

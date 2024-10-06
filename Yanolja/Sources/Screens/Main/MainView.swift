@@ -14,14 +14,17 @@ struct MainView: View {
   
   var body: some View {
     VStack(spacing: 0) {
-      WinRatePercentage(winRateUseCase: winRateUseCase)
-        .foregroundColor(userInfoUseCase.state.myTeam?.mainColor)
-        .padding(.top, 20)
-        .padding(.bottom, 8)
+      WinRatePercentage(
+        totalWinRate: winRateUseCase.state.myWinRate.totalWinRate,
+        myTeam: userInfoUseCase.state.myTeam
+      )
+      .foregroundColor(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
+      .padding(.top, 20)
+      .padding(.bottom, 8)
       
       MainCharacterView(
         characterModel: .init(
-          myTeam: userInfoUseCase.state.myTeam,
+          myTeam: userInfoUseCase.state.myTeam ?? .noTeam,
           totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
         )
       )
@@ -36,16 +39,21 @@ struct MainView: View {
 }
 
 private struct WinRatePercentage: View {
-  @Bindable var winRateUseCase: WinRateUseCase
+  let totalWinRate: Int?
+  let myTeam: BaseballTeam?
   
   var body: some View {
     HStack(alignment: .top, spacing: 13.5) {
-      // MARK: - myWinRate에 따라 이미지 적용 / 현재 단일 이미지로 테스트
-      if let totalWinRate = winRateUseCase.state.myWinRate.totalWinRate {
-        Image(String(totalWinRate), bundle: .main)
-      } else {
-        Image(.noneWinRate)
+      Group {
+        if let totalWinRate {
+          Image(String(totalWinRate), bundle: .main)
+            .renderingMode(.template)
+        } else {
+          Image(.noneWinRate)
+            .renderingMode(.template)
+        }
       }
+      .foregroundStyle(myTeam?.mainColor ?? .noTeam1)
     }
   }
 }
@@ -60,7 +68,7 @@ private struct NameBox: View {
           .resizable()
           .scaledToFit()
           .frame(height: 10)
-        Text(userInfoUseCase.state.myTeam?.name ?? "무직")
+        Text(userInfoUseCase.state.myTeam?.name ?? BaseballTeam.noTeam.name)
           .font(.footnote)
         Image(systemName: "sparkle")
           .resizable()

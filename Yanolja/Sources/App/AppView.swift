@@ -144,7 +144,10 @@ struct AppView: View {
       .navigationDestination(for: NavigationDestination.self) { destination in
         switch destination {
         case .settings:
-          SettingsView(userInfoUseCase: userInfoUseCase)
+          SettingsView(
+            winRateUseCase: winRateUseCase,
+            userInfoUseCase: userInfoUseCase
+          )
             .navigationTitle("마이페이지")
             .navigationBarBackButtonHidden(true)
             .toolbar {

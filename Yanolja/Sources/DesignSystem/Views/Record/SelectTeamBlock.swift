@@ -36,7 +36,7 @@ struct SelectTeamBlock: View {
           selection: $selectedTeam,
           content: {
             if case let .vs(myteam) = type {
-              ForEach(BaseballTeam.allCases.filter{ $0 != myteam }, id: \.self) { team in
+              ForEach(BaseballTeam.recordBaseBallTeam.filter{ $0 != myteam }, id: \.self) { team in
                 HStack {
                   Text(team.name)
                     .font(.subheadline)
@@ -45,7 +45,7 @@ struct SelectTeamBlock: View {
                 }
               }
             } else {
-              ForEach(BaseballTeam.allCases, id: \.self) { team in
+              ForEach(BaseballTeam.recordBaseBallTeam, id: \.self) { team in
                 HStack {
                   Text(team.name)
                     .font(.subheadline)
@@ -84,7 +84,7 @@ extension SelectTeamBlock {
 #Preview {
   SelectTeamBlock(
     type: .my,
-    selectedTeam: .constant(.doosan)
+    selectedTeam: .constant(.nc)
   )
 }
 

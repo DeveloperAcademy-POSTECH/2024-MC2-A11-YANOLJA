@@ -16,6 +16,13 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>NOTEAM</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>NOTEAM AppIcon</string>
+				</array>
+			</dict>
 			<key>DOOSAN</key>
 			<dict>
 				<key>CFBundleIconFiles</key>

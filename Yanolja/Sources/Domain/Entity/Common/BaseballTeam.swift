@@ -1,15 +1,14 @@
 //
-//  BaseballTeamType.swift
+//  BaseballTeam.swift
 //  Yanolja
 //
-//  Created by 박혜운 on 5/13/24.
-//  Copyright © 2024 com.mc2.yanolja. All rights reserved.
+//  Created by 박혜운 on 10/6/24.
+//  Copyright © 2024 com.mc2. All rights reserved.
 //
 
 import Foundation
 import SwiftUI
 
-// MARK: - 고유명사라 예외적 대문자, _ 표기
 enum BaseballTeam: String, CaseIterable {
   case doosan
   case lotte
@@ -21,6 +20,9 @@ enum BaseballTeam: String, CaseIterable {
   case lg
   case nc
   case ssg
+  case noTeam
+  
+  static let recordBaseBallTeam: [Self] = [.doosan, .lotte, .samsung, .hanwha, .kiwoom, .kia, .kt, .lg, .nc, .ssg]
 }
 
 extension BaseballTeam {
@@ -46,6 +48,8 @@ extension BaseballTeam {
       return "NC 다이노스"
     case .ssg:
       return "SSG 랜더스"
+    case .noTeam:
+      return "무직"
     }
   }
   
@@ -71,6 +75,8 @@ extension BaseballTeam {
       return .nc1
     case .ssg:
       return .ssg1
+    case .noTeam:
+      return .noTeam1
     }
   }
   
@@ -96,6 +102,8 @@ extension BaseballTeam {
       return .nc2
     case .ssg:
       return .ssg2
+    case .noTeam:
+      return .noTeam2
     }
   }
   
@@ -121,6 +129,8 @@ extension BaseballTeam {
       return Image(.NC)
     case .ssg:
       return Image(.SSG)
+    case .noTeam:
+      return Image(.noTeam)
     }
   }
   

@@ -19,7 +19,7 @@ struct WinRateModel: Identifiable {
   // MainView의 MediumVsTeamCell의 순서를 정렬하는 계산 속성
   var sortedTeams: [BaseballTeam] {
     BaseballTeam
-      .allCases
+      .recordBaseBallTeam
       .sorted {
       let winRate0 = vsTeamWinRate[$0] ?? nil
       let winRate1 = vsTeamWinRate[$1] ?? nil

@@ -16,6 +16,8 @@ enum RecordViewEditType {
 
 struct DetailRecordView: View {
   @Environment(\.dismiss) var dismiss
+  var recordUseCase: RecordUseCase
+  
   @State var recording: GameRecordWithScoreModel = .init() // 수정할 때
   @State private var showingAlert: Bool = false
   @State private var changeMyTeam: BaseballTeam?
@@ -23,7 +25,6 @@ struct DetailRecordView: View {
   
   private let editType: RecordViewEditType
   private let changeRecords: ([GameRecordWithScoreModel]) -> Void
-  var recordUseCase: RecordUseCase
   
   @State private var selectedOption: String = ""
   let doubleHeader = [1: "DH1", 2: "DH2"]
@@ -59,8 +60,8 @@ struct DetailRecordView: View {
               "경기장",
               selection: $recording.stadiums
             ) {
-              ForEach(BaseballStadiums.allCases, id: \.self) {
-                Text($0.name)
+              ForEach(BaseballStadiums.nameList, id: \.self) {
+                Text($0)
               }
             }
             .accentColor(.gray)
@@ -165,7 +166,7 @@ struct DetailRecordView: View {
               .frame(width: 94, height: 32)
               .background(
                 RoundedRectangle(cornerRadius: 8)
-                  .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
+                  .foregroundStyle(recording.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
               )
               .font(.headline)
               .foregroundStyle(recording.isCancel ? .gray : .black)
@@ -187,7 +188,7 @@ struct DetailRecordView: View {
               .frame(width: 94, height: 32)
               .background(
                 RoundedRectangle(cornerRadius: 8)
-                  .foregroundStyle(recording.isCancel ? .none2.opacity(0.4) : .none2)
+                  .foregroundStyle(recording.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
               )
               .font(.headline)
               .foregroundStyle(recording.isCancel ? .gray : .black)

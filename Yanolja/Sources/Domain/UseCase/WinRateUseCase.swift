@@ -16,7 +16,7 @@ class WinRateUseCase {
     var tappedTeamWinRateCell: Bool = false
     
     // MARK: - Data State
-    var myTeam: BaseballTeam = .doosan
+    var myTeam: BaseballTeam = .noTeam
     var myWinRate: WinRateModel = .init(totalWinRate: 40)
     var myWinCount: Int = 0
     var myLoseCount: Int = 0
@@ -39,7 +39,7 @@ class WinRateUseCase {
     recordService: RecordDataServiceInterface,
     myTeamService: MyTeamServiceInterface
   ) {
-    _state.myTeam = myTeamService.readMyTeam() ?? .doosan
+    _state.myTeam = myTeamService.readMyTeam() ?? .noTeam
     
     switch recordService.readAllRecord() {
     case .success(let allList):

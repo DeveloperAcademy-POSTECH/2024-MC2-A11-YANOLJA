@@ -33,7 +33,7 @@ struct TotalRecordCell: View {
         Spacer()
         RecordFaceView(
           characterModel: .init(
-            myTeam: userInfoUseCase.state.myTeam,
+            myTeam: userInfoUseCase.state.myTeam ?? .noTeam,
             totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
           )
         )
