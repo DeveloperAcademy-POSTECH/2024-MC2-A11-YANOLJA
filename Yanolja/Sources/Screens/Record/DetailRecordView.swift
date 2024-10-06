@@ -157,7 +157,7 @@ struct DetailRecordView: View {
                 "--",
                 text: Binding(
                   get: {
-                    recording.myTeamScore.isEmpty || recording.myTeamScore == "--" ? "" : recording.myTeamScore
+                    recording.myTeamScore == "--" ? "" : recording.myTeamScore
                   },
                   set: { newValue in
                     recording.myTeamScore = newValue.isEmpty ? "" : newValue
@@ -179,7 +179,7 @@ struct DetailRecordView: View {
                 "--",
                 text: Binding(
                   get: {
-                    recording.vsTeamScore.isEmpty || recording.vsTeamScore == "--" ? "" : recording.vsTeamScore
+                    recording.vsTeamScore == "--" ? "" : recording.vsTeamScore
                   },
                   set: { newValue in
                     recording.vsTeamScore = newValue.isEmpty ? "" : newValue
@@ -286,10 +286,10 @@ struct DetailRecordView: View {
                 if editType == .create { // 생성 시
                   // 만약 스코어를 입력하지 않고 저장했다면 리스트에 "--" 반영
                   if recording.myTeamScore.isEmpty {
-                    recording.myTeamScore = "--"
+                    recording.myTeamScore = "0"
                   }
                   if recording.vsTeamScore.isEmpty {
-                    recording.vsTeamScore = "--"
+                    recording.vsTeamScore = "0"
                   }
                   if recording.isCancel {
                     recording.isCancel = true
@@ -300,10 +300,10 @@ struct DetailRecordView: View {
                 } else { // 수정 시
                   // 만약 스코어를 입력하지 않고 저장했다면 리스트에 "--" 반영
                   if recording.myTeamScore.isEmpty {
-                    recording.myTeamScore = "--"
+                    recording.myTeamScore = "0"
                   }
                   if recording.vsTeamScore.isEmpty {
-                    recording.vsTeamScore = "--"
+                    recording.vsTeamScore = "0"
                   }
                   if recording.isCancel {
                     recording.isCancel = true
