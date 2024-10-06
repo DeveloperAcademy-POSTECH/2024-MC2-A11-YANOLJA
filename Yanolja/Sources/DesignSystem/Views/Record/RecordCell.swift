@@ -29,12 +29,12 @@ struct RecordCell: View {
           }
           Spacer()
           VStack {
-            HStack(spacing: 8) {
+            HStack(spacing: 6) {
               Text(record.myTeam.name.split(separator: " ").first ?? "")
                 .font(.title)
                 .bold()
                 .foregroundStyle(.black)
-                .frame(width: 50)
+                .frame(width: 60)
               Text("vs")
                 .font(.subheadline)
                 .foregroundStyle(.gray)
@@ -42,7 +42,7 @@ struct RecordCell: View {
                 .font(.title)
                 .foregroundStyle(.black)
                 .bold()
-                .frame(width: 50)
+                .frame(width: 60)
             }
             .padding(.bottom, 2)
             
