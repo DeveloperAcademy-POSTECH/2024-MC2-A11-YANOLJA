@@ -35,6 +35,8 @@ struct DetailRecordView: View {
   @State private var selectedUIImage: UIImage?
   @State private var image: Image?
   
+  @State private var makeBlur: Bool = false
+  
   init(
     to editType: RecordViewEditType,
     record: GameRecordWithScoreModel = .init(),
@@ -232,14 +234,38 @@ struct DetailRecordView: View {
           content: {
             if let image = recording.photo {
               VStack {
-                image
-                  .resizable()
-                  .scaledToFill()
-                  .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
-                  .clipped()
-                  .cornerRadius(8)
+                if makeBlur {
+                  ZStack {
+                    image
+                      .resizable()
+                      .scaledToFill()
+                      .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
+                      .clipped()
+                      .cornerRadius(8)
+                      .blur(radius: 3)
+                    Image(systemName: "trash")
+                      .resizable()
+                      .frame(width: 36, height: 42)
+                      .aspectRatio(1, contentMode: .fill)
+                      .foregroundStyle(.white)
+                      .onTapGesture {
+                        recording.photo = nil
+                        makeBlur.toggle()
+                      }
+                  }
+                } else {
+                  image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
+                    .clipped()
+                    .cornerRadius(8)
+                }
               }
               .frame(height: UIScreen.main.bounds.width - 50)
+              .onTapGesture {
+                makeBlur.toggle()
+              }
             } else {
               HStack(spacing: 0) {
                 Image(systemName: "plus")
