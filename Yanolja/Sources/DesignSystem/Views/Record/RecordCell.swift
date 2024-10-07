@@ -102,6 +102,8 @@ struct RecordCell: View {
       return .gray
     case .draw:
       return .gray
+    case .cancel:
+      return .gray
     }
   }
   
@@ -115,6 +117,8 @@ struct RecordCell: View {
     case .lose:
       return .gray
     case .draw:
+      return .gray
+    case .cancel:
       return .gray
     }
   }

@@ -8,7 +8,26 @@
 
 import Foundation
 
-enum RecordFilter {
-  static let list: [String] = ["전체", "구단별", "구장별", "승리", "패배", "무승부", "취소"]
-  static let initialValue: String = list.first ?? "전체"
+enum RecordFilter: CaseIterable, Hashable {
+  static var allCases: [RecordFilter] = [.all, team(.doosan), stadiums(BaseballStadiums.nameList.first ?? ""), .results(.win)]
+  
+//  static let list: [String] = ["전체", "구단별", "구장별", "승리", "패배", "무승부", "취소"]
+  static let initialValue: Self = .all
+  case all
+  case team(BaseballTeam)
+  case stadiums(String)
+  case results(GameResult)
+  
+  var label: String {
+    switch self {
+    case .all:
+      return "전체"
+    case .team:
+      return "구단별"
+    case .stadiums:
+      return "구장별"
+    case .results:
+      return "결과별"
+    }
+  }
 }

@@ -157,6 +157,7 @@ class WinRateUseCase {
         loseCount += 1
       case .draw:
         drawCount += 1
+      case .cancel: continue
       }
     }
     _state.myWinCount = winCount
