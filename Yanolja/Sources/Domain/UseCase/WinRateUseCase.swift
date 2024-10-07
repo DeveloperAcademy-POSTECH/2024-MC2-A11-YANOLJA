@@ -31,7 +31,7 @@ class WinRateUseCase {
     case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
     case sendMyTeamInfo(BaseballTeam)
   }
-
+  
   private var _state: State = .init()
   var state: State { _state }
   
@@ -52,6 +52,18 @@ class WinRateUseCase {
     case .failure:
       break
     }
+  }
+  
+  // MARK: - Preview용
+  init(
+    recordList: [GameRecordWithScoreModel],
+    recordService: RecordDataServiceInterface,
+    myTeamService: MyTeamServiceInterface
+  ) {
+    _state.myTeam = myTeamService.readMyTeam() ?? .noTeam
+    self.totalWinRate(recordList: recordList)
+    self.vsAllTeamWinRate(recordList: recordList)
+    self.allRecordResult(recordList: recordList)
   }
   
   func effect(_ action: Action) {
@@ -97,14 +109,14 @@ class WinRateUseCase {
     
     for record in recordList {
       let team = record.vsTeam
-
+      
       teamGames[team, default: 0] += 1
       
       if record.result == .win {
         // 승리한 경우에만 승리 수 증가
         teamWins[team, default: 0] += 1
       }
-       
+      
       if record.result == .draw {
         // 무승부인 경우 무승부 수 증가
         teamDraws[team, default: 0] += 1

@@ -152,8 +152,10 @@ struct AllRecordView: View {
 
 #Preview {
   NavigationStack {
+    let recordList: [GameRecordWithScoreModel] = [.init(myTeamScore: "0", vsTeamScore: "0")]
     AllRecordView(
       winRateUseCase: .init(
+        recordList: recordList,
         recordService: RecordDataService(),
         myTeamService: UserDefaultsService()
       ),
@@ -162,8 +164,15 @@ struct AllRecordView: View {
         myNicknameService: UserDefaultsService(),
         changeIconService: ChangeAppIconService()
       ),
-      recordUseCase: .init(recordService: RecordDataService()),
+      recordUseCase: .init(
+        recordList: recordList,
+        recordService: RecordDataService()
+      ),
       selectedYearFilter: .constant("전체")
     )
   }
+}
+
+extension Array<String> {
+  
 }
