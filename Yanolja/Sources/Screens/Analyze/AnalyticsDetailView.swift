@@ -1,5 +1,5 @@
 //
-//  AnalyzeDetailView.swift
+//  AnalyticsDetailView.swift
 //  Yanolja
 //
 //  Created by 박혜운 on 5/13/24.
@@ -9,11 +9,11 @@
 import SwiftUI
 
 // MARK: - 브리
-struct AnalyzeDetailView: View {
+struct AnalyticsDetailView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
   
-  let filterOptionsCategory: AnalyzeFilter
+  let filterOptionsCategory: AnalyticsFilter
   
   var detailOptions: String {
     switch filterOptionsCategory {
@@ -27,18 +27,18 @@ struct AnalyzeDetailView: View {
   var winRate: Int? {
     switch filterOptionsCategory {
     case let .team(baseballTeam):
-      return winRateUseCase.state.eachTeamAnalyze.vsTeamWinRate[baseballTeam] ?? nil
+      return winRateUseCase.state.eachTeamAnalytics.vsTeamWinRate[baseballTeam] ?? nil
     case let .stadiums(stadiums):
-      return winRateUseCase.state.eachStadiumsAnalyze.stadiumsWinRate[stadiums] ?? nil
+      return winRateUseCase.state.eachStadiumsAnalytics.stadiumsWinRate[stadiums] ?? nil
     }
   }
   
   var recordCount: Int? {
     switch filterOptionsCategory {
     case let .team(baseballTeam):
-      return winRateUseCase.state.eachTeamAnalyze.vsTeamRecordCount[baseballTeam] ?? nil
+      return winRateUseCase.state.eachTeamAnalytics.vsTeamRecordCount[baseballTeam] ?? nil
     case let .stadiums(stadiums):
-      return winRateUseCase.state.eachStadiumsAnalyze.stadiumsRecordCount[stadiums] ?? nil
+      return winRateUseCase.state.eachStadiumsAnalytics.stadiumsRecordCount[stadiums] ?? nil
     }
   }
   
@@ -54,7 +54,7 @@ struct AnalyzeDetailView: View {
   init(
     winRateUseCase: WinRateUseCase,
     recordUseCase: RecordUseCase,
-    filterOptions: AnalyzeFilter
+    filterOptions: AnalyticsFilter
   ) {
     self.winRateUseCase = winRateUseCase
     self.recordUseCase = recordUseCase
@@ -179,7 +179,7 @@ struct AnalyzeDetailView: View {
 
 
 #Preview {
-  AnalyzeDetailView(
+  AnalyticsDetailView(
     winRateUseCase: WinRateUseCase(
       recordService: RecordDataService(),
       myTeamService: UserDefaultsService()
