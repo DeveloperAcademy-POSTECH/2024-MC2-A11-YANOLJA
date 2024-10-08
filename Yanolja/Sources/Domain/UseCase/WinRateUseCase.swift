@@ -14,6 +14,7 @@ class WinRateUseCase {
   struct State {
     // MARK: - View State
     var tappedTeamWinRateCell: Bool = false
+    var selectedYearFilter: String = YearFilter.initialValue
     
     // MARK: - Data State
     var myTeam: BaseballTeam = .noTeam
@@ -21,12 +22,17 @@ class WinRateUseCase {
     var myWinCount: Int = 0
     var myLoseCount: Int = 0
     var myDrawCount: Int = 0
+    fileprivate var recordList: [GameRecordWithScoreModel] = []
+    var filteredRecordList: [GameRecordWithScoreModel] {
+      self.recordList.filtered(years: selectedYearFilter)
+    }
   }
   
   // MARK: - Action
   enum Action {
     // MARK: - User Action
     case tappedTeamChange(BaseballTeam) // MARK: - 팀 변경 시 다른 형태로 값 주입 필요 (현재 기존 형태)
+    case tappedAnalyzeYearFilter(to: String)
     case tappedTeamWinRateCell
     case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
     case sendMyTeamInfo(BaseballTeam)
@@ -45,6 +51,7 @@ class WinRateUseCase {
     case .success(let allList):
       // MARK: - 기존 Data 값 있다면, 변경해서 저장하고 다시 불러와서 진행
       // MARK: - 기존 Data 값 없다면, 정상 진행
+      self._state.recordList = allList
       self.totalWinRate(recordList: allList)
       self.vsAllTeamWinRate(recordList: allList)
       self.allRecordResult(recordList: allList)
@@ -61,6 +68,7 @@ class WinRateUseCase {
     myTeamService: MyTeamServiceInterface
   ) {
     _state.myTeam = myTeamService.readMyTeam() ?? .noTeam
+    _state.recordList = recordList
     self.totalWinRate(recordList: recordList)
     self.vsAllTeamWinRate(recordList: recordList)
     self.allRecordResult(recordList: recordList)
@@ -71,10 +79,14 @@ class WinRateUseCase {
     case let .tappedTeamChange(team):
       _state.myTeam = team
       
+    case let .tappedAnalyzeYearFilter(year): // 연도 정보 토대로 필터정보 변경
+      _state.selectedYearFilter = year
+      let recordList = _state.recordList.filtered(years: year)
     case .tappedTeamWinRateCell:
       _state.tappedTeamWinRateCell.toggle()
       
     case .updateRecords(let records):
+      self._state.recordList = records
       self.totalWinRate(recordList: records)
       self.vsAllTeamWinRate(recordList: records)
       self.allRecordResult(recordList: records)

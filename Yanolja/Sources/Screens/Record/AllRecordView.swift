@@ -18,6 +18,8 @@ struct AllRecordView: View {
   @State var selectedRecordFilter: String = RecordFilter.initialValue
   
   var body: some View {
+    let filteredList = recordUseCase.state.recordList
+      .filtered(years: selectedYearFilter)
     VStack(spacing: 0) {
       let filteredList = recordUseCase.state.recordList
       
