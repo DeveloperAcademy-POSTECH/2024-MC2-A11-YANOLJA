@@ -17,7 +17,6 @@ struct AppView: View {
   
   @State var selection: Tab = .main
   @State var selectedRecordYearFilter: String = YearFilter.initialValue
-  @State var selectedAnalyzeYearFilter: String = YearFilter.initialValue
   
   var body: some View {
     NavigationStack(path: $path) {
@@ -48,13 +47,12 @@ struct AppView: View {
         }
         .tag(Tab.record)
         
-        AllAnalyzeView(
+        AllAnalyticsView(
           winRateUseCase: winRateUseCase,
           recordUseCase: recordUseCase,
-          userInfoUseCase: userInfoUseCase,
-          selectedYearFilter: $selectedAnalyzeYearFilter
+          userInfoUseCase: userInfoUseCase
         )
-        .tag(Tab.analyze)
+        .tag(Tab.analytics)
         .tabItem {
           Image(systemName: "chart.line.uptrend.xyaxis")
           Text("분석")
@@ -65,7 +63,7 @@ struct AppView: View {
           switch selection {
           case .main: return "나의 직관 승률"
           case .record: return "\(selectedRecordYearFilter) 직관 기록"
-          case .analyze: return "\(selectedAnalyzeYearFilter) 직관 분석"
+          case .analytics: return "\(winRateUseCase.state.selectedYearFilter) 직관 분석"
           }
         }()
       )
@@ -116,16 +114,16 @@ struct AppView: View {
                     Image(systemName: "calendar")
                   }
                 }
-              case .analyze:
+              case .analytics:
                 Menu {
                   ForEach(YearFilter.list, id: \.self) { selectedFilter in
                     Button(
                       action: {
-                        selectedAnalyzeYearFilter = selectedFilter
+                        winRateUseCase.effect(.tappedAnalyticsYearFilter(to: selectedFilter))
                       }
                     ) {
                       HStack {
-                        if selectedAnalyzeYearFilter == selectedFilter {
+                        if winRateUseCase.state.selectedYearFilter == selectedFilter {
                           Image(systemName: "checkmark")
                         }
                         Text(selectedFilter)

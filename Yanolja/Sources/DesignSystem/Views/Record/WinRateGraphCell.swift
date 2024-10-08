@@ -9,14 +9,14 @@
 import SwiftUI
 
 struct WinRateGraphCell: View {
-  let myTeam: BaseballTeam
-  let vsTeam: BaseballTeam
+  let myTeamSubColor: Color
+  let detailOptionsName: String
   let winRate: Int?
   
   var body: some View {
     HStack {
       VStack(alignment: .leading, spacing: 2) {
-        Text(vsTeam.name)
+        Text(detailOptionsName)
           .font(.caption2)
           .bold()
           .foregroundStyle(.gray)
@@ -44,7 +44,7 @@ struct WinRateGraphCell: View {
         
         GeometryReader { geometry in
           RoundedRectangle(cornerRadius: 10)
-            .fill(myTeam.subColor)
+            .fill(myTeamSubColor)
             .frame(
               width: widthForWinRate(geometry: geometry),  // winRate에 비례하는 너비
               height: geometry.size.height
@@ -63,5 +63,5 @@ struct WinRateGraphCell: View {
 }
 
 #Preview {
-  WinRateGraphCell(myTeam: .kiwoom, vsTeam: .ssg, winRate: 50)
+  WinRateGraphCell(myTeamSubColor: BaseballTeam.kiwoom.subColor, detailOptionsName: BaseballTeam.ssg.name, winRate: 50)
 }

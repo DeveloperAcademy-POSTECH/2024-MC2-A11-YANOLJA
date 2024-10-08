@@ -9,23 +9,22 @@
 import SwiftUI
 
 struct TotalRecordCell: View {
-  @Bindable var winRateUseCase: WinRateUseCase
-  @Bindable var userInfoUseCase: UserInfoUseCase
-  @Bindable var recordUseCase: RecordUseCase
+  let recordList: [GameRecordWithScoreModel]
+  let myTeam: BaseballTeam
   
   var body: some View {
     VStack {
       HStack() {
         VStack(alignment: .leading, spacing: 0) {
-          Text("총 \(recordUseCase.state.recordList.count)경기")
+          Text("총 \(recordList.count)경기")
             .font(.footnote)
           Spacer()
             .frame(height: 8)
             .frame(maxWidth: .infinity)
           HStack(spacing: 6) {
-            Text("\(winRateUseCase.state.myWinCount)승")
-            Text("\(winRateUseCase.state.myLoseCount)패")
-            Text("\(winRateUseCase.state.myDrawCount)무")
+            Text("\(listInfo.winCount)승")
+            Text("\(listInfo.loseCount)패")
+            Text("\(listInfo.drawCount)무")
           }
           .font(.title)
           .bold()
@@ -33,8 +32,8 @@ struct TotalRecordCell: View {
         Spacer()
         RecordFaceView(
           characterModel: .init(
-            myTeam: userInfoUseCase.state.myTeam ?? .noTeam,
-            totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
+            myTeam: myTeam,
+            totalWinRate: listInfo.winRate
           )
         )
         .frame(width: 120, height: 120)
@@ -52,19 +51,32 @@ struct TotalRecordCell: View {
     .frame(height: 92)
     .clipShape(RoundedRectangle(cornerRadius: 14))
   }
+  
+  var listInfo: (
+    winCount: Int,
+    loseCount: Int,
+    drawCount: Int,
+    winRate: Int?
+  ) {
+    var winCount = 0
+    var loseCount = 0
+    var drawCount = 0
+    for record in recordList {
+      guard record.result != .cancel else { continue }
+      if record.result == .win { winCount += 1 }
+      if record.result == .lose { loseCount += 1 }
+      if record.result == .draw { drawCount += 1 }
+    }
+    let winOrLoseCount = winCount + loseCount
+    let winRate = winOrLoseCount > 0 ? Int(Double(winCount) / Double(winOrLoseCount) * 100) : nil
+    
+    return (winCount, loseCount, drawCount, winRate)
+  }
 }
 
 #Preview {
   TotalRecordCell(
-    winRateUseCase: .init(
-      recordService: RecordDataService(),
-      myTeamService: UserDefaultsService()
-    ),
-    userInfoUseCase: UserInfoUseCase(
-      myTeamService: UserDefaultsService(),
-      myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService()
-    ), 
-    recordUseCase: .init(recordService: RecordDataService())
+    recordList: [],
+    myTeam: .doosan
   )
 }
