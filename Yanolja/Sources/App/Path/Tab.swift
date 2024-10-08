@@ -11,5 +11,5 @@ import Foundation
 enum Tab {
   case main
   case record
-  case analyze
+  case analytics
 }
