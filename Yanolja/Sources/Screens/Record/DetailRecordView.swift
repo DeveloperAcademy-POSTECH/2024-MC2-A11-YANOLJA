@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 // 내가 보이는 뷰를 생성하거나 편집하는 enum
 enum RecordViewEditType {
@@ -378,7 +379,7 @@ struct DetailRecordView: View {
   
   func loadImage() {
     guard let selectedImage = selectedUIImage else { return }
-    recording.photo = Image(uiImage: selectedImage)
+    recording.photo = selectedImage
   }
 }
 
