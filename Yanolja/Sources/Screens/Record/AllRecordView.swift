@@ -14,66 +14,38 @@ struct AllRecordView: View {
   @Bindable var recordUseCase: RecordUseCase
   @State var selectedRecord: GameRecordWithScoreModel?
   
-  @Binding var selectedYearFilter: String // 년도 별 필터 기준
-  @State var selectedRecordFilter: String = RecordFilter.initialValue
+  @Binding var selectedYearFilter: String
+  @State var selectedRecordFilter: RecordFilter = RecordFilter.initialValue
+  @State var isAscending: Bool = true
   
   var body: some View {
     let filteredList = recordUseCase.state.recordList
       .filtered(years: selectedYearFilter)
+      .filtered(options: selectedRecordFilter)
+      .sortByLatestDate(isAscending)
+    
     VStack(spacing: 0) {
-      let filteredList = recordUseCase.state.recordList
-      
       Spacer()
         .frame(height: 30)
       
       TotalRecordCell(
-        winRateUseCase: winRateUseCase,
-        userInfoUseCase: userInfoUseCase,
-        recordUseCase: recordUseCase
+        recordList: filteredList,
+        myTeam: userInfoUseCase.state.myTeam ?? .noTeam
       )
       .padding(.bottom, 24)
       
       HStack {
-        Menu {
-          ForEach(RecordFilter.list, id: \.self) { selectedFilter in
-            Button(
-              action: {
-                selectedRecordFilter = selectedFilter
-              }
-            ) {
-              HStack {
-                if selectedRecordFilter == selectedFilter {
-                  Image(systemName: "checkmark")
-                }
-                Text(selectedFilter)
-              }
-            }
-          }
-        } label: {
-          HStack(spacing: 4) {
-            Text(selectedRecordFilter)
-              .font(.subheadline)
-              .foregroundStyle(.gray)
-              .bold()
-            Image(systemName: "chevron.down")
-              .font(.subheadline)
-              .foregroundStyle(.gray)
-              .bold()
-          }
-        }
+        RecordListFilterButton(
+          selectedRecordFilter: $selectedRecordFilter,
+          myTeam: userInfoUseCase.state.myTeam ?? .doosan
+        )
         Spacer()
-        
-        Button(action: {
-          // 정렬 순서 변경 포인트
-        }) {
-          Image(systemName: "arrow.up.arrow.down")
-            .font(.subheadline)
-            .foregroundStyle(.gray)
-            .bold()
-        }
+        RecordListOrderButton(sortByLatestDate: $isAscending)
       }
       
-      if filteredList.isEmpty {
+      if recordUseCase.state.recordList
+        .filtered(options: selectedRecordFilter)
+        .sortByLatestDate(isAscending).isEmpty {
         HStack{
           Spacer()
           Text("직관 기록이 없습니다. \n직관 기록을 추가하세요!")
@@ -87,7 +59,10 @@ struct AllRecordView: View {
         .padding(.bottom, 100)
       } else {
         ScrollView {
-          ForEach(recordUseCase.state.recordList.sorted { $0.date > $1.date }, id: \.id) { record in
+          ForEach(
+            filteredList,
+            id: \.id
+          ) { record in
             Button(
               action: {
                 selectedRecord = record
@@ -173,8 +148,4 @@ struct AllRecordView: View {
       selectedYearFilter: .constant("전체")
     )
   }
-}
-
-extension Array<String> {
-  
 }

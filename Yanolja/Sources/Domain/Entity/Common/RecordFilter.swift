@@ -9,24 +9,23 @@
 import Foundation
 
 enum RecordFilter: CaseIterable, Hashable {
-  static var allCases: [RecordFilter] = [.all, team(.doosan), stadiums(BaseballStadiums.nameList.first ?? ""), .results(.win)]
-  
-//  static let list: [String] = ["전체", "구단별", "구장별", "승리", "패배", "무승부", "취소"]
+  static let allCases: [RecordFilter] = [.all, teamOptions(.doosan), stadiumsOptions(BaseballStadiums.nameList.first ?? ""), .resultsOptions(.win)]
   static let initialValue: Self = .all
+  
   case all
-  case team(BaseballTeam)
-  case stadiums(String)
-  case results(GameResult)
+  case teamOptions(BaseballTeam)
+  case stadiumsOptions(String)
+  case resultsOptions(GameResult)
   
   var label: String {
     switch self {
     case .all:
       return "전체"
-    case .team:
+    case .teamOptions:
       return "구단별"
-    case .stadiums:
+    case .stadiumsOptions:
       return "구장별"
-    case .results:
+    case .resultsOptions:
       return "결과별"
     }
   }
