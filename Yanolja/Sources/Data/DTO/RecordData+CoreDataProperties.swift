@@ -17,7 +17,7 @@ extension RecordData {
     }
 
     @NSManaged public var id: UUID?
-    @NSManaged public var date: String?
+    @NSManaged public var date: Date?
     @NSManaged public var myTeam: String?
     @NSManaged public var myTeamScore: Int32
     @NSManaged public var vsTeam: String?

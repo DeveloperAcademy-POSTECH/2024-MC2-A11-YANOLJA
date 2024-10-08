@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 // MARK: - v1.0 이전 Record 데이터
 struct GameRecordModel: Identifiable {
@@ -36,6 +37,20 @@ struct GameRecordModel: Identifiable {
 
 // MARK: - v1.0 이후 Record 데이터
 struct GameRecordWithScoreModel: Identifiable {
+  
+  let id: UUID
+  var date: Date
+  var stadiums: String
+  var isDoubleHeader: Int // 추가
+  var myTeam: BaseballTeam
+  var vsTeam: BaseballTeam
+  var myTeamScore: String // 추가
+  var vsTeamScore: String // 추가
+  var isCancel: Bool // 추가
+  var memo: String? // 추가
+  var photo: UIImage? // Image -> UIImage로 타입 변경
+  
+  
   init(
     id: UUID = .init(),
     date: Date = .init(),
@@ -47,7 +62,8 @@ struct GameRecordWithScoreModel: Identifiable {
     vsTeamScore: String = "",
     isCancel: Bool = false,
     memo: String? = nil,
-    photo: Image? = nil
+    photo: UIImage? = nil
+    
   ) {
     self.id = id
     self.date = date
@@ -61,18 +77,6 @@ struct GameRecordWithScoreModel: Identifiable {
     self.memo = memo
     self.photo = photo
   }
-  
-  let id: UUID
-  var date: Date
-  var stadiums: String
-  var isDoubleHeader: Int // 추가
-  var myTeam: BaseballTeam
-  var vsTeam: BaseballTeam
-  var myTeamScore: String // 추가
-  var vsTeamScore: String // 추가
-  var isCancel: Bool // 추가
-  var memo: String? // 추가
-  var photo: Image? // 추가
   
   var result: GameResult { // 계산 속성으로 변경
     guard let myTeamScore = Int(myTeamScore), let vsTeamScore = Int(vsTeamScore) else { return .draw }

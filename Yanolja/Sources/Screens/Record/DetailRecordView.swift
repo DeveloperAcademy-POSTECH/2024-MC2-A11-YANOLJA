@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 // 내가 보이는 뷰를 생성하거나 편집하는 enum
 enum RecordViewEditType {
@@ -232,7 +233,7 @@ struct DetailRecordView: View {
           content: {
             if let image = recording.photo {
               VStack {
-                image
+                Image(uiImage: image)
                   .resizable()
                   .scaledToFill()
                   .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
@@ -240,6 +241,7 @@ struct DetailRecordView: View {
                   .cornerRadius(8)
               }
               .frame(height: UIScreen.main.bounds.width - 50)
+              
             } else {
               HStack(spacing: 0) {
                 Image(systemName: "plus")
@@ -352,7 +354,7 @@ struct DetailRecordView: View {
   
   func loadImage() {
     guard let selectedImage = selectedUIImage else { return }
-    recording.photo = Image(uiImage: selectedImage)
+    recording.photo = selectedImage
   }
 }
 
