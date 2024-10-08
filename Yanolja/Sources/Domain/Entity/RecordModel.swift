@@ -75,7 +75,7 @@ struct GameRecordWithScoreModel: Identifiable {
   var photo: Image? // 추가
   
   var result: GameResult { // 계산 속성으로 변경
-    guard let myTeamScore = Int(myTeamScore), let vsTeamScore = Int(vsTeamScore) else { return .draw }
+    guard let myTeamScore = Int(myTeamScore), let vsTeamScore = Int(vsTeamScore) else { return .cancel }
     if myTeamScore > vsTeamScore {
       return .win
     } else if myTeamScore < vsTeamScore {
