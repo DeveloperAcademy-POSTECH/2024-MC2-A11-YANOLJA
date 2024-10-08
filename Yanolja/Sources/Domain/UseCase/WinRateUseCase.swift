@@ -19,8 +19,8 @@ class WinRateUseCase {
     // MARK: - Data State
     var myTeam: BaseballTeam = .noTeam
     var totalWinRate: Int? = 88
-    var eachTeamAnalyze: EachTeamAnalyzeModel = .init()
-    var eachStadiumsAnalyze: EachStadiumsAnalyzeModel = .init()
+    var eachTeamAnalytics: EachTeamAnalyticsModel = .init()
+    var eachStadiumsAnalytics: EachStadiumsAnalyticsModel = .init()
     fileprivate var recordList: [GameRecordWithScoreModel] = []
     var filteredRecordList: [GameRecordWithScoreModel] {
       self.recordList.filtered(years: selectedYearFilter)
@@ -31,7 +31,7 @@ class WinRateUseCase {
   enum Action {
     // MARK: - User Action
     case tappedTeamChange(BaseballTeam) // MARK: - 팀 변경 시 다른 형태로 값 주입 필요 (현재 기존 형태)
-    case tappedAnalyzeYearFilter(to: String)
+    case tappedAnalyticsYearFilter(to: String)
     case tappedTeamWinRateCell
     case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
     case sendMyTeamInfo(BaseballTeam)
@@ -78,7 +78,7 @@ class WinRateUseCase {
     case let .tappedTeamChange(team):
       _state.myTeam = team
       
-    case let .tappedAnalyzeYearFilter(year): // 연도 정보 토대로 필터정보 변경
+    case let .tappedAnalyticsYearFilter(year): // 연도 정보 토대로 필터정보 변경
       _state.selectedYearFilter = year
       let recordList = _state.recordList.filtered(years: year)
       self.vsAllTeamWinRate(recordList: recordList)
@@ -156,8 +156,8 @@ class WinRateUseCase {
       }
     }
     
-    _state.eachTeamAnalyze.vsTeamWinRate = vsTeamWinRate
-    _state.eachTeamAnalyze.vsTeamRecordCount = vsTeamRecordCount
+    _state.eachTeamAnalytics.vsTeamWinRate = vsTeamWinRate
+    _state.eachTeamAnalytics.vsTeamRecordCount = vsTeamRecordCount
   }
   
   /// 직관 기록을 통해 구장 별 승률을 계산하고 입력합니다
@@ -204,7 +204,7 @@ class WinRateUseCase {
       }
     }
     
-    _state.eachStadiumsAnalyze.stadiumsWinRate = stadiumsWinRate
-    _state.eachStadiumsAnalyze.stadiumsRecordCount = stadiumsRecordCount
+    _state.eachStadiumsAnalytics.stadiumsWinRate = stadiumsWinRate
+    _state.eachStadiumsAnalytics.stadiumsRecordCount = stadiumsRecordCount
   }
 }
