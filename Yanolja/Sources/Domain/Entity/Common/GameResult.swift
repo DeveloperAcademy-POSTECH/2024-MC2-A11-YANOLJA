@@ -12,6 +12,7 @@ enum GameResult: String, CaseIterable {
   case win
   case lose
   case draw
+  case cancel
   
   var title: String {
     switch self {
@@ -21,6 +22,8 @@ enum GameResult: String, CaseIterable {
       return "패"
     case .draw:
       return "무"
+    case .cancel:
+      return "취소"
     }
   }
   
@@ -32,6 +35,8 @@ enum GameResult: String, CaseIterable {
       return "패배"
     case .draw:
       return "무승부"
+    case .cancel:
+      return "취소"
     }
   }
 }

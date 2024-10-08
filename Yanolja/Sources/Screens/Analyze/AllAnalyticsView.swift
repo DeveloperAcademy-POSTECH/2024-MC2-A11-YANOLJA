@@ -1,5 +1,5 @@
 //
-//  AllAnalyzeView.swift
+//  AllAnalyticsView.swift
 //  Yanolja
 //
 //  Created by 박혜운 on 9/29/24.
@@ -8,23 +8,28 @@
 
 import SwiftUI
 
-struct AllAnalyzeView: View {
+struct AllAnalyticsView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
   @Bindable var userInfoUseCase: UserInfoUseCase
-  @State var selectedTeam: BaseballTeam?
+  @State var selectedCell: AnalyticsFilter?
   
-  @Binding var selectedYearFilter: String // 년도 별 필터 기준
+  @State var selectedAnalyticsFilter: AnalyticsFilter = .initialValue
+  // MARK: - RecordList Order
+  @State var isAscending: Bool = true
   
   var body: some View {
+    let filteredRecordList = winRateUseCase.state.filteredRecordList
+    let sortTeamList = winRateUseCase.state.eachTeamAnalytics.sortByWinRate(ascending: isAscending).filter { $0 != userInfoUseCase.state.myTeam }
+    let sortStadiumsList = winRateUseCase.state.eachStadiumsAnalytics.sortByWinRate(ascending: isAscending)
+    
     VStack(spacing: 0) {
       Spacer()
         .frame(height: 30)
       
       TotalRecordCell(
-        winRateUseCase: winRateUseCase,
-        userInfoUseCase: userInfoUseCase,
-        recordUseCase: recordUseCase
+        recordList: filteredRecordList,
+        myTeam: userInfoUseCase.state.myTeam ?? .noTeam
       )
       
       Spacer()
@@ -53,14 +58,10 @@ struct AllAnalyzeView: View {
             .font(.footnote)
           HStack {
             Spacer()
-            if let totalWinRate = winRateUseCase.state.myWinRate.totalWinRate {
+            if let totalWinRate = filteredRecordList.winRate {
               Text("\(totalWinRate)%")
             } else {
-              if let totalWinRate = winRateUseCase.state.myWinRate.totalWinRate {
-                Text("\(totalWinRate)%")
-              } else {
-                Text("--%")
-              }
+              Text("--%")
             }
           }
           .font(.title2)
@@ -80,44 +81,52 @@ struct AllAnalyzeView: View {
       VStack(spacing: 0) {
         HStack {
           HStack(spacing: 4) {
-            Text("구단별")
-              .font(.subheadline)
-              .bold()
-            Image(systemName: "chevron.down")
-              .font(.subheadline)
-              .bold()
+            AnalyticsListFilterButton(selectedAnalyticsFilter: $selectedAnalyticsFilter)
+            Spacer()
+            RecordListOrderButton(sortByLatestDate: $isAscending)
           }
           .foregroundStyle(.gray)
-          
-          Spacer()
-          Image(systemName: "arrow.up.arrow.down")
-            .font(.subheadline)
-            .bold()
-            .foregroundStyle(.gray)
         }
         .padding(.bottom, 16)
         
         ScrollView(.vertical) {
-        VStack(spacing: 12) {
-          ForEach(winRateUseCase.state.myWinRate.sortedTeams, id: \.self.name) { vsTeam in
-            if userInfoUseCase.state.myTeam != vsTeam {
-              Button(
-                action: {
-                  winRateUseCase.effect(.tappedTeamWinRateCell)
-                  selectedTeam = vsTeam
-                },
-                label: {
-                  WinRateGraphCell(
-                    myTeam: winRateUseCase.state.myTeam,
-                    vsTeam: vsTeam,
-                    winRate: winRateUseCase.state.myWinRate.vsTeamWinRate[vsTeam] ?? nil
-                  )
-                }
-              )
+          VStack(spacing: 12) {
+            switch selectedAnalyticsFilter {
+            case .team:
+              ForEach(sortTeamList, id: \.self.name) { vsTeam in
+                Button(
+                  action: {
+                    winRateUseCase.effect(.tappedTeamWinRateCell)
+                    selectedCell = .team(vsTeam)
+                  },
+                  label: {
+                    WinRateGraphCell(
+                      myTeamSubColor: userInfoUseCase.state.myTeam?.subColor ?? .gray,
+                      detailOptionsName: vsTeam.name,
+                      winRate: winRateUseCase.state.eachTeamAnalytics.vsTeamWinRate[vsTeam] ?? nil
+                    )
+                  }
+                )
+              }
+            case .stadiums:
+              ForEach(sortStadiumsList, id: \.self) { stadiums in
+                Button(
+                  action: {
+                    winRateUseCase.effect(.tappedTeamWinRateCell)
+                    selectedCell = .stadiums(stadiums)
+                  },
+                  label: {
+                    WinRateGraphCell(
+                      myTeamSubColor: userInfoUseCase.state.myTeam?.subColor ?? .gray,
+                      detailOptionsName: stadiums,
+                      winRate: winRateUseCase.state.eachStadiumsAnalytics.stadiumsWinRate[stadiums] ?? nil
+                    )
+                  }
+                )
+              }
             }
           }
         }
-      }
       }
     }
     .padding(.horizontal, 16)
@@ -134,11 +143,11 @@ struct AllAnalyzeView: View {
             }
           ),
       content: {
-        if let team = selectedTeam {
-          VsTeamDetailView(
+        if let selectedCell {
+          AnalyticsDetailView(
             winRateUseCase: winRateUseCase,
             recordUseCase: recordUseCase,
-            detailTeam: team
+            filterOptions: selectedCell
           )
           .presentationDetents([.fraction(0.8)])
           .presentationDragIndicator(.visible)
@@ -149,7 +158,7 @@ struct AllAnalyzeView: View {
 }
 
 #Preview {
-  AllAnalyzeView(
+  AllAnalyticsView(
     winRateUseCase: WinRateUseCase(
       recordService: RecordDataService(),
       myTeamService: UserDefaultsService()
@@ -161,7 +170,6 @@ struct AllAnalyzeView: View {
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
       changeIconService: ChangeAppIconService()
-    ), 
-    selectedYearFilter: .constant("전체")
+    )
   )
 }

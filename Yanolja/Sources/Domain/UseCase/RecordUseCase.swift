@@ -47,6 +47,15 @@ class RecordUseCase {
     }
   }
   
+  // MARK: - Preview용 
+  init(
+    recordList: [GameRecordWithScoreModel],
+    recordService: RecordDataServiceInterface
+  ) {
+    self.recordService = recordService
+    self._state.recordList = recordList
+  }
+  
   // MARK: - View Action
   func effect(_ action: Action) {
     switch action {

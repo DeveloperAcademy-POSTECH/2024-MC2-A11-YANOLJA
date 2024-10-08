@@ -15,7 +15,7 @@ struct MainView: View {
   var body: some View {
     VStack(spacing: 0) {
       WinRatePercentage(
-        totalWinRate: winRateUseCase.state.myWinRate.totalWinRate,
+        totalWinRate: winRateUseCase.state.totalWinRate,
         myTeam: userInfoUseCase.state.myTeam
       )
       .foregroundColor(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
@@ -25,7 +25,7 @@ struct MainView: View {
       MainCharacterView(
         characterModel: .init(
           myTeam: userInfoUseCase.state.myTeam ?? .noTeam,
-          totalWinRate: winRateUseCase.state.myWinRate.totalWinRate
+          totalWinRate: winRateUseCase.state.totalWinRate
         )
       )
       .frame(width: 280, height: 280)

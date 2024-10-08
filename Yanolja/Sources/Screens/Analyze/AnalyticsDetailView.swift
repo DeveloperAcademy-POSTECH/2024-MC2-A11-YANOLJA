@@ -1,5 +1,5 @@
 //
-//  VsTeamDetailView.swift
+//  AnalyticsDetailView.swift
 //  Yanolja
 //
 //  Created by 박혜운 on 5/13/24.
@@ -9,26 +9,64 @@
 import SwiftUI
 
 // MARK: - 브리
-struct VsTeamDetailView: View {
+struct AnalyticsDetailView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
-  let detailTeam: BaseballTeam
+  
+  let filterOptionsCategory: AnalyticsFilter
+  
+  var detailOptions: String {
+    switch filterOptionsCategory {
+    case let .team(baseballTeam):
+      return baseballTeam.name
+    case let .stadiums(stadiums):
+      return stadiums
+    }
+  }
+  
+  var winRate: Int? {
+    switch filterOptionsCategory {
+    case let .team(baseballTeam):
+      return winRateUseCase.state.eachTeamAnalytics.vsTeamWinRate[baseballTeam] ?? nil
+    case let .stadiums(stadiums):
+      return winRateUseCase.state.eachStadiumsAnalytics.stadiumsWinRate[stadiums] ?? nil
+    }
+  }
+  
+  var recordCount: Int? {
+    switch filterOptionsCategory {
+    case let .team(baseballTeam):
+      return winRateUseCase.state.eachTeamAnalytics.vsTeamRecordCount[baseballTeam] ?? nil
+    case let .stadiums(stadiums):
+      return winRateUseCase.state.eachStadiumsAnalytics.stadiumsRecordCount[stadiums] ?? nil
+    }
+  }
+  
+  var filteredRecordList: [GameRecordWithScoreModel] {
+    switch filterOptionsCategory {
+    case let .team(baseballTeam):
+      return winRateUseCase.state.filteredRecordList.filter { $0.vsTeam == baseballTeam }
+    case let .stadiums(stadiums):
+      return winRateUseCase.state.filteredRecordList.filter { $0.stadiums == stadiums }
+    }
+  }
   
   init(
     winRateUseCase: WinRateUseCase,
     recordUseCase: RecordUseCase,
-    detailTeam: BaseballTeam
+    filterOptions: AnalyticsFilter
   ) {
     self.winRateUseCase = winRateUseCase
     self.recordUseCase = recordUseCase
-    self.detailTeam = detailTeam
+    self.filterOptionsCategory = filterOptions
   }
   
   var body: some View {
+
     NavigationStack {
       VStack(spacing: 0) {
         HStack {
-          Text("\(detailTeam.name)")
+          Text("\(detailOptions)")
             .foregroundStyle(.date)
             .bold()
           Spacer()
@@ -41,8 +79,8 @@ struct VsTeamDetailView: View {
               .font(.footnote)
             HStack {
               Spacer()
-              if let winRate = winRateUseCase.state.myWinRate.vsTeamWinRate[detailTeam] {
-                Text("\(winRate.map{ String($0) } ?? "--")")
+              if let winRate {
+                Text("\(String(winRate))")
                   .font(.title2)
                   .bold()
                 
@@ -64,10 +102,8 @@ struct VsTeamDetailView: View {
           }
           
           VStack(alignment: .leading, spacing: 8) {
-            if let recordCount = winRateUseCase.state.myWinRate
-              .vsTeamRecordCount[detailTeam] {
-              
-              Text("총 \(recordCount.map { String($0) } ?? "--")경기")
+            if let recordCount {
+              Text("총 \(String(recordCount))경기")
                 .font(.footnote)
             } else {
               Text("총 --경기")
@@ -76,10 +112,9 @@ struct VsTeamDetailView: View {
             HStack {
               Spacer()
               // 각 팀의 승무패 횟수
-              let recordList = recordUseCase.state.recordList.filter { $0.vsTeam == detailTeam }
-              let winCount = recordList.filter { $0.result == .win }.count
-              let loseCount = recordList.filter { $0.result == .lose }.count
-              let drawCount = recordList.filter { $0.result == .draw }.count
+              let winCount = filteredRecordList.filter { $0.result == .win }.count
+              let loseCount = filteredRecordList.filter { $0.result == .lose }.count
+              let drawCount = filteredRecordList.filter { $0.result == .draw }.count
               Text("\(winCount)승 \(loseCount)패 \(drawCount)무")
             }
             .font(.title2)
@@ -97,17 +132,10 @@ struct VsTeamDetailView: View {
       .padding(.bottom, 20)
       .padding(.horizontal, 16)
       
-      let filteredList = recordUseCase
-        .state
-        .recordList
-        .filter{ list in
-          list.vsTeam == detailTeam
-        }
-      
-      if filteredList.isEmpty {
+      if filteredRecordList.isEmpty {
         HStack{
           Spacer()
-          Text("\(detailTeam.name)와의 직관 기록이 없습니다.")
+          Text("\(detailOptions)와의 직관 기록이 없습니다.")
             .foregroundColor(.gray)
             .font(.callout)
             .padding(.bottom, 12)
@@ -119,12 +147,7 @@ struct VsTeamDetailView: View {
         ScrollView() {
           VStack {
             ForEach(
-              recordUseCase
-                .state
-                .recordList
-                .filter{ list in
-                  list.vsTeam == detailTeam
-                },
+              filteredRecordList,
               id: \.id
             ) { record in
               NavigationLink(
@@ -156,12 +179,13 @@ struct VsTeamDetailView: View {
 
 
 #Preview {
-  VsTeamDetailView(
+  AnalyticsDetailView(
     winRateUseCase: WinRateUseCase(
       recordService: RecordDataService(),
       myTeamService: UserDefaultsService()
     ),
-    recordUseCase: RecordUseCase(recordService: RecordDataService()),
-    detailTeam: .kia
+    recordUseCase: RecordUseCase(
+      recordService: RecordDataService()),
+    filterOptions: .team(.kia)
   )
 }
