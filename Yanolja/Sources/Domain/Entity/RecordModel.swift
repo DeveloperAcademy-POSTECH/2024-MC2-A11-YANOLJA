@@ -79,7 +79,7 @@ struct GameRecordWithScoreModel: Identifiable {
   }
   
   var result: GameResult { // 계산 속성으로 변경
-    guard let myTeamScore = Int(myTeamScore), let vsTeamScore = Int(vsTeamScore) else { return .cancel }
+    guard !self.isCancel else { return .cancel }
     if myTeamScore > vsTeamScore {
       return .win
     } else if myTeamScore < vsTeamScore {
