@@ -15,9 +15,9 @@ struct RecordCell: View {
     ZStack {
       VStack {
         HStack(spacing: 0) {
-          // 경기가 취소되었을 경우 점수가 아닌 "--"로 표시
+          // 경기가 취소되었을 경우 점수가 아닌 "-"로 표시
           if record.isCancel {
-            Text("--")
+            Text("-")
               .jikyoFont(.recordCell)
               .foregroundStyle(myTeamScoreColor())
               .frame(width: 70, height: 70)
@@ -58,9 +58,9 @@ struct RecordCell: View {
           }
           Spacer()
           ZStack(alignment: .center) {
-            // 경기가 취소되었을 경우 점수가 아닌 "--"로 표시
+            // 경기가 취소되었을 경우 점수가 아닌 "-"로 표시
             if record.isCancel {
-              Text("--")
+              Text("-")
                 .jikyoFont(.recordCell)
                 .foregroundStyle(vsTeamScoreColor())
                 .frame(width: 70, height: 70)
@@ -96,33 +96,33 @@ struct RecordCell: View {
   
   func myTeamScoreColor() -> Color {
     guard !record.isCancel else {
-      return .gray
+      return Color(.systemGray4)
     }
     switch record.result {
     case .win:
       return record.myTeam.mainColor
     case .lose:
-      return .gray
+      return Color(.systemGray4)
     case .draw:
-      return .gray
+      return Color(.systemGray4)
     case .cancel:
-      return .gray
+      return Color(.systemGray4)
     }
   }
   
   func vsTeamScoreColor() -> Color {
     guard !record.isCancel else {
-      return .gray
+      return Color(.systemGray4)
     }
     switch record.result {
     case .win:
-      return .gray
+      return Color(.systemGray4)
     case .lose:
       return .gray
     case .draw:
-      return .gray
+      return Color(.systemGray4)
     case .cancel:
-      return .gray
+      return Color(.systemGray4)
     }
   }
 }

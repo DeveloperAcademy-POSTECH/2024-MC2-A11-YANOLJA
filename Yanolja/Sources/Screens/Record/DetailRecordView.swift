@@ -237,7 +237,7 @@ struct DetailRecordView: View {
               VStack {
                 if makeBlur {
                   ZStack {
-                    image
+                    Image(uiImage: image)
                       .resizable()
                       .scaledToFill()
                       .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
@@ -255,7 +255,7 @@ struct DetailRecordView: View {
                       }
                   }
                 } else {
-                  image
+                  Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
                     .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.width - 50)
