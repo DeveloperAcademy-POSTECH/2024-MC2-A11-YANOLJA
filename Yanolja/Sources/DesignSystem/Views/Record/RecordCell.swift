@@ -20,6 +20,7 @@ struct RecordCell: View {
             Text("-")
               .jikyoFont(.recordCell)
               .foregroundStyle(myTeamScoreColor())
+              .opacity(0.5)
               .frame(width: 70, height: 70)
           } else {
             Text(record.myTeamScore)
@@ -34,26 +35,44 @@ struct RecordCell: View {
                 .font(.title)
                 .bold()
                 .foregroundStyle(.black)
+                .opacity(record.isCancel ? 0.5 : 1)
                 .frame(width: 70)
                 .multilineTextAlignment(.trailing)
               Text("vs")
                 .font(.subheadline)
                 .foregroundStyle(.gray)
+                .opacity(record.isCancel ? 0.5 : 1)
                 .frame(width: 16)
               Text(record.vsTeam.name.split(separator: " ").first ?? "")
                 .font(.title)
                 .foregroundStyle(.black)
                 .bold()
+                .opacity(record.isCancel ? 0.5 : 1)
                 .frame(width: 70)
                 .multilineTextAlignment(.leading)
             }
             .padding(.bottom, 2)
             
-            Text(record.date.gameDate())
-              .font(.caption2)
-              .foregroundStyle(.date)
+            switch record.isDoubleHeader {
+            case 1:
+              Text("\(record.date.gameDate()) DH1")
+                .font(.caption2)
+                .opacity(record.isCancel ? 0.5 : 1)
+                .foregroundStyle(.date)
+            case 2:
+              Text("\(record.date.gameDate()) DH2")
+                .font(.caption2)
+                .opacity(record.isCancel ? 0.5 : 1)
+                .foregroundStyle(.date)
+            default:
+              Text(record.date.gameDate())
+                .font(.caption2)
+                .opacity(record.isCancel ? 0.5 : 1)
+                .foregroundStyle(.date)
+            }
             Text(record.stadiums)
               .font(.caption2)
+              .opacity(record.isCancel ? 0.5 : 1)
               .foregroundStyle(.date)
           }
           Spacer()
@@ -63,6 +82,7 @@ struct RecordCell: View {
               Text("-")
                 .jikyoFont(.recordCell)
                 .foregroundStyle(vsTeamScoreColor())
+                .opacity(0.5)
                 .frame(width: 70, height: 70)
             } else {
               Text(record.vsTeamScore)
@@ -78,6 +98,7 @@ struct RecordCell: View {
       .background(
         RoundedRectangle(cornerRadius: 16)
           .fill(.bg)
+          .opacity(record.isCancel ? 0.5 : 1)
       )
       
       Path { path in
@@ -89,6 +110,7 @@ struct RecordCell: View {
         Color.init(hex: 0xC7C7CC)
           .opacity(0.35)
       )
+      .opacity(record.isCancel ? 0.5 : 1)
       .frame(width: 2, height: 118)
     }
     
