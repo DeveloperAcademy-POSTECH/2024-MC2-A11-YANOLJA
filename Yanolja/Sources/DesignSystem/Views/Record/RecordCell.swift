@@ -53,10 +53,23 @@ struct RecordCell: View {
             }
             .padding(.bottom, 2)
             
-            Text(record.date.gameDate())
-              .font(.caption2)
-              .opacity(record.isCancel ? 0.5 : 1)
-              .foregroundStyle(.date)
+            switch record.isDoubleHeader {
+            case 1:
+              Text("\(record.date.gameDate()) DH1")
+                .font(.caption2)
+                .opacity(record.isCancel ? 0.5 : 1)
+                .foregroundStyle(.date)
+            case 2:
+              Text("\(record.date.gameDate()) DH2")
+                .font(.caption2)
+                .opacity(record.isCancel ? 0.5 : 1)
+                .foregroundStyle(.date)
+            default:
+              Text(record.date.gameDate())
+                .font(.caption2)
+                .opacity(record.isCancel ? 0.5 : 1)
+                .foregroundStyle(.date)
+            }
             Text(record.stadiums)
               .font(.caption2)
               .opacity(record.isCancel ? 0.5 : 1)
