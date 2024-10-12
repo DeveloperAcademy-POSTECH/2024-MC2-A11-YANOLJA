@@ -30,8 +30,6 @@ struct DetailRecordView: View {
   @State private var selectedOption: String = ""
   let doubleHeader = [0: "DH1", 1: "DH2"]
   
-  @State private var inputText = ""
-  
   @State private var showImagePicker = false
   @State private var selectedUIImage: UIImage?
   @State private var image: Image?
@@ -165,7 +163,7 @@ struct DetailRecordView: View {
                   set: { newValue in
                     recording.myTeamScore = newValue.isEmpty ? "" : newValue
                   }))
-              .keyboardType(.numberPad) 
+              .keyboardType(.numberPad)
               .multilineTextAlignment(.center)
               .frame(width: 94, height: 32)
               .background(
@@ -224,9 +222,6 @@ struct DetailRecordView: View {
               if newValue.count > 15 {
                 recording.memo = String(newValue.prefix(15))
               }
-            }
-            .onSubmit {
-              recording.memo = inputText
             }
           })
         
