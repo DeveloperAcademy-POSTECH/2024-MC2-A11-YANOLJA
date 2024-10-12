@@ -62,6 +62,9 @@ struct ContentView: View {
       VStack(spacing: 12) {
         ZStack {
           Circle()
+            .foregroundStyle(.white)
+            .frame(width: 120)
+          Circle()
             .stroke(lineWidth: 1)
             .frame(width: 120)
           ZStack {
