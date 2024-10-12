@@ -9,6 +9,8 @@
 import Foundation
 
 enum SettingsAPI {
+  case characterDialogue(myTeam: String)
+  case allStadiums
   case allNotices
 }
 
@@ -17,20 +19,29 @@ extension SettingsAPI: EndPointType {
   
   var path: String {
     switch self {
-    case .allNotices:
-      return "/notices"
+    case .characterDialogue: return "/teamLine"
+    case .allStadiums: return "/stadiums"
+    case .allNotices: return "/notices"
     }
   }
   
   var method: HTTPMethod {
     switch self {
-    case .allNotices: .get
+    case .characterDialogue: return .post
+    case .allStadiums: return .get
+    case .allNotices: return .get
     }
   }
   
   var task: HTTPTask {
     switch self {
-    case .allNotices: .requestPlain
+    case let .characterDialogue(myTeam): return .requestParameters(
+      parameters: ["myTeam": myTeam],
+      encoding: .queryString
+    )
+      
+    case .allStadiums: return .requestPlain
+    case .allNotices: return .requestPlain
     }
   }
 }

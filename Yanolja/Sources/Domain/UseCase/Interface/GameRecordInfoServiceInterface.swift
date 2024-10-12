@@ -8,9 +8,7 @@
 
 import Foundation
 
-struct TeamInfoService {
+struct GameRecordInfoService {
   var gameRecord: (_ date: Date, _ myTeam: String) async -> Result<[GameRecordWithScoreModel], Error>
-  var characterDialogue: (_ myTeam: String) async -> Result<[String], Error>
   var teamWinRate: (_ myTeam: String) async -> Result<Int?, Error>
-  var allStadiums: () async -> Result<[String], Error>
 }
