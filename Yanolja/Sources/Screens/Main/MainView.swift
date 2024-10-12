@@ -14,12 +14,13 @@ struct MainView: View {
   
   var body: some View {
     VStack(spacing: 0) {
+      Spacer()
+      
       WinRatePercentage(
         totalWinRate: winRateUseCase.state.totalWinRate,
         myTeam: userInfoUseCase.state.myTeam
       )
       .foregroundColor(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
-      .padding(.top, 20)
       .padding(.bottom, 8)
       
       MainCharacterView(
