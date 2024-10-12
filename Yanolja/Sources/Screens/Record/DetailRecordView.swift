@@ -103,7 +103,7 @@ struct DetailRecordView: View {
                           }
                           Task {
                             realRecordInfoList = await loadRealGameRecordsInfo()
-                            recording = realRecordInfoList.first ?? resetScoreCancelDoubleHeaderAbout(recording)
+                            recording = realRecordInfoList.first?.keepMemoPhoto(in: recording) ?? resetScoreCancelDoubleHeaderAbout(recording)
                           }
                         }
                       }
@@ -133,9 +133,9 @@ struct DetailRecordView: View {
             set: { doubleHeaderNum in
               recording.isDoubleHeader = doubleHeaderNum
               if doubleHeaderNum == 1 {
-                recording = realRecordInfoList.last ?? recording
+                recording = realRecordInfoList.last?.keepMemoPhoto(in: recording) ?? recording
               } else {
-                recording = realRecordInfoList.first ?? recording
+                recording = realRecordInfoList.first?.keepMemoPhoto(in: recording) ?? recording
               }
             }
           )) {
@@ -389,7 +389,7 @@ struct DetailRecordView: View {
           recording.date = date
           Task {
             realRecordInfoList = await loadRealGameRecordsInfo()
-            recording = realRecordInfoList.first ?? resetScoreCancelDoubleHeaderAbout(recording)
+            recording = realRecordInfoList.first?.keepMemoPhoto(in: recording) ?? resetScoreCancelDoubleHeaderAbout(recording)
           }
         }
       ),
@@ -422,6 +422,16 @@ struct DetailRecordView: View {
   }
 }
 
+private extension GameRecordWithScoreModel {
+  func keepMemoPhoto(in exRecord: GameRecordWithScoreModel) -> GameRecordWithScoreModel {
+    var new = self
+    new.memo = exRecord.memo
+    new.photo = exRecord.photo
+    
+    return new
+  }
+}
+
 #Preview {
   DetailRecordView(
     // 현재 보여지는 뷰는 편집(삭제 버튼 추가)
@@ -432,3 +442,4 @@ struct DetailRecordView: View {
     changeRecords: { _ in }
   )
 }
+
