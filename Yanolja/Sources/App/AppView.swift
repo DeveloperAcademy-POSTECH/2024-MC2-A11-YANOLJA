@@ -63,7 +63,7 @@ struct AppView: View {
           switch selection {
           case .main: return "나의 직관 승률"
           case .record: return "\(selectedRecordYearFilter) 직관 기록"
-          case .analytics: return "\(winRateUseCase.state.selectedYearFilter) 직관 분석"
+          case .analytics: return "\(winRateUseCase.state.selectedYearFilter) 승률 분석"
           }
         }()
       )

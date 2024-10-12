@@ -54,7 +54,7 @@ struct AllAnalyticsView: View {
         }
         
         VStack(alignment: .leading, spacing: 8) {
-          Text("나의 승률")
+          Text("나의 직관 승률")
             .font(.footnote)
           HStack {
             Spacer()
