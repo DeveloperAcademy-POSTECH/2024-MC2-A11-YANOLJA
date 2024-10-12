@@ -80,6 +80,8 @@ struct GameRecordWithScoreModel: Identifiable {
   
   var result: GameResult { // 계산 속성으로 변경
     guard !self.isCancel else { return .cancel }
+    let myTeamScore = Int(myTeamScore) ?? 0
+    let vsTeamScore = Int(vsTeamScore) ?? 0
     if myTeamScore > vsTeamScore {
       return .win
     } else if myTeamScore < vsTeamScore {
