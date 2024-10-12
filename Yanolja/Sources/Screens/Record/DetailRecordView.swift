@@ -123,6 +123,8 @@ struct DetailRecordView: View {
             .onChange(of: isDH) { oldValue, newValue in
               if newValue == false {
                 recording.isDoubleHeader = -1
+              } else if newValue == true, recording.isDoubleHeader == -1 {
+                recording.isDoubleHeader = 0
               }
             }
           }
