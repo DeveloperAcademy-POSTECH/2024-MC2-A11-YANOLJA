@@ -44,6 +44,7 @@ struct AllRecordView: View {
       }
       
       if recordUseCase.state.recordList
+        .filtered(years: selectedYearFilter)
         .filtered(options: selectedRecordFilter)
         .sortByLatestDate(isAscending).isEmpty {
         HStack{
@@ -74,6 +75,7 @@ struct AllRecordView: View {
             )
           }
         }
+        .scrollIndicators(.never)
         .padding(.top, 25)
       }
     }

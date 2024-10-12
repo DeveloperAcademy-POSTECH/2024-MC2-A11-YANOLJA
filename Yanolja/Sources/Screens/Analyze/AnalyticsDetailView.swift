@@ -77,7 +77,7 @@ struct AnalyticsDetailView: View {
           VStack(alignment: .leading, spacing: 8) {
             Text("직관 승률")
               .font(.footnote)
-            HStack {
+            HStack(spacing: 0) {
               Spacer()
               if let winRate {
                 Text("\(String(winRate))")
