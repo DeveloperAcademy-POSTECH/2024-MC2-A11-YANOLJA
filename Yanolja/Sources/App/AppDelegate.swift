@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   ) -> Bool {
     
     Task {
+      await loadStadiumsInfo()
       await transferExRecordDataToPublicVersionRecordData()
     }
     
@@ -94,5 +95,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       let recordList = recordUseCase.state.recordList
       self.winRateUseCase.effect(.updateRecords(recordList))
     }
+  }
+  
+  func loadStadiumsInfo() async {
+    guard case let .success(stadiums) = await SettingsService.live.allStadiums() else { return }
+    BaseballStadiums.nameList = stadiums
   }
 }
