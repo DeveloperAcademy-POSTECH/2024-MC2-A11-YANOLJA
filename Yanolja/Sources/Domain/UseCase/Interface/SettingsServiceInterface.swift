@@ -9,5 +9,7 @@
 import Foundation
 
 struct SettingsService {
+  var characterDialogue: (_ myTeam: String) async -> Result<[String], Error>
+  var allStadiums: () async -> Result<[String], Error>
   var allNotices: () async -> Result<[NoticesDTO], Error>
 }

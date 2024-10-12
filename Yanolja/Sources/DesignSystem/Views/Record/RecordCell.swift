@@ -54,12 +54,12 @@ struct RecordCell: View {
             .padding(.bottom, 2)
             
             switch record.isDoubleHeader {
-            case 1:
+            case 0:
               Text("\(record.date.gameDate()) DH1")
                 .font(.caption2)
                 .opacity(record.isCancel ? 0.5 : 1)
                 .foregroundStyle(.date)
-            case 2:
+            case 1:
               Text("\(record.date.gameDate()) DH2")
                 .font(.caption2)
                 .opacity(record.isCancel ? 0.5 : 1)

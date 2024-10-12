@@ -53,6 +53,8 @@ extension BaseballTeam {
     }
   }
   
+  var sliceName: String { self.name.components(separatedBy: " ")[0] }
+  
   var mainColor: Color {
     switch self {
     case .doosan:

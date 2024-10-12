@@ -8,14 +8,14 @@
 
 import Foundation
 
-extension TeamInfoService {
+extension GameRecordInfoService {
   static let live = {
     return Self(
       gameRecord: { date, myTeam in
-        let result = await Provider<TeamInfoAPI>
+        let result = await Provider<GameRecordInfoAPI>
           .init()
           .request(
-            TeamInfoAPI.gameRecord(date: date.asYearMonthDayWithDash, myTeam: myTeam),
+            GameRecordInfoAPI.realRecord(date: date.asYearMonthDayWithDash, myTeam: myTeam),
             type: [BaseballGameDTO].self
           )
         
@@ -36,39 +36,17 @@ extension TeamInfoService {
           return .success(recordList)
         case let .failure(error): return .failure(error)
         }
-      }, characterDialogue: { myTeam in
-        let result = await Provider<TeamInfoAPI>
-          .init()
-          .request(
-            TeamInfoAPI.characterDialogue(myTeam: myTeam),
-            type: TeamLineDTO.self
-          )
-        switch result {
-        case let .success(teamLineDto): return .success(teamLineDto.line)
-        case let .failure(error): return .failure(error)
-        }
       }, teamWinRate: { myTeam in
-        let result = await Provider<TeamInfoAPI>
+        let result = await Provider<GameRecordInfoAPI>
           .init()
           .request(
-            TeamInfoAPI.teamWinRate(myTeam: myTeam),
+            GameRecordInfoAPI.teamWinRate(myTeam: myTeam),
             type: TeamWinRateDTO.self
           )
         switch result {
         case let .success(winRateDto):
           let winRate: Int = Int(winRateDto.winRate * 100)
           return .success(winRate)
-        case let .failure(error): return .failure(error)
-        }
-      }, allStadiums: {
-        let result = await Provider<TeamInfoAPI>
-          .init()
-          .request(
-            TeamInfoAPI.allStadiums,
-            type: StadiumsDTO.self
-          )
-        switch result {
-        case let .success(stadiumsDTO): return .success(stadiumsDTO.stadiums)
         case let .failure(error): return .failure(error)
         }
       }

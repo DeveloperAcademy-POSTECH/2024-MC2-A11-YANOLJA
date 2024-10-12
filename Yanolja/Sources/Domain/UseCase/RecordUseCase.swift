@@ -22,6 +22,7 @@ class RecordUseCase {
   
   // MARK: - Action
   enum Action {
+    case renewAllRecord
     case tappedCreateRecordSheet(Bool)
     case tappedRecordCellToEditRecordSheet(Bool)
     case tappedSaveNewRecord(GameRecordWithScoreModel)
@@ -35,7 +36,9 @@ class RecordUseCase {
     return _state
   }
   
-  init(recordService: RecordDataServiceInterface) {
+  init(
+    recordService: RecordDataServiceInterface
+  ) {
     self.recordService = recordService
     // MARK: - v1.0 기존 Data 값 있다면, 변경해서 저장하고 다시 불러와서 진행
     // MARK: - v1.0 기존 Data 값 없다면, 정상 진행
@@ -59,6 +62,14 @@ class RecordUseCase {
   // MARK: - View Action
   func effect(_ action: Action) {
     switch action {
+    case .renewAllRecord:
+      switch recordService.readAllRecord() {
+      case .success(let dataList):
+        _state.recordList = dataList
+      case .failure:
+        return
+      }
+      
     case let .tappedCreateRecordSheet(result):
       self._state.createRecordSheet = result
       return
