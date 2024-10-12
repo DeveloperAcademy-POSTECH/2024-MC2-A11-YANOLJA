@@ -196,53 +196,6 @@ struct TeamChangeView: View {
   }
 }
 
-struct NicknameChangeView: View {
-  @Environment(\.dismiss) var dismiss
-  @Bindable var userInfoUseCase: UserInfoUseCase
-  @State var selectedUserNickname: String = ""
-  
-  var body: some View {
-    VStack(spacing: 0) {
-      HStack(spacing: 0) {
-        Button(action: {
-          dismiss()
-        }) {
-          Text("취소")
-        }
-        Spacer()
-        Text("닉네임 변경")
-          .bold()
-        Spacer()
-        Button(action: {
-          userInfoUseCase.effect(.changeMyNickname(selectedUserNickname))
-          dismiss()
-        }) {
-          Text("완료")
-            .bold()
-        }
-      }
-      .frame(height: 44)
-      .padding(.top, 16)
-      .padding(.bottom, 20)
-      
-      // 지정한 닉네임이 없으면 그대로 실행
-      if userInfoUseCase.state.myNickname.isEmpty {
-        NicknameSettingsContent(inputText: $selectedUserNickname)
-          .presentationDragIndicator(.visible)
-      } else {
-        // 지정한 닉네임이 있다면 사용하던 닉네임이 보인다
-        NicknameSettingsContent(inputText: $selectedUserNickname)
-          .onAppear {
-            selectedUserNickname = userInfoUseCase.state.myNickname
-          }
-          .presentationDragIndicator(.visible)
-      }
-      Spacer()
-    }
-    .padding(.horizontal, 16)
-  }
-}
-
 struct TermsView: View {
   var body: some View {
     Text("이용약관 화면")
