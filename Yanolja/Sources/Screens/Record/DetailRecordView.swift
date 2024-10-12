@@ -20,15 +20,17 @@ struct DetailRecordView: View {
   var recordUseCase: RecordUseCase
   
   @State var recording: GameRecordWithScoreModel = .init() // 수정할 때
+  
+  @State private var realRecordInfoList: [GameRecordWithScoreModel] = []
   @State private var showingAlert: Bool = false
   @State private var changeMyTeam: BaseballTeam?
-  @State private var isDH: Bool = false
   
   private let editType: RecordViewEditType
   private let changeRecords: ([GameRecordWithScoreModel]) -> Void
   
   @State private var selectedOption: String = ""
-  let doubleHeader = [0: "DH1", 1: "DH2"]
+  private let doubleHeader = [0: "DH1", 1: "DH2"]
+  private var isDH: Bool { recording.isDoubleHeader != -1 }
   
   @State private var inputText = ""
   
@@ -111,41 +113,31 @@ struct DetailRecordView: View {
                 selectedTeam: $recording.vsTeam
               )
             }
-            .onAppear {
-              if recording.isDoubleHeader != -1 {
-                isDH = true
-              }
-            }
             
-            Toggle(isOn: $isDH) {
+            Toggle(isOn: .init(get: { isDH }, set: { isDH in recording.isDoubleHeader = isDH ? 0 : -1 })) {
               Text("더블헤더")
-            }
-            .onChange(of: isDH) { oldValue, newValue in
-              if newValue == false {
-                recording.isDoubleHeader = -1
-              } else if newValue == true, recording.isDoubleHeader == -1 {
-                recording.isDoubleHeader = 0
-              }
             }
           }
         )
         
         // 더블헤더 선택
         if isDH {
-          Picker("더블헤더 선택", selection: $recording.isDoubleHeader) {
+          Picker("더블헤더 선택", selection: .init(
+            get: { recording.isDoubleHeader },
+            set: { doubleHeaderNum in
+              recording.isDoubleHeader = doubleHeaderNum
+              if doubleHeaderNum == 1 {
+                recording = realRecordInfoList.last ?? recording
+              } else {
+                recording = realRecordInfoList.first ?? recording
+              }
+            }
+          )) {
             ForEach(doubleHeader.keys.sorted(), id: \.self) { key in
               Text(doubleHeader[key] ?? "")
             }
           }
           .pickerStyle(.inline)
-          .onSubmit {
-            // 더블헤더 선택 시 번호 전달
-            if recording.isDoubleHeader == 0 {
-              recording.isDoubleHeader = 0
-            } else {
-              recording.isDoubleHeader = 1
-            }
-          }
         }
         
         // 경기 결과 표시
@@ -371,6 +363,12 @@ struct DetailRecordView: View {
       .navigationTitle("오늘의 직관")
       .navigationBarTitleDisplayMode(.inline)
     }
+    .task {
+      realRecordInfoList = await loadRealGameRecordsInfo()
+      if editType == .create {
+        recording = realRecordInfoList.first ?? recording
+      }
+    }
   }
   
   var selectDate: some View {
@@ -384,6 +382,15 @@ struct DetailRecordView: View {
   func loadImage() {
     guard let selectedImage = selectedUIImage else { return }
     recording.photo = selectedImage
+  }
+  
+  private func loadRealGameRecordsInfo() async -> [GameRecordWithScoreModel] {
+    isDataLoading = true
+    let service = GameRecordInfoService.live
+    let result = await service.gameRecord(recording.date, recording.myTeam.sliceName)
+    isDataLoading = false
+    guard case let .success(recordList) = result else { return [] }
+    return recordList
   }
 }
 
