@@ -165,6 +165,7 @@ struct DetailRecordView: View {
                   set: { newValue in
                     recording.myTeamScore = newValue.isEmpty ? "" : newValue
                   }))
+              .keyboardType(.numberPad) 
               .multilineTextAlignment(.center)
               .frame(width: 94, height: 32)
               .background(

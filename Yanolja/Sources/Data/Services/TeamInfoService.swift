@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 extension TeamInfoService {
   static let live = {
     return Self(
