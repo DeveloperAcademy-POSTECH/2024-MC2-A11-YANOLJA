@@ -12,7 +12,7 @@ import SwiftUI
 class UserInfoUseCase {
   struct State {
     var myTeam: BaseballTeam?
-    var myNickname: String = "기본 이름"
+    var myNickname: String?
   }
   
   enum Action {
@@ -34,7 +34,7 @@ class UserInfoUseCase {
     self.changeAppIconService = changeIconService
     self.myTeamService = myTeamService
     self.myNicknameService = myNicknameService
-    _state.myNickname = myNicknameService.readMyNickname() ?? "기본 이름"
+    _state.myNickname = myNicknameService.readMyNickname()
     _state.myTeam = myTeamService.readMyTeam()
   }
   

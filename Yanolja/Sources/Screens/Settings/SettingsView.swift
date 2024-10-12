@@ -78,7 +78,7 @@ struct ContentView: View {
         }
         .clipShape(Circle())
         
-        Text("\(userInfoUseCase.state.myNickname)")
+        Text("\(userInfoUseCase.state.myNickname ?? "기본 이름")")
           .font(.title2)
           .fontWeight(.black)
           .frame(maxWidth: .infinity)
