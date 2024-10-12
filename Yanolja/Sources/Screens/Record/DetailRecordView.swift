@@ -23,6 +23,7 @@ struct DetailRecordView: View {
   
   @State private var realRecordInfoList: [GameRecordWithScoreModel] = []
   @State private var showingAlert: Bool = false
+  @State private var isDataLoading = false
   @State private var changeMyTeam: BaseballTeam?
   
   private let editType: RecordViewEditType
@@ -306,6 +307,7 @@ struct DetailRecordView: View {
           )
         }
       }
+      .loadingIndicator(isLoading: isDataLoading)
       .toolbar(
         content: {
           ToolbarItem(placement: .topBarTrailing) {
@@ -395,7 +397,7 @@ struct DetailRecordView: View {
     )
   }
   
-  func loadImage() {
+  private func loadImage() {
     guard let selectedImage = selectedUIImage else { return }
     recording.photo = selectedImage
   }
