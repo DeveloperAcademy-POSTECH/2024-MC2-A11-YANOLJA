@@ -44,7 +44,7 @@ struct SettingsView: View {
 
 // Enum으로 각 버튼 구분
 enum ActiveSheet: Identifiable {
-  case teamChange, nicknameChange, terms, privacyPolicy, creators, announcements
+  case teamChange, nicknameChange, terms, privacyPolicy, creators, notices
   
   var id: Int {
     hashValue
@@ -119,7 +119,7 @@ struct ContentView: View {
         }
         
         Button(action: {
-          activeSheet = .announcements
+          activeSheet = .notices
         }) {
           Text("공지사항")
         }
@@ -145,8 +145,8 @@ struct ContentView: View {
         PrivacyPolicyView()  // '개인정보 처리방침' 화면
       case .creators:
         CreatorsView()  // '승리지교를 만든 사람들' 화면
-      case .announcements:
-        AnnouncementsView()  // '공지사항' 화면
+      case .notices:
+        NoticesView()  // '공지사항' 화면
       }
     }
   }
@@ -252,17 +252,5 @@ struct TermsView: View {
 struct PrivacyPolicyView: View {
   var body: some View {
     Text("개인정보 처리방침 화면")
-  }
-}
-
-struct CreatorsView: View {
-  var body: some View {
-    Text("승리지교를 만든 사람들 화면")
-  }
-}
-
-struct AnnouncementsView: View {
-  var body: some View {
-    Text("공지사항 화면")
   }
 }
