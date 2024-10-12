@@ -74,6 +74,7 @@ struct AllRecordView: View {
             )
           }
         }
+        .scrollIndicators(.never)
         .padding(.top, 25)
       }
     }
