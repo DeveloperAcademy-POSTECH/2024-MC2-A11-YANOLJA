@@ -140,6 +140,14 @@ struct AppView: View {
           }
         )
       }
+      .sheet(
+        isPresented: .init(get: { userInfoUseCase.state.myTeam != nil && userInfoUseCase.state.myNickname == nil }, set: { _ in }),
+        content: {
+          NicknameChangeView(userInfoUseCase: userInfoUseCase, noNicknameUser: true)
+            .presentationDetents([.fraction(0.9)])
+        }
+      )
+      .interactiveDismissDisabled(true)
       .navigationDestination(for: NavigationDestination.self) { destination in
         switch destination {
         case .settings:

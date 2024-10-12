@@ -78,7 +78,7 @@ private struct NameBox: View {
       }
       .foregroundStyle(.gray)
       
-      Text(userInfoUseCase.state.myNickname)
+      Text(userInfoUseCase.state.myNickname ?? "기본 이름")
         .font(.title2)
         .bold()
     }
