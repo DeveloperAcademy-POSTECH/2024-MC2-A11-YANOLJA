@@ -20,7 +20,6 @@ struct NoticesView: View {
       }
     }
     .tint(.black)
-    
   }
 }
 

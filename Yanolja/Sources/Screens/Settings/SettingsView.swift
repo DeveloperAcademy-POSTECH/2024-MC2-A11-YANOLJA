@@ -45,10 +45,7 @@ struct SettingsView: View {
 // Enum으로 각 버튼 구분
 enum ActiveSheet: Identifiable {
   case teamChange, nicknameChange, terms, privacyPolicy, creators, notices
-  
-  var id: Int {
-    hashValue
-  }
+  var id: Int { hashValue }
 }
 
 struct ContentView: View {
