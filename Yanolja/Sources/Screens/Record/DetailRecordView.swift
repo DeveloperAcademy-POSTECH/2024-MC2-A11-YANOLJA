@@ -28,7 +28,7 @@ struct DetailRecordView: View {
   private let changeRecords: ([GameRecordWithScoreModel]) -> Void
   
   @State private var selectedOption: String = ""
-  let doubleHeader = [1: "DH1", 2: "DH2"]
+  let doubleHeader = [0: "DH1", 1: "DH2"]
   
   @State private var inputText = ""
   
@@ -112,7 +112,7 @@ struct DetailRecordView: View {
               )
             }
             .onAppear {
-              if recording.isDoubleHeader != 0 {
+              if recording.isDoubleHeader != -1 {
                 isDH = true
               }
             }
@@ -122,7 +122,7 @@ struct DetailRecordView: View {
             }
             .onChange(of: isDH) { oldValue, newValue in
               if newValue == false {
-                recording.isDoubleHeader = 0
+                recording.isDoubleHeader = -1
               }
             }
           }
@@ -138,10 +138,10 @@ struct DetailRecordView: View {
           .pickerStyle(.inline)
           .onSubmit {
             // 더블헤더 선택 시 번호 전달
-            if recording.isDoubleHeader == 1 {
-              recording.isDoubleHeader = 1
+            if recording.isDoubleHeader == 0 {
+              recording.isDoubleHeader = 0
             } else {
-              recording.isDoubleHeader = 2
+              recording.isDoubleHeader = 1
             }
           }
         }
@@ -165,6 +165,7 @@ struct DetailRecordView: View {
                   set: { newValue in
                     recording.myTeamScore = newValue.isEmpty ? "" : newValue
                   }))
+              .keyboardType(.numberPad) 
               .multilineTextAlignment(.center)
               .frame(width: 94, height: 32)
               .background(

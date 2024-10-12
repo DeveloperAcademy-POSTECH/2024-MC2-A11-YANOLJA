@@ -14,4 +14,10 @@ extension Date {
     dateFormatter.dateFormat = "YYYY"
     return dateFormatter.string(from: self)
   }
+  
+  var asYearMonthDayWithDash: String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    return dateFormatter.string(from: self)
+  }
 }
