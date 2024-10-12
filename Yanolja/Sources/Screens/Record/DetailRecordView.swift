@@ -97,8 +97,13 @@ struct DetailRecordView: View {
                         // MARK: - 나의 팀 변경: 동시에 상태 팀 선택 리스트 제한
                         if let myTeam = changeMyTeam {
                           recording.myTeam = myTeam
-                          guard recording.vsTeam == myTeam else { return }
-                          recording.vsTeam = recording.vsTeam.anyOtherTeam()
+                          if recording.vsTeam == myTeam {
+                            recording.vsTeam = recording.vsTeam.anyOtherTeam()
+                          }
+                          Task {
+                            realRecordInfoList = await loadRealGameRecordsInfo()
+                            recording = realRecordInfoList.first ?? resetScoreCancelDoubleHeaderAbout(recording)
+                          }
                         }
                       }
                 )
@@ -371,10 +376,21 @@ struct DetailRecordView: View {
     }
   }
   
-  var selectDate: some View {
+  private var selectDate: some View {
     DatePicker(
       "날짜",
-      selection: $recording.date,
+      selection: .init(
+        get: {
+          recording.date
+        },
+        set: { date in
+          recording.date = date
+          Task {
+            realRecordInfoList = await loadRealGameRecordsInfo()
+            recording = realRecordInfoList.first ?? resetScoreCancelDoubleHeaderAbout(recording)
+          }
+        }
+      ),
       displayedComponents: [.date]
     )
   }
@@ -391,6 +407,16 @@ struct DetailRecordView: View {
     isDataLoading = false
     guard case let .success(recordList) = result else { return [] }
     return recordList
+  }
+  
+  private func resetScoreCancelDoubleHeaderAbout(_ record: GameRecordWithScoreModel) -> GameRecordWithScoreModel {
+    var new = record
+    new.myTeamScore = "0"
+    new.vsTeamScore = "0"
+    new.isDoubleHeader = -1
+    new.isCancel = false
+    
+    return new
   }
 }
 
