@@ -86,6 +86,8 @@ class WinRateUseCase {
       Task {
         if case let .success(winRate) = await gameRecordInfoService.teamWinRate(_state.myTeam.sliceName) {
           _state.myTeamWinRate = winRate
+        } else {
+          _state.myTeamWinRate = nil
         }
       }
       
