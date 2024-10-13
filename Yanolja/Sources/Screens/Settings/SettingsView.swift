@@ -18,7 +18,7 @@ struct SettingsView: View {
         winRateUseCase: winRateUseCase,
         userInfoUseCase: userInfoUseCase
       )
-        .offset(y: -20)
+      .offset(y: -20)
       Text("승리지쿄 | ver \(BundleInfo.getVersion ?? "0.0")")
         .font(.caption)
         .foregroundStyle(.gray)
@@ -32,12 +32,14 @@ struct SettingsView: View {
   SettingsView(
     winRateUseCase: .init(
       recordService: RecordDataService(),
-      myTeamService: UserDefaultsService()
+      myTeamService: UserDefaultsService(),
+      gameRecordInfoService: .live
     ),
     userInfoUseCase: .init(
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService()
+      changeIconService: ChangeAppIconService(), 
+      settingsService: .live
     )
   )
 }
@@ -62,7 +64,8 @@ struct ContentView: View {
             .foregroundStyle(.white)
             .frame(width: 120)
           Circle()
-            .stroke(lineWidth: 1)
+            .stroke(lineWidth: 0.33)
+            .fill(Color(.systemGray6))
             .frame(width: 120)
           ZStack {
             Image(.myPageFace)
@@ -154,16 +157,10 @@ struct ContentView: View {
           winRateUseCase: winRateUseCase,
           userInfoUseCase: userInfoUseCase
         )  // '팀 변경' 화면
-          .presentationDetents([.fraction(0.9)])
+        .presentationDetents([.fraction(0.9)])
       case .nicknameChange:
         NicknameChangeView(userInfoUseCase: userInfoUseCase)  // '닉네임 변경' 화면
           .presentationDetents([.fraction(0.9)])
-      case .terms:
-        TermsView()  // '이용약관' 화면
-      case .privacyPolicy:
-        PrivacyPolicyView()  // '개인정보 처리방침' 화면
-      case .creators:
-        CreatorsView()  // '승리지교를 만든 사람들' 화면
       }
     }
   }
