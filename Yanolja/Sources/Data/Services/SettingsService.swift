@@ -11,11 +11,11 @@ import Foundation
 extension SettingsService {
   static let live = {
     return Self(
-      characterDialogue: { myTeam in
+      characterBubbleTexts: { myTeam in
         let result = await Provider<GameRecordInfoAPI>
           .init()
           .request(
-            SettingsAPI.characterDialogue(myTeam: myTeam),
+            SettingsAPI.characterBubbleTexts(myTeam: myTeam),
             type: TeamLineDTO.self
           )
         switch result {
