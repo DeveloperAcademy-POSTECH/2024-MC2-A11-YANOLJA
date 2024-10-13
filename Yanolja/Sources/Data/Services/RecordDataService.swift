@@ -108,6 +108,8 @@ class RecordDataService: RecordDataServiceInterface {
                 // UIImage -> Data 변환 후 저장
                 if let photo = record.photo {
                     recordToEdit.photo = photo.jpegData(compressionQuality: 1.0)
+                } else {
+                  recordToEdit.photo = nil // 사진이 없을 경우 기존 데이터를 삭제
                 }
                 
                 try recordContext.save()

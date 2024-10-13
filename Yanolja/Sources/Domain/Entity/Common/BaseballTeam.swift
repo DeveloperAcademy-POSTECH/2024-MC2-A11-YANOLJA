@@ -23,6 +23,8 @@ enum BaseballTeam: String, CaseIterable {
   case noTeam
   
   static let recordBaseBallTeam: [Self] = [.doosan, .lotte, .samsung, .hanwha, .kiwoom, .kia, .kt, .lg, .nc, .ssg]
+  
+  static let defaultBubbleTexts: [String] = ["오늘은 누구 응원할까?", "내가 혹시 승리요정??", "어느 구단으로 취직하지?", "이기는 팀 우리 팀?", "홈런 가자!?"]
 }
 
 extension BaseballTeam {

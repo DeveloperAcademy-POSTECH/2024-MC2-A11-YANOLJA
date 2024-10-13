@@ -22,6 +22,7 @@ struct TeamChangeView: View {
         dismiss()
       }) {
         Text("취소")
+          .tint(.black)
       }
       Spacer()
       Text("팀 변경")
@@ -36,6 +37,7 @@ struct TeamChangeView: View {
       }) {
         Text("완료")
           .bold()
+          .tint(.black)
       }
     }
     .frame(height: 44)

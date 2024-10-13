@@ -22,6 +22,7 @@ struct NicknameChangeView: View {
             dismiss()
           }) {
             Text("취소")
+              .tint(.black)
           }
         } else {
           Text("취소")
@@ -37,6 +38,7 @@ struct NicknameChangeView: View {
         }) {
           Text("완료")
             .bold()
+            .tint(.black)
         }
         .disabled(selectedUserNickname.isEmpty)
       }
