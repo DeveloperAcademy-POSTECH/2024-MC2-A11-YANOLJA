@@ -92,7 +92,7 @@ struct DetailRecordView: View {
                         
                       },
                   secondaryButton:
-                      .default(Text("확인")) {
+                      .default( Text("확인") ) {
                         // MARK: - 나의 팀 변경: 동시에 상태 팀 선택 리스트 제한
                         if let myTeam = changeMyTeam {
                           recording.myTeam = myTeam
@@ -362,6 +362,7 @@ struct DetailRecordView: View {
           }
         }
       )
+      .tint(.black)
       .navigationTitle("오늘의 직관")
       .navigationBarTitleDisplayMode(.inline)
     }
