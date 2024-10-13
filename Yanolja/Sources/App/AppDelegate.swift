@@ -28,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     
+    UserDefaultsService().save(data: true, key: .isPopGestureEnabled)
+    
     Task {
       await loadStadiumsInfo()
       await transferExRecordDataToPublicVersionRecordData()
