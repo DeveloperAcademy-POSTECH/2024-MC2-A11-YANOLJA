@@ -14,7 +14,7 @@ struct MyTeamSelectCell: View {
     var body: some View {
       ZStack {
         RoundedRectangle(cornerRadius: 20)
-          .fill(.brandColor)
+          .fill(Color(.systemGray6))
           .frame(width: 105, height: 105)
         
         VStack {

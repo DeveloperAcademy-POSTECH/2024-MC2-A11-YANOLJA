@@ -43,4 +43,5 @@ extension UserDefaultsService: MyNicknameServiceInterface {
 enum UserDefaultsKeys: String {
   case myTeam
   case myNickname
+  case isPopGestureEnabled
 }

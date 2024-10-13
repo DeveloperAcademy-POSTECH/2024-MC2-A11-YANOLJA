@@ -18,7 +18,7 @@ struct SettingsView: View {
         winRateUseCase: winRateUseCase,
         userInfoUseCase: userInfoUseCase
       )
-        .offset(y: -20)
+      .offset(y: -20)
       Text("승리지쿄 | ver \(BundleInfo.getVersion ?? "0.0")")
         .font(.caption)
         .foregroundStyle(.gray)
@@ -32,23 +32,22 @@ struct SettingsView: View {
   SettingsView(
     winRateUseCase: .init(
       recordService: RecordDataService(),
-      myTeamService: UserDefaultsService()
+      myTeamService: UserDefaultsService(),
+      gameRecordInfoService: .live
     ),
     userInfoUseCase: .init(
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService()
+      changeIconService: ChangeAppIconService(), 
+      settingsService: .live
     )
   )
 }
 
 // Enum으로 각 버튼 구분
 enum ActiveSheet: Identifiable {
-  case teamChange, nicknameChange, terms, privacyPolicy, creators, notices
-  
-  var id: Int {
-    hashValue
-  }
+  case teamChange, nicknameChange
+  var id: Int { hashValue }
 }
 
 struct ContentView: View {
@@ -65,7 +64,8 @@ struct ContentView: View {
             .foregroundStyle(.white)
             .frame(width: 120)
           Circle()
-            .stroke(lineWidth: 1)
+            .stroke(lineWidth: 0.33)
+            .fill(Color(.systemGray6))
             .frame(width: 120)
           ZStack {
             Image(.myPageFace)
@@ -103,30 +103,65 @@ struct ContentView: View {
       }
       
       Section(header: Text("승리지교 정보")) {
-        Button(action: {
-          activeSheet = .terms
-        }) {
-          Text("이용약관")
-        }
+        NavigationLink(
+          destination: {
+            PolicyView(viewType: .termsPolicy)
+              .navigationTitle("이용약관")
+              .navigationBarBackButtonHidden(true)
+              .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                  BackButton()
+                }
+              }
+          },
+          label: { Text("이용약관") }
+        )
         
-        Button(action: {
-          activeSheet = .privacyPolicy
-        }) {
-          Text("개인정보 처리방침")
-        }
+        NavigationLink(
+          destination: {
+            PolicyView(viewType: .personalPolicy)
+              .navigationTitle("개인정보 처리방침")
+              .navigationBarBackButtonHidden(true)
+              .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                  BackButton()
+                }
+              }
+          },
+          label: { Text("개인정보 처리방침") }
+        )
         
-        Button(action: {
-          activeSheet = .creators
-        }) {
-          Text("승리지교를 만든 사람들")
-        }
+        NavigationLink(
+          destination: {
+            CreatorsView()
+              .navigationTitle("승리지교를 만든 사람들")
+              .navigationBarBackButtonHidden(true)
+              .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                  BackButton()
+                }
+              }
+          },
+          label: { Text("승리지교를 만든 사람들") }
+        )
         
-        Button(action: {
-          activeSheet = .notices
-        }) {
-          Text("공지사항")
-        }
+        NavigationLink(
+          destination: {
+            NoticesView(notices: userInfoUseCase.state.notices)
+              .navigationTitle("공지사항")
+              .navigationBarBackButtonHidden(true)
+              .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                  BackButton()
+                }
+              }
+          },
+          label: { Text("공지사항") }
+        )
       }
+      .navigationBarBackButtonHidden(true)
+      .navigationBarTitleDisplayMode(.inline)
+      .buttonStyle(PlainButtonStyle())
     }
     .listStyle(InsetGroupedListStyle())  // 그룹화된 리스트 스타일 사용
     .tint(.black)
@@ -138,75 +173,25 @@ struct ContentView: View {
           winRateUseCase: winRateUseCase,
           userInfoUseCase: userInfoUseCase
         )  // '팀 변경' 화면
-          .presentationDetents([.fraction(0.9)])
+        .presentationDetents([.fraction(0.9)])
       case .nicknameChange:
         NicknameChangeView(userInfoUseCase: userInfoUseCase)  // '닉네임 변경' 화면
           .presentationDetents([.fraction(0.9)])
-      case .terms:
-        TermsView()  // '이용약관' 화면
-      case .privacyPolicy:
-        PrivacyPolicyView()  // '개인정보 처리방침' 화면
-      case .creators:
-        CreatorsView()  // '승리지교를 만든 사람들' 화면
-      case .notices:
-        NoticesView()  // '공지사항' 화면
       }
     }
   }
 }
 
-// 각 시트에 대한 뷰들 (여기서는 Placeholder로 간단히 정의)
-struct TeamChangeView: View {
+private struct BackButton: View {
   @Environment(\.dismiss) var dismiss
-  @Bindable var winRateUseCase: WinRateUseCase
-  @Bindable var userInfoUseCase: UserInfoUseCase
-  
-  @State var selectedTeam: BaseballTeam? = nil
   
   var body: some View {
-    HStack(spacing: 0) {
-      Button(action: {
-        dismiss()
-      }) {
-        Text("취소")
-      }
-      Spacer()
-      Text("팀 변경")
-        .bold()
-      Spacer()
-      Button(action: {
-        if let myTeam = selectedTeam {
-          userInfoUseCase.effect(.changeMyTeam(myTeam))
-          winRateUseCase.effect(.tappedTeamChange(myTeam))
-        }
-        dismiss()
-      }) {
-        Text("완료")
-          .bold()
-      }
+    Button(action: {
+      dismiss()
+    }) {
+      Image(systemName: "chevron.left")
+        .font(.system(size: 18, weight: .semibold))
     }
-    .frame(height: 44)
-    .padding(.top, 16)
-    .padding(.horizontal, 16)
-    VStack(spacing: 0) {
-      MyTeamSettingsContent(selectedTeam: $selectedTeam)
-        .presentationDragIndicator(.visible)
-        .onAppear {
-          selectedTeam = userInfoUseCase.state.myTeam
-        }
-      Spacer()
-    }
-  }
-}
-
-struct TermsView: View {
-  var body: some View {
-    Text("이용약관 화면")
-  }
-}
-
-struct PrivacyPolicyView: View {
-  var body: some View {
-    Text("개인정보 처리방침 화면")
+    .tint(.black)
   }
 }

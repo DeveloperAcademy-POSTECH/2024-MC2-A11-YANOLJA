@@ -41,7 +41,7 @@ struct AllAnalyticsView: View {
             .font(.footnote)
           HStack {
             Spacer()
-            Text("에디%")
+            Text("\(winRateUseCase.state.myTeamWinRate?.toString ?? "--")%")
               .font(.title2)
               .bold()
           }
@@ -161,7 +161,8 @@ struct AllAnalyticsView: View {
   AllAnalyticsView(
     winRateUseCase: WinRateUseCase(
       recordService: RecordDataService(),
-      myTeamService: UserDefaultsService()
+      myTeamService: UserDefaultsService(), 
+      gameRecordInfoService: .live
     ),
     recordUseCase: .init(
       recordService: RecordDataService()
@@ -169,7 +170,8 @@ struct AllAnalyticsView: View {
     userInfoUseCase: UserInfoUseCase(
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService()
+      changeIconService: ChangeAppIconService(),
+      settingsService: .live
     )
   )
 }

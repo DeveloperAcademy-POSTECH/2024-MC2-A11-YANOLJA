@@ -45,8 +45,11 @@ extension GameRecordInfoService {
           )
         switch result {
         case let .success(winRateDto):
-          let winRate: Int = Int(winRateDto.winRate * 100)
-          return .success(winRate)
+          var newWinRate: Int?
+          if let winRate = winRateDto.winRate {
+            newWinRate = Int((winRate) * 100)
+          }
+          return .success(newWinRate)
         case let .failure(error): return .failure(error)
         }
       }

@@ -27,7 +27,7 @@ struct MyTeamSettingsContent: View {
             MyTeamSelectCell(team: team)
             .cornerRadiusWithBorder(
               radius: 20,
-              borderColor: .black.opacity(0.3),
+              borderColor: Color(.systemGray3),
               lineWidth: selectedTeam == team ? 2 : 0
             )
           }

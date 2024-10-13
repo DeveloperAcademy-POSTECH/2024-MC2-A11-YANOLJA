@@ -38,10 +38,9 @@ extension GameRecordInfoAPI: EndPointType {
       let parameters = ["date": date, "myTeam": myTeam]
     return .requestParameters(parameters: parameters, encoding: .jsonBody)
     
-    case let .teamWinRate(myTeam): return .requestParameters(
-      parameters: ["myTeam": myTeam],
-      encoding: .queryString
-    )
+    case let .teamWinRate(myTeam):
+      let parameters = ["myTeam": myTeam]
+      return .requestParameters(parameters: parameters, encoding: .jsonBody)
     }
   }
 }

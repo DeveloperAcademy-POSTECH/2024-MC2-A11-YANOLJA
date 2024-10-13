@@ -76,17 +76,18 @@ struct AppView: View {
             Group {
               switch selection {
               case .main:
-                HStack(alignment: .top, spacing: 16) {
-                  Button(
-                    action: { print("이미지 다운로드") },
-                    label: { Image(systemName: "square.and.arrow.down")
-                      .offset(y: -2) }
-                  )
+                // MARK: - 카드 공유 생성 시 활성화
+//                HStack(alignment: .top, spacing: 16) {
+//                  Button(
+//                    action: { print("이미지 다운로드") },
+//                    label: { Image(systemName: "square.and.arrow.down")
+//                      .offset(y: -2) }
+//                  )
                   Button(
                     action: { path.append(NavigationDestination.settings) },
                     label: { Image(systemName: "gearshape") }
                   )
-                }
+//                }
               case .record:
                 HStack(alignment: .top, spacing: 16) {
                   Button(
@@ -195,7 +196,8 @@ struct AppView: View {
   AppView(
     winRateUseCase: .init(
       recordService: RecordDataService(),
-      myTeamService: UserDefaultsService()
+      myTeamService: UserDefaultsService(),
+      gameRecordInfoService: .live
     ),
     recordUseCase: .init(
       recordService: RecordDataService()
@@ -203,7 +205,8 @@ struct AppView: View {
     userInfoUseCase: .init(
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService()
+      changeIconService: ChangeAppIconService(),
+      settingsService: .live
     )
   )
 }
