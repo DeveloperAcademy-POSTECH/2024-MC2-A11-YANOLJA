@@ -37,7 +37,7 @@ extension SettingsAPI: EndPointType {
     switch self {
     case let .characterDialogue(myTeam): return .requestParameters(
       parameters: ["myTeam": myTeam],
-      encoding: .queryString
+      encoding: .jsonBody
     )
       
     case .allStadiums: return .requestPlain
