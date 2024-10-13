@@ -34,12 +34,20 @@ extension SettingsService {
         case let .failure(error): return .failure(error)
         }
       }, allNotices: {
-        return await Provider<SettingsAPI>
+        let result = await Provider<SettingsAPI>
           .init()
           .request(
             SettingsAPI.allNotices,
-            type: [NoticesDTO].self
+            type: NoticesDTO.self
           )
+        
+        switch result {
+        case let .success(noticesDTO):
+          let notices = noticesDTO.notices
+          let newNotices: [NoticeModel] = notices.map { NoticeModel(date: $0.date, title: $0.noticeName, contents: $0.noticeComment) }
+          return .success(newNotices)
+        case let .failure(error): return .failure(error)
+        }
       }
     )
   }()
