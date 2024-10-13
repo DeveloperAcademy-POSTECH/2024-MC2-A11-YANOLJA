@@ -87,11 +87,8 @@ class RecordUseCase {
     case let .tappedEditNewRecord(editRecord):
       _ = recordService.editRecord(editRecord)
       if let index = _state.recordList.map({ $0.id }).firstIndex(of: editRecord.id) {
-        print("123124")
         _state.recordList[index] = editRecord
-        print(_state.recordList[index])
       }
-      print(_state.recordList)
       self._state.editRecordSheet = false
       
       // 데이터 삭제 요청
