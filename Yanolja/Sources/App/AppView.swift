@@ -58,7 +58,7 @@ struct AppView: View {
           Text("분석")
         }
       }
-      .tint(.black)
+      .accentColor(.black)
       .navigationTitle(
         {
           switch selection {

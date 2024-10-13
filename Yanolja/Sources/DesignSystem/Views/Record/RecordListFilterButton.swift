@@ -20,7 +20,7 @@ struct RecordListFilterButton: View {
         showLabel: RecordFilter.all.label
       )
       Menu(RecordFilter.teamOptions(.doosan).label) {
-        ForEach(BaseballTeam.recordBaseBallTeam, id: \.name) { team in
+        ForEach(BaseballTeam.recordBaseBallTeam.filter { $0 != myTeam }, id: \.name) { team in
           RecordFilterLabel(
             selectedRecordFilter: $selectedRecordFilter,
             recordFilter: .teamOptions(team),
