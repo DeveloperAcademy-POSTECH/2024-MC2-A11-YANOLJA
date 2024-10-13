@@ -59,8 +59,10 @@ class UserInfoUseCase {
       
     case .setBubbleTexts:
       Task {
-        if case let .success(bubbleTextList) = await settingsService.characterBubbleTexts(_state.myTeam?.sliceName ?? "두산") {
+        if case let .success(bubbleTextList) = await settingsService.characterBubbleTexts(_state.myTeam?.sliceName ?? BaseballTeam.noTeam.sliceName) {
           _state.bubbleTextList = bubbleTextList
+        } else {
+          _state.bubbleTextList = BaseballTeam.defaultBubbleTexts
         }
       }
       
