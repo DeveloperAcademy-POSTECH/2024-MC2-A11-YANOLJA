@@ -136,12 +136,14 @@ struct AllRecordView: View {
       winRateUseCase: .init(
         recordList: recordList,
         recordService: RecordDataService(),
-        myTeamService: UserDefaultsService()
+        myTeamService: UserDefaultsService(),
+        gameRecordInfoService: .live
       ),
       userInfoUseCase: UserInfoUseCase(
         myTeamService: UserDefaultsService(),
         myNicknameService: UserDefaultsService(),
-        changeIconService: ChangeAppIconService()
+        changeIconService: ChangeAppIconService(),
+        settingsService: .live
       ),
       recordUseCase: .init(
         recordList: recordList,

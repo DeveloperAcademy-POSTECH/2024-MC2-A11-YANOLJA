@@ -23,11 +23,12 @@ struct MainView: View {
       .foregroundColor(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
       .padding(.bottom, 8)
       
-      MainCharacterView(
+      MainCharacterWithBubbleView(
         characterModel: .init(
           myTeam: userInfoUseCase.state.myTeam ?? .noTeam,
           totalWinRate: winRateUseCase.state.totalWinRate
-        )
+        ),
+        bubbleText: userInfoUseCase.state.bubbleTextList
       )
       .frame(width: 280, height: 280)
       .padding(.bottom, 8)
@@ -90,11 +91,13 @@ private struct NameBox: View {
     MainView(
       winRateUseCase: WinRateUseCase(
         recordService: RecordDataService(),
-        myTeamService: UserDefaultsService()
+        myTeamService: UserDefaultsService(),
+        gameRecordInfoService: .live
       ),
       userInfoUseCase: .init(
         myTeamService: UserDefaultsService(), myNicknameService: UserDefaultsService(),
-        changeIconService: ChangeAppIconService()
+        changeIconService: ChangeAppIconService(),
+        settingsService: .live
       )
     )
   }

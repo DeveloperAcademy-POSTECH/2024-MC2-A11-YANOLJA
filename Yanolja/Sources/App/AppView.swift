@@ -195,7 +195,8 @@ struct AppView: View {
   AppView(
     winRateUseCase: .init(
       recordService: RecordDataService(),
-      myTeamService: UserDefaultsService()
+      myTeamService: UserDefaultsService(),
+      gameRecordInfoService: .live
     ),
     recordUseCase: .init(
       recordService: RecordDataService()
@@ -203,7 +204,8 @@ struct AppView: View {
     userInfoUseCase: .init(
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService()
+      changeIconService: ChangeAppIconService(),
+      settingsService: .live
     )
   )
 }

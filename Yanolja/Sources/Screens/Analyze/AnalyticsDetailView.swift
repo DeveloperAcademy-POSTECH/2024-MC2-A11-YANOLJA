@@ -182,7 +182,8 @@ struct AnalyticsDetailView: View {
   AnalyticsDetailView(
     winRateUseCase: WinRateUseCase(
       recordService: RecordDataService(),
-      myTeamService: UserDefaultsService()
+      myTeamService: UserDefaultsService(),
+      gameRecordInfoService: .live
     ),
     recordUseCase: RecordUseCase(
       recordService: RecordDataService()),

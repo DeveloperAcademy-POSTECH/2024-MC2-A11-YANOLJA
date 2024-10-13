@@ -7,7 +7,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   let winRateUseCase = WinRateUseCase.init(
     recordService: RecordDataService(),
-    myTeamService: UserDefaultsService()
+    myTeamService: UserDefaultsService(),
+    gameRecordInfoService: .live
   )
   
   let recordUseCase = RecordUseCase.init(
@@ -17,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   let userInfoUseCase = UserInfoUseCase.init(
     myTeamService: UserDefaultsService(),
     myNicknameService: UserDefaultsService(),
-    changeIconService: ChangeAppIconService()
+    changeIconService: ChangeAppIconService(), 
+    settingsService: .live
   )
   
   func application(
