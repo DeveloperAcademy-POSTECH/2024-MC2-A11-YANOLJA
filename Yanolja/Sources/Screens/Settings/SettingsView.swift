@@ -103,17 +103,33 @@ struct ContentView: View {
       }
       
       Section(header: Text("승리지교 정보")) {
-        Button(action: {
-          activeSheet = .terms
-        }) {
-          Text("이용약관")
-        }
+        NavigationLink(
+          destination: {
+            PolicyView(viewType: .termsPolicy)
+              .navigationTitle("이용약관")
+              .navigationBarBackButtonHidden(true)
+              .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                  BackButton()
+                }
+              }
+          },
+          label: { Text("이용약관") }
+        )
         
-        Button(action: {
-          activeSheet = .privacyPolicy
-        }) {
-          Text("개인정보 처리방침")
-        }
+        NavigationLink(
+          destination: {
+            PolicyView(viewType: .personalPolicy)
+              .navigationTitle("개인정보 처리방침")
+              .navigationBarBackButtonHidden(true)
+              .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                  BackButton()
+                }
+              }
+          },
+          label: { Text("개인정보 처리방침") }
+        )
         
         NavigationLink(
           destination: {
