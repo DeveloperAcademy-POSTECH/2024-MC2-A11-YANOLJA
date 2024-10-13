@@ -38,7 +38,7 @@ struct GameRecordModel: Identifiable {
 // MARK: - v1.0 이후 Record 데이터
 struct GameRecordWithScoreModel: Identifiable {
   
-  let id: UUID
+  var id: UUID
   var date: Date
   var stadiums: String
   var isDoubleHeader: Int // 추가

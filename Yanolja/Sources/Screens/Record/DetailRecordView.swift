@@ -402,7 +402,8 @@ struct DetailRecordView: View {
     let service = GameRecordInfoService.live
     let result = await service.gameRecord(recording.date, recording.myTeam.sliceName)
     isDataLoading = false
-    guard case let .success(recordList) = result else { return [] }
+    guard case var .success(recordList) = result else { return [] }
+    recordList.indices.forEach { recordList[$0].id = recording.id }
     return recordList
   }
   
@@ -420,6 +421,7 @@ struct DetailRecordView: View {
 private extension GameRecordWithScoreModel {
   func keepMemoPhoto(in exRecord: GameRecordWithScoreModel) -> GameRecordWithScoreModel {
     var new = self
+    new.id = exRecord.id
     new.memo = exRecord.memo
     new.photo = exRecord.photo
     
