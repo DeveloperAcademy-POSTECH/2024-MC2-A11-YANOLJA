@@ -135,7 +135,7 @@ struct AnalyticsDetailView: View {
       if filteredRecordList.isEmpty {
         HStack{
           Spacer()
-          Text("\(detailOptions)와의 직관 기록이 없습니다.")
+          Text("\(detailOptions)와의 직관 기록이 없습니다")
             .foregroundColor(.gray)
             .font(.callout)
             .padding(.bottom, 12)

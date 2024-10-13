@@ -49,7 +49,18 @@ struct AllRecordView: View {
         .sortByLatestDate(isAscending).isEmpty {
         HStack{
           Spacer()
-          Text("직관 기록이 없습니다. \n직관 기록을 추가하세요!")
+          Group {
+            switch selectedRecordFilter {
+            case .all:
+              Text("\(RecordFilter.all.label) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+            case .teamOptions(let baseballTeam):
+              Text("\(baseballTeam.sliceName) 상대 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+            case .stadiumsOptions(let string):
+              Text("\(string) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+            case .resultsOptions(let gameResult):
+              Text("\(gameResult.label) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+            }
+          }
             .multilineTextAlignment(.center)
             .foregroundColor(.gray)
             .font(.callout)
