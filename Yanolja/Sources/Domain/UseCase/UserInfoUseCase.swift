@@ -14,11 +14,13 @@ class UserInfoUseCase {
     var myTeam: BaseballTeam?
     var myNickname: String?
     var bubbleTextList: [String] = []
+    var notices: [NoticeModel] = []
   }
   
   enum Action {
     case changeMyTeam(BaseballTeam)
     case changeMyNickname(String)
+    case setNotices
     case setBubbleTexts
   }
   
@@ -41,12 +43,19 @@ class UserInfoUseCase {
     self.settingsService = settingsService
     _state.myNickname = myNicknameService.readMyNickname()
     _state.myTeam = myTeamService.readMyTeam()
+    self.effect(.setNotices)
     self.effect(.setBubbleTexts)
   }
   
   // MARK: - View Action
   func effect(_ action: Action) {
     switch action {
+    case .setNotices:
+      Task {
+        if case let .success(notices) = await settingsService.allNotices() {
+          _state.notices = notices
+        }
+      }
       
     case .setBubbleTexts:
       Task {
