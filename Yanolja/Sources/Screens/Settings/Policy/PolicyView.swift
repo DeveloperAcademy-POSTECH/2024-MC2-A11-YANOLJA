@@ -12,8 +12,9 @@ struct PolicyView: View {
   @State var isLoading: Bool = true  // 로딩 상태를 외부에서 바인딩
   let viewType: PolicyType
   var body: some View {
-      WebContent(url: viewType.url, isLoading: $isLoading)
+    WebContent(htmlFileName: viewType.rawValue, isLoading: $isLoading)
         .loadingIndicator(isLoading: isLoading)
+        .ignoresSafeArea(edges: .bottom)
   }
 }
 

@@ -10,11 +10,11 @@ import SwiftUI
 import WebKit
 
 public struct WebContent: UIViewRepresentable {
-  public var url: String
+  public var htmlFileName: String
   @Binding var isLoading: Bool  // 로딩 상태를 외부에서 바인딩
   
-  public init(url: String, isLoading: Binding<Bool>) {
-    self.url = url
+  public init(htmlFileName: String, isLoading: Binding<Bool>) {
+    self.htmlFileName = htmlFileName
     self._isLoading = isLoading
   }
   
@@ -23,10 +23,15 @@ public struct WebContent: UIViewRepresentable {
   }
   
   public func makeUIView(context: Context) -> WKWebView {
-    guard let url = URL(string: self.url) else { return WKWebView() }
     let webView = WKWebView()
     webView.navigationDelegate = context.coordinator  // 델리게이트 설정
-    webView.load(URLRequest(url: url))
+    
+    if let filePath = Bundle.main.path(forResource: htmlFileName, ofType: "html") {
+                let fileURL = URL(fileURLWithPath: filePath)
+                let request = URLRequest(url: fileURL)
+                webView.load(request)
+    }
+    
     return webView
   }
   
