@@ -62,7 +62,7 @@ struct AnalyticsDetailView: View {
   }
   
   var body: some View {
-
+    
     NavigationStack {
       VStack(spacing: 0) {
         HStack {
@@ -102,13 +102,10 @@ struct AnalyticsDetailView: View {
           }
           
           VStack(alignment: .leading, spacing: 8) {
-            if let recordCount {
-              Text("총 \(String(recordCount))경기")
-                .font(.footnote)
-            } else {
-              Text("총 --경기")
-                .font(.footnote)
-            }
+            
+            Text("총 \(String(recordCount ?? 0))경기")
+              .font(.footnote)
+            
             HStack {
               Spacer()
               // 각 팀의 승무패 횟수
