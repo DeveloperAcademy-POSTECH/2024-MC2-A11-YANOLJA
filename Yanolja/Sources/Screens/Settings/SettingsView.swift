@@ -112,11 +112,19 @@ struct ContentView: View {
           Text("개인정보 처리방침")
         }
         
-        Button(action: {
-          activeSheet = .creators
-        }) {
-          Text("승리지교를 만든 사람들")
-        }
+        NavigationLink(
+          destination: {
+            CreatorsView()
+              .navigationTitle("승리지교를 만든 사람들")
+              .navigationBarBackButtonHidden(true)
+              .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                  BackButton()
+                }
+              }
+          },
+          label: { Text("승리지교를 만든 사람들") }
+        )
         
         NavigationLink(
           destination: {
