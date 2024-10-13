@@ -41,7 +41,7 @@ struct AllAnalyticsView: View {
             .font(.footnote)
           HStack {
             Spacer()
-            Text("에디%")
+            Text("\(winRateUseCase.state.myTeamWinRate?.toString ?? "--")%")
               .font(.title2)
               .bold()
           }

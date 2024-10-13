@@ -18,6 +18,7 @@ class WinRateUseCase {
     
     // MARK: - Data State
     var myTeam: BaseballTeam = .noTeam
+    var myTeamWinRate: Int?
     var totalWinRate: Int? = 88
     var eachTeamAnalytics: EachTeamAnalyticsModel = .init()
     var eachStadiumsAnalytics: EachStadiumsAnalyticsModel = .init()
@@ -35,21 +36,23 @@ class WinRateUseCase {
     case tappedTeamWinRateCell
     case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
     case sendMyTeamInfo(BaseballTeam)
+    case setMyTeamWinRate
   }
   
+  private let gameRecordInfoService: GameRecordInfoService
   private var _state: State = .init()
   var state: State { _state }
   
   init(
     recordService: RecordDataServiceInterface,
-    myTeamService: MyTeamServiceInterface
+    myTeamService: MyTeamServiceInterface,
+    gameRecordInfoService: GameRecordInfoService
   ) {
+    self.gameRecordInfoService = gameRecordInfoService
     _state.myTeam = myTeamService.readMyTeam() ?? .noTeam
     
     switch recordService.readAllRecord() {
     case .success(let allList):
-      // MARK: - 기존 Data 값 있다면, 변경해서 저장하고 다시 불러와서 진행
-      // MARK: - 기존 Data 값 없다면, 정상 진행
       self._state.recordList = allList
       self.totalWinRate(recordList: allList)
       self.vsAllTeamWinRate(recordList: allList)
@@ -58,14 +61,18 @@ class WinRateUseCase {
     case .failure:
       break
     }
+    
+    effect(.setMyTeamWinRate)
   }
   
   // MARK: - Preview용
   init(
     recordList: [GameRecordWithScoreModel],
     recordService: RecordDataServiceInterface,
-    myTeamService: MyTeamServiceInterface
+    myTeamService: MyTeamServiceInterface,
+    gameRecordInfoService: GameRecordInfoService
   ) {
+    self.gameRecordInfoService = gameRecordInfoService
     _state.myTeam = myTeamService.readMyTeam() ?? .noTeam
     _state.recordList = recordList
     self.totalWinRate(recordList: recordList)
@@ -75,8 +82,16 @@ class WinRateUseCase {
   
   func effect(_ action: Action) {
     switch action {
+    case .setMyTeamWinRate:
+      Task {
+        if case let .success(winRate) = await gameRecordInfoService.teamWinRate(_state.myTeam.sliceName) {
+          _state.myTeamWinRate = winRate
+        }
+      }
+      
     case let .tappedTeamChange(team):
       _state.myTeam = team
+      effect(.setMyTeamWinRate)
       
     case let .tappedAnalyticsYearFilter(year): // 연도 정보 토대로 필터정보 변경
       _state.selectedYearFilter = year
