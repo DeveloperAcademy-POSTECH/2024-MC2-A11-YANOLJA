@@ -22,7 +22,7 @@ enum RecordFilter: CaseIterable, Hashable {
     case .all:
       return "전체"
     case .teamOptions:
-      return "구단별"
+      return "상대구단별"
     case .stadiumsOptions:
       return "구장별"
     case .resultsOptions:

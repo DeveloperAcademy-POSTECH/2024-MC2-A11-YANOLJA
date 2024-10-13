@@ -19,7 +19,7 @@ enum AnalyticsFilter: Hashable {
   var label: String {
     switch self {
     case .team:
-      return "구단별"
+      return "상대구단별"
     case .stadiums:
       return "구장별"
     }
