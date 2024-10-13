@@ -10,5 +10,5 @@ import Foundation
 
 struct TeamWinRateDTO: Codable {
   let myTeam: String
-  let winRate: Double
+  let winRate: Double?
 }
