@@ -102,7 +102,7 @@ struct ContentView: View {
         }
       }
       
-      Section(header: Text("승리지교 정보")) {
+      Section(header: Text("승리지쿄 정보")) {
         NavigationLink(
           destination: {
             PolicyView(viewType: .termsPolicy)
@@ -134,7 +134,7 @@ struct ContentView: View {
         NavigationLink(
           destination: {
             CreatorsView()
-              .navigationTitle("승리지교를 만든 사람들")
+              .navigationTitle("승리지쿄를 만든 사람들")
               .navigationBarBackButtonHidden(true)
               .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -142,7 +142,7 @@ struct ContentView: View {
                 }
               }
           },
-          label: { Text("승리지교를 만든 사람들") }
+          label: { Text("승리지쿄를 만든 사람들") }
         )
         
         NavigationLink(
