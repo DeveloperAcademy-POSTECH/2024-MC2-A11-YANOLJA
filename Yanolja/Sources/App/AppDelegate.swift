@@ -50,7 +50,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let historyRecordService = CoreDataService()
     let recordService = RecordDataService()
     let teamInfoService = GameRecordInfoService.live
-    
     guard case let .success(exRecordList) = historyRecordService.readAllRecord() else { return }
     guard !exRecordList.isEmpty else { return }
     
@@ -67,8 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       
       let result = await teamInfoService.gameRecord(exDate, exTeam)
 
-      if case let .success(gameDatas) = result {
-        let gameData = gameDatas[0]
+      if case let .success(gameDatas) = result, let gameData = gameDatas.first {
         myScore = gameData.myTeamScore
         vsScore = gameData.vsTeamScore
         stadiums = gameData.stadiums
