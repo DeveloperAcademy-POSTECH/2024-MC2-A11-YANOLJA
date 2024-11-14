@@ -72,4 +72,8 @@ Tuist/Dependencies
 ### Privacy ###
 *.xcconfig
 **/baseURL.swift
+### Privacy ###
+APIKeys*.swift
+*.xcconfig
+**/BaseURL.swift
 

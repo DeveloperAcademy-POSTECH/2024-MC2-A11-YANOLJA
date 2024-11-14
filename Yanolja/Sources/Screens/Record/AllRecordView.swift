@@ -133,7 +133,7 @@ struct AllRecordView: View {
           vsTeam: winRateUseCase.state.myTeam != .noTeam ? winRateUseCase.state.myTeam.anyOtherTeam() : .doosan.anyOtherTeam()
         ),
         usecase: recordUseCase,
-        changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords))
+        changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords)) // 내부로 넣거나, 아예 밖으로 빼거나 
         }
       )
     }
