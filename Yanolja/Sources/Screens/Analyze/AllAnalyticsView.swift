@@ -49,9 +49,10 @@ struct AllAnalyticsView: View {
         .padding(16)
         .background {
           RoundedRectangle(cornerRadius: 14)
-            .stroke(lineWidth: 0.33)
+            .stroke(style: StrokeStyle(lineWidth: 0.33))
             .foregroundStyle(.gray)
         }
+        .clipShape(RoundedRectangle(cornerRadius: 14))
         
         VStack(alignment: .leading, spacing: 8) {
           Text("나의 직관 승률")
@@ -73,6 +74,7 @@ struct AllAnalyticsView: View {
             .stroke(lineWidth: 0.33)
             .foregroundStyle(.gray)
         }
+        .clipShape(RoundedRectangle(cornerRadius: 14))
       }
       
       Spacer()
