@@ -1,6 +1,6 @@
 name: ✨ Feature 기능 추가
 description: 새로운 기능을 추가하는 경우, 이 템플릿을 사용해 주세요!
-title: "✨ Feat: "
+title: "[feat] "
 labels: ["Feat ✨"]
 body:
   - type: markdown

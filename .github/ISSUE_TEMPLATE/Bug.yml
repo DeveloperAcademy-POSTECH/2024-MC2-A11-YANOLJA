@@ -1,6 +1,6 @@
 name: 🐛 Bug 오류 해결
 description: 오류를 해결하는 경우, 이 템플릿을 사용해 주세요!
-title: "🐛 Bug: "
+title: "[bug] "
 labels: ["Bug 🐛"]
 body:
   - type: markdown

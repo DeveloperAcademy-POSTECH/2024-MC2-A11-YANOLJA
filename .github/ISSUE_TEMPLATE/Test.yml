@@ -1,6 +1,6 @@
 name: 🧪 Test code 추가
 description: 테스트 코드를 추가하는 경우, 이 템플릿을 사용해 주세요!
-title: "🧪 Test: "
+title: "[test] "
 labels: ["🧪 Test"]
 body:
   - type: markdown
