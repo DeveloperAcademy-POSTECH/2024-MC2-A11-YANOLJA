@@ -10,7 +10,7 @@ import SwiftUI
 
 @Observable
 class RecordUseCase {
-  // MARK: - State
+  // MARK: - State 
   struct State {
     // MARK: - View State
     var createRecordSheet: Bool = false
