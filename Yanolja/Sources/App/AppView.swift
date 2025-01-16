@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 struct AppView: View {
   @State private var path = NavigationPath()  // 네비게이션 경로 관리
@@ -92,6 +93,7 @@ struct AppView: View {
                 HStack(alignment: .top, spacing: 16) {
                   Button(
                     action: {
+                      recordButton()
                       recordUseCase
                         .effect(.tappedCreateRecordSheet(true))
                     },
@@ -190,6 +192,12 @@ struct AppView: View {
       )
     }
   }
+  
+  // Mixpanel 직관 기록 버튼
+  func recordButton() {
+      Mixpanel.mainInstance().track(event: "RecordButton")
+      Mixpanel.mainInstance().people.increment(property: "record_button", by: 1)
+    }
 }
 
 #Preview {

@@ -8,6 +8,7 @@
 
 import SwiftUI
 import UIKit
+import Mixpanel
 
 // 내가 보이는 뷰를 생성하거나 편집하는 enum
 enum RecordViewEditType {
