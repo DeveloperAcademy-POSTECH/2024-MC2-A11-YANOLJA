@@ -45,13 +45,13 @@ struct MainCharacterWithBubbleView: View {
   }
   
   func tabCharacter() {
-      // 이미 이벤트가 기록된 경우 호출 차단
-      guard !trackTabCharacter else { return }
+    // 이미 이벤트가 기록된 경우 호출 차단
+    guard !trackTabCharacter else { return }
     trackTabCharacter = true
-      
-      Mixpanel.mainInstance().track(event: "TabCharacter")
-      Mixpanel.mainInstance().people.increment(property: "tab_character", by: 1)
-    }
+    
+    Mixpanel.mainInstance().track(event: "TabCharacter")
+    Mixpanel.mainInstance().people.increment(property: "tab_character", by: 1)
+  }
   
   func makeBubble(text: String) -> some View {
     Text(text)

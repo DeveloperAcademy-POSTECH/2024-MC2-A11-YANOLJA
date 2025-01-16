@@ -78,17 +78,17 @@ struct AppView: View {
               switch selection {
               case .main:
                 // MARK: - 카드 공유 생성 시 활성화
-//                HStack(alignment: .top, spacing: 16) {
-//                  Button(
-//                    action: { print("이미지 다운로드") },
-//                    label: { Image(systemName: "square.and.arrow.down")
-//                      .offset(y: -2) }
-//                  )
-                  Button(
-                    action: { path.append(NavigationDestination.settings) },
-                    label: { Image(systemName: "gearshape") }
-                  )
-//                }
+                //                HStack(alignment: .top, spacing: 16) {
+                //                  Button(
+                //                    action: { print("이미지 다운로드") },
+                //                    label: { Image(systemName: "square.and.arrow.down")
+                //                      .offset(y: -2) }
+                //                  )
+                Button(
+                  action: { path.append(NavigationDestination.settings) },
+                  label: { Image(systemName: "gearshape") }
+                )
+                //                }
               case .record:
                 HStack(alignment: .top, spacing: 16) {
                   Button(
@@ -158,19 +158,19 @@ struct AppView: View {
             winRateUseCase: winRateUseCase,
             userInfoUseCase: userInfoUseCase
           )
-            .navigationTitle("마이페이지")
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-              ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                  path.removeLast()
-                }) {
-                  Image(systemName: "chevron.left")
-                    .font(.system(size: 18, weight: .semibold))
-                }
-                .tint(.black)
+          .navigationTitle("마이페이지")
+          .navigationBarBackButtonHidden(true)
+          .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+              Button(action: {
+                path.removeLast()
+              }) {
+                Image(systemName: "chevron.left")
+                  .font(.system(size: 18, weight: .semibold))
               }
+              .tint(.black)
             }
+          }
         }
       }
       .fullScreenCover(
@@ -195,9 +195,9 @@ struct AppView: View {
   
   // Mixpanel 직관 기록 버튼
   func recordButton() {
-      Mixpanel.mainInstance().track(event: "RecordButton")
-      Mixpanel.mainInstance().people.increment(property: "record_button", by: 1)
-    }
+    Mixpanel.mainInstance().track(event: "RecordButton")
+    Mixpanel.mainInstance().people.increment(property: "record_button", by: 1)
+  }
 }
 
 #Preview {

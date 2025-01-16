@@ -40,6 +40,9 @@ struct DetailRecordView: View {
   
   @State private var makeBlur: Bool = false
   
+  // 이벤트 기록 여부를 추적
+  @State private var trackUploadPicture: Bool = false
+  
   init(
     to editType: RecordViewEditType,
     record: GameRecordWithScoreModel = .init(),
@@ -274,6 +277,8 @@ struct DetailRecordView: View {
               .contentShape(Rectangle())
               .onTapGesture {
                 showImagePicker.toggle()
+                // 사진 업로드 이벤트
+                uploadPicture()
               }
               .sheet(
                 isPresented: $showImagePicker,
@@ -375,6 +380,17 @@ struct DetailRecordView: View {
     }
   }
   
+  // 사진 업로드 이벤트 기록
+  func uploadPicture() {
+    // 사진이 없으면 이벤트 기록 X
+    guard recording.photo != nil else { return }
+    trackUploadPicture = true
+    
+    Mixpanel.mainInstance().track(event: "UploadPicture", properties: [
+      "uploaded_picture": trackUploadPicture
+    ])
+  }
+  
   private var selectDate: some View {
     DatePicker(
       "날짜",
@@ -441,4 +457,3 @@ private extension GameRecordWithScoreModel {
     changeRecords: { _ in }
   )
 }
-
