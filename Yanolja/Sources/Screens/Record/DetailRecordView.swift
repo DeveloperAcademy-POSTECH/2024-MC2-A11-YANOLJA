@@ -278,7 +278,7 @@ struct DetailRecordView: View {
               .onTapGesture {
                 showImagePicker.toggle()
                 // 사진 업로드 이벤트
-                //                uploadPicture()
+                // uploadPicture()
               }
               .sheet(
                 isPresented: $showImagePicker,
@@ -344,6 +344,7 @@ struct DetailRecordView: View {
                   changeRecords(recordUseCase.state.recordList)
                   dismiss()
                 }
+                completeButton()
               },
               label: {
                 Text("완료")
@@ -399,6 +400,20 @@ struct DetailRecordView: View {
     Mixpanel.mainInstance().track(event: "WriteMemo", properties: [
       "write_memo_length": memo.count
     ])
+  }
+  
+  // 최종 완료 이벤트 기록
+  func completeButton() {
+    // 사진이 저장된 경우에만 이벤트 기록
+    if recording.photo != nil {
+      uploadPicture()
+    }
+    // 메모가 있는 경우에만 이벤트 기록
+    if let memo = recording.memo, !memo.isEmpty {
+      writeMemo(memo)
+    }
+    Mixpanel.mainInstance().track(event: "CompleteButton")
+    Mixpanel.mainInstance().people.increment(property: "complete_button", by: 1)
   }
   
   private var selectDate: some View {
