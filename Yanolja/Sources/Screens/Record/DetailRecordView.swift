@@ -278,7 +278,7 @@ struct DetailRecordView: View {
               .onTapGesture {
                 showImagePicker.toggle()
                 // 사진 업로드 이벤트
-                uploadPicture()
+                //                uploadPicture()
               }
               .sheet(
                 isPresented: $showImagePicker,
@@ -388,6 +388,16 @@ struct DetailRecordView: View {
     
     Mixpanel.mainInstance().track(event: "UploadPicture", properties: [
       "uploaded_picture": trackUploadPicture
+    ])
+  }
+  
+  // 메모 기입 이벤트 기록
+  func writeMemo(_ memo: String) {
+    // 메모 내용이 없으면 이벤트 기록 X
+    guard let memo = recording.memo, !memo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+    
+    Mixpanel.mainInstance().track(event: "WriteMemo", properties: [
+      "write_memo_length": memo.count
     ])
   }
   
