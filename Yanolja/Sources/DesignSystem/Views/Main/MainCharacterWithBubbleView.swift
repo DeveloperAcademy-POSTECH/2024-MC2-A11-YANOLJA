@@ -10,15 +10,11 @@ import SwiftUI
 import Mixpanel
 
 struct MainCharacterWithBubbleView: View {
-  let characterModel: CharacterModel
-  
-  // 이벤트 기록 여부를 추적
-  @State private var trackTabCharacter = false
-  
   @State private var isVisible: [Bool] = [false, false, false, false, false]
   @State private var isAnimating: [Bool] = [false, false, false, false, false]
   private let maxCount = 5
-  
+
+  let characterModel: CharacterModel
   let bubbleText: [String]
   
   var body: some View {
@@ -39,18 +35,9 @@ struct MainCharacterWithBubbleView: View {
       }
     }
     .onTapGesture {
-      tabCharacter()
       showNextBubble()
+      TrackUserActivityManager.shared.effect(.tappedMainCharacter)
     }
-  }
-  
-  func tabCharacter() {
-    // 이미 이벤트가 기록된 경우 호출 차단
-    guard !trackTabCharacter else { return }
-    trackTabCharacter = true
-    
-    Mixpanel.mainInstance().track(event: "TabCharacter")
-    Mixpanel.mainInstance().people.increment(property: "tab_character", by: 1)
   }
   
   func makeBubble(text: String) -> some View {

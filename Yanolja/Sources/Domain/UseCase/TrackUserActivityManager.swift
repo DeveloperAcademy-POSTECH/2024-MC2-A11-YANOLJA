@@ -20,6 +20,7 @@ class TrackUserActivityManager {
   private init() {}
   
   private var trackService: TrackUserActivityService?
+  private var tappedMainCharacter: Bool = false
   
   func configure(service: TrackUserActivityService) {
     self.trackService = service
@@ -28,6 +29,9 @@ class TrackUserActivityManager {
   func effect(_ action: Action) {
     switch action {
     case .tappedMainCharacter:
+      guard !tappedMainCharacter else { return }
+      tappedMainCharacter = true
+      trackService?.tappedMainCharacter()
       
     case .tappedPlusButtonToMakeRecord:
       break

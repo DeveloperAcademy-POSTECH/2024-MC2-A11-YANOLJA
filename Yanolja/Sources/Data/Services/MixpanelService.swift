@@ -11,6 +11,8 @@ import Mixpanel
 
 struct MixpanelService: TrackUserActivityService {
   func tappedMainCharacter() {
+    Mixpanel.mainInstance().track(event: "TabCharacter")
+    Mixpanel.mainInstance().people.increment(property: "tab_character", by: 1)
   }
   
   func tappedPlusButtonToMakeRecord() {
