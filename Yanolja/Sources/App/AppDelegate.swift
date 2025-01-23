@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   ) -> Bool {
     
     Mixpanel.initialize(token: PrivateKey.getMixpanel ?? "")
+    TrackUserActivityManager.shared.configure(service: MixpanelService())
     UserDefaultsService().save(data: true, key: .isPopGestureEnabled)
     
     Task {
