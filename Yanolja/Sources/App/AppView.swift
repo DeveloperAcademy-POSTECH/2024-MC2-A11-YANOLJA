@@ -32,6 +32,9 @@ struct AppView: View {
           Text("홈")
         }
         .tag(Tab.main)
+        .onAppear {
+          TrackUserActivityManager.shared.effect(.mainTabOnAppear)
+        }
         
         AllRecordView(
           winRateUseCase: winRateUseCase,
@@ -77,21 +80,22 @@ struct AppView: View {
               switch selection {
               case .main:
                 // MARK: - 카드 공유 생성 시 활성화
-//                HStack(alignment: .top, spacing: 16) {
-//                  Button(
-//                    action: { print("이미지 다운로드") },
-//                    label: { Image(systemName: "square.and.arrow.down")
-//                      .offset(y: -2) }
-//                  )
-                  Button(
-                    action: { path.append(NavigationDestination.settings) },
-                    label: { Image(systemName: "gearshape") }
-                  )
-//                }
+                //                HStack(alignment: .top, spacing: 16) {
+                //                  Button(
+                //                    action: { print("이미지 다운로드") },
+                //                    label: { Image(systemName: "square.and.arrow.down")
+                //                      .offset(y: -2) }
+                //                  )
+                Button(
+                  action: { path.append(NavigationDestination.settings) },
+                  label: { Image(systemName: "gearshape") }
+                )
+                //                }
               case .record:
                 HStack(alignment: .top, spacing: 16) {
                   Button(
                     action: {
+                      TrackUserActivityManager.shared.effect(.tappedPlusButtonToMakeRecord)
                       recordUseCase
                         .effect(.tappedCreateRecordSheet(true))
                     },
@@ -156,19 +160,19 @@ struct AppView: View {
             winRateUseCase: winRateUseCase,
             userInfoUseCase: userInfoUseCase
           )
-            .navigationTitle("마이페이지")
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-              ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                  path.removeLast()
-                }) {
-                  Image(systemName: "chevron.left")
-                    .font(.system(size: 18, weight: .semibold))
-                }
-                .tint(.black)
+          .navigationTitle("마이페이지")
+          .navigationBarBackButtonHidden(true)
+          .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+              Button(action: {
+                path.removeLast()
+              }) {
+                Image(systemName: "chevron.left")
+                  .font(.system(size: 18, weight: .semibold))
               }
+              .tint(.black)
             }
+          }
         }
       }
       .fullScreenCover(

@@ -2,7 +2,6 @@ import ProjectDescription
 
 extension Configuration {
   public static func build(_ type: BuildTarget, name: String = "") -> Self {
-    let buildName = type.rawValue
     switch type {
     case .release:
       return .release(
@@ -34,7 +33,9 @@ extension Path {
 }
 
 extension FileElement {
-  public static var sharedConfigPath: FileElement = "./Configs/Shared.xcconfig"
+  public static var sharedConfigPath: FileElement {
+    "./Configs/Shared.xcconfig"
+  }
 }
 
 extension Scheme {

@@ -7,6 +7,12 @@
 | @ksikk | @penum1227 | @tkfkd1364 | @rochelle0922 |  @wltnryu  | @shippingpark |
 | 빠라바라밤 | 빰빰빠라빰 | 야놀자두둥 | 야놀자빠밤 | 줏대있게해 | 개발재밌죠? |
 
+# 프로젝트 설계도 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/43b6e9e6-8f11-4d01-b32c-eefa09056513" alt="image" width="635" />
+</p>
+
+
 
 # 앱 기능
 ![image](https://github.com/DeveloperAcademy-POSTECH/2024-MC2-A11-YANOLJA/assets/81788774/abbb2ba1-080f-4051-97c5-c77bf32b4a64)
