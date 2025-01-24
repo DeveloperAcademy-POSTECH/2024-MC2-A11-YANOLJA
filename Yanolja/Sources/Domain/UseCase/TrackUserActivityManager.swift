@@ -23,7 +23,8 @@ class TrackUserActivityManager {
   private var trackService: TrackUserActivityService?
   private var tappedMainCharacter: Bool = false
   
-  func configure(service: TrackUserActivityService) {
+  func configure(token: String, service: TrackUserActivityService) {
+    service.initialize(token: token)
     self.trackService = service
   }
   

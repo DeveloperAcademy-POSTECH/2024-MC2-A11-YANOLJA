@@ -9,6 +9,7 @@
 import Foundation
 
 protocol TrackUserActivityService {
+  func initialize(token: String)
   func tappedMainCharacter()
   func tappedPlusButtonToMakeRecord()
   func tappedConfirmButtonToRecord()

@@ -1,6 +1,5 @@
 import SwiftUI
 import UIKit
-import Mixpanel
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,8 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     
-    Mixpanel.initialize(token: PrivateKey.getMixpanel ?? "")
-    TrackUserActivityManager.shared.configure(service: MixpanelService())
+    TrackUserActivityManager.shared.configure(
+      token: PrivateKey.getMixpanel ?? "",
+      service: MixpanelService()
+    )
     UserDefaultsService().save(data: true, key: .isPopGestureEnabled)
     
     Task {

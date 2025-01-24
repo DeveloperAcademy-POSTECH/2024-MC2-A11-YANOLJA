@@ -10,6 +10,10 @@ import Foundation
 import Mixpanel
 
 struct MixpanelService: TrackUserActivityService {
+  func initialize(token: String) {
+    Mixpanel.initialize(token: token)
+  }
+  
   func tappedMainCharacter() {
     let type = MixpanelDTO.tabCharacter
     Mixpanel.mainInstance().track(event: type.event)
