@@ -21,14 +21,15 @@ struct MixpanelService: TrackUserActivityService {
   }
   
   func tappedConfirmButtonToRecord() {
-    
+    Mixpanel.mainInstance().track(event: "CompleteButton")
+    Mixpanel.mainInstance().people.increment(property: "complete_button", by: 1)
   }
   
-  func tappedConfirmButtonWithMemo() {
-    
+  func tappedConfirmButtonWithMemo(_ count: Int) {
+    Mixpanel.mainInstance().track(event: "WriteMemo", properties: ["write_memo_length": count])
   }
   
-  func tappedConfirmButtonWithPhoto() {
-    
+  func tappedConfirmButtonWithPhoto(_ exists: Bool) {
+    Mixpanel.mainInstance().track(event: "UploadPicture", properties: ["uploaded_picture": exists])
   }
 }

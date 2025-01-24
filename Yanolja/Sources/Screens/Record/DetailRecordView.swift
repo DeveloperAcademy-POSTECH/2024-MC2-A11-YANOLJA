@@ -8,7 +8,6 @@
 
 import SwiftUI
 import UIKit
-import Mixpanel
 
 // 내가 보이는 뷰를 생성하거나 편집하는 enum
 enum RecordViewEditType {
@@ -344,7 +343,7 @@ struct DetailRecordView: View {
                   changeRecords(recordUseCase.state.recordList)
                   dismiss()
                 }
-                completeButton()
+                TrackUserActivityManager.shared.effect(.tappedConfirmButtonToRecord(recording: recording))
               },
               label: {
                 Text("완료")
@@ -380,42 +379,7 @@ struct DetailRecordView: View {
       }
     }
   }
-  
-  // 사진 업로드 이벤트 기록
-  func uploadPicture() {
-    // 사진이 없으면 이벤트 기록 X
-    guard recording.photo != nil else { return }
-    trackUploadPicture = true
-    
-    Mixpanel.mainInstance().track(event: "UploadPicture", properties: [
-      "uploaded_picture": trackUploadPicture
-    ])
-  }
-  
-  // 메모 기입 이벤트 기록
-  func writeMemo(_ memo: String) {
-    // 메모 내용이 없으면 이벤트 기록 X
-    guard let memo = recording.memo, !memo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-    
-    Mixpanel.mainInstance().track(event: "WriteMemo", properties: [
-      "write_memo_length": memo.count
-    ])
-  }
-  
-  // 최종 완료 이벤트 기록
-  func completeButton() {
-    // 사진이 저장된 경우에만 이벤트 기록
-    if recording.photo != nil {
-      uploadPicture()
-    }
-    // 메모가 있는 경우에만 이벤트 기록
-    if let memo = recording.memo, !memo.isEmpty {
-      writeMemo(memo)
-    }
-    Mixpanel.mainInstance().track(event: "CompleteButton")
-    Mixpanel.mainInstance().people.increment(property: "complete_button", by: 1)
-  }
-  
+
   private var selectDate: some View {
     DatePicker(
       "날짜",

@@ -12,7 +12,7 @@ class TrackUserActivityManager {
   enum Action {
     case tappedMainCharacter
     case tappedPlusButtonToMakeRecord
-    case tappedConfirmButtonToRecord(memo: Bool, photo: Bool)
+    case tappedConfirmButtonToRecord(recording: GameRecordWithScoreModel)
   }
   
   static var shared: TrackUserActivityManager = .init()
@@ -36,8 +36,14 @@ class TrackUserActivityManager {
     case .tappedPlusButtonToMakeRecord:
       trackService?.tappedPlusButtonToMakeRecord()
       
-    case let .tappedConfirmButtonToRecord(memo, photo):
-      break 
+    case let .tappedConfirmButtonToRecord(recording):
+      trackService?.tappedConfirmButtonToRecord()
+      
+      if let memo = recording.memo {
+        trackService?.tappedConfirmButtonWithMemo(memo.count)
+      }
+      
+      trackService?.tappedConfirmButtonWithPhoto(recording.photo != nil)
     }
   }
 }
