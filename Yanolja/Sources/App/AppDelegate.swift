@@ -95,10 +95,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       
       // 이전 기록 삭제
       _ = historyRecordService.removeRecord(id: exRecord.id)
-      
-      self.recordUseCase.effect(.renewAllRecord)
       let recordList = recordUseCase.state.recordList
-      self.winRateUseCase.effect(.updateRecords(recordList))
+
+      await MainActor.run {
+        self.recordUseCase.effect(.renewAllRecord)
+        self.winRateUseCase.effect(.updateRecords(recordList))
+      }
     }
   }
   
