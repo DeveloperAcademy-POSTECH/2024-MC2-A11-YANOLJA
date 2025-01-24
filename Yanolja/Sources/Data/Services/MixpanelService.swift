@@ -11,25 +11,30 @@ import Mixpanel
 
 struct MixpanelService: TrackUserActivityService {
   func tappedMainCharacter() {
-    Mixpanel.mainInstance().track(event: "TabCharacter")
-    Mixpanel.mainInstance().people.increment(property: "tab_character", by: 1)
+    let type = MixpanelDTO.tabCharacter
+    Mixpanel.mainInstance().track(event: type.event)
+    Mixpanel.mainInstance().people.increment(property: type.property, by: 1)
   }
   
   func tappedPlusButtonToMakeRecord() {
-    Mixpanel.mainInstance().track(event: "RecordButton")
-    Mixpanel.mainInstance().people.increment(property: "record_button", by: 1)
+    let type = MixpanelDTO.recordButton
+    Mixpanel.mainInstance().track(event: type.event)
+    Mixpanel.mainInstance().people.increment(property: type.property, by: 1)
   }
   
   func tappedConfirmButtonToRecord() {
-    Mixpanel.mainInstance().track(event: "CompleteButton")
-    Mixpanel.mainInstance().people.increment(property: "complete_button", by: 1)
+    let type = MixpanelDTO.completeButton
+    Mixpanel.mainInstance().track(event: type.event)
+    Mixpanel.mainInstance().people.increment(property: type.property, by: 1)
   }
   
   func tappedConfirmButtonWithMemo(_ count: Int) {
-    Mixpanel.mainInstance().track(event: "WriteMemo", properties: ["write_memo_length": count])
+    let type = MixpanelDTO.writeMemo
+    Mixpanel.mainInstance().track(event: type.event, properties: [type.property: count])
   }
   
   func tappedConfirmButtonWithPhoto(_ exists: Bool) {
-    Mixpanel.mainInstance().track(event: "UploadPicture", properties: ["uploaded_picture": exists])
+    let type = MixpanelDTO.uploadPicture
+    Mixpanel.mainInstance().track(event: type.event, properties: [type.property: exists])
   }
 }
