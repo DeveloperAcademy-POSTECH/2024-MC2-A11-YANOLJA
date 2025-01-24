@@ -10,6 +10,7 @@ import Foundation
 
 class TrackUserActivityManager {
   enum Action {
+    case mainTabOnAppear
     case tappedMainCharacter
     case tappedPlusButtonToMakeRecord
     case tappedConfirmButtonToRecord(recording: GameRecordWithScoreModel)
@@ -28,8 +29,12 @@ class TrackUserActivityManager {
   
   func effect(_ action: Action) {
     switch action {
+    case .mainTabOnAppear:
+      tappedMainCharacter = false
+      
     case .tappedMainCharacter:
       trackMainCharacterTapped()
+      tappedMainCharacter = true
       
     case .tappedPlusButtonToMakeRecord:
       trackPlusButtonTapped()
@@ -43,7 +48,6 @@ class TrackUserActivityManager {
   
   private func trackMainCharacterTapped() {
     guard !tappedMainCharacter else { return }
-    tappedMainCharacter = true
     trackService?.tappedMainCharacter()
   }
   

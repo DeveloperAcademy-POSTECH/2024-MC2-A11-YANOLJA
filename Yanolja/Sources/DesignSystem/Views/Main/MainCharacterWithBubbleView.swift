@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import Mixpanel
 
 struct MainCharacterWithBubbleView: View {
   @State private var isVisible: [Bool] = [false, false, false, false, false]

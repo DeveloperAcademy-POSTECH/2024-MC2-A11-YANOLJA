@@ -32,6 +32,9 @@ struct AppView: View {
           Text("홈")
         }
         .tag(Tab.main)
+        .onAppear {
+          TrackUserActivityManager.shared.effect(.mainTabOnAppear)
+        }
         
         AllRecordView(
           winRateUseCase: winRateUseCase,
