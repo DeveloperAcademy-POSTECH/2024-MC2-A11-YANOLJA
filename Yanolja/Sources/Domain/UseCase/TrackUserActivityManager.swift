@@ -34,7 +34,8 @@ class TrackUserActivityManager {
       trackService?.tappedMainCharacter()
       
     case .tappedPlusButtonToMakeRecord:
-      break
+      trackService?.tappedPlusButtonToMakeRecord()
+      
     case let .tappedConfirmButtonToRecord(memo, photo):
       break 
     }

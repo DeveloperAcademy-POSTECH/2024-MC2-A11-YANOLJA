@@ -16,7 +16,8 @@ struct MixpanelService: TrackUserActivityService {
   }
   
   func tappedPlusButtonToMakeRecord() {
-    
+    Mixpanel.mainInstance().track(event: "RecordButton")
+    Mixpanel.mainInstance().people.increment(property: "record_button", by: 1)
   }
   
   func tappedConfirmButtonToRecord() {
