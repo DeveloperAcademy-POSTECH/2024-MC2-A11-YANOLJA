@@ -29,21 +29,38 @@ class TrackUserActivityManager {
   func effect(_ action: Action) {
     switch action {
     case .tappedMainCharacter:
-      guard !tappedMainCharacter else { return }
-      tappedMainCharacter = true
-      trackService?.tappedMainCharacter()
+      trackMainCharacterTapped()
       
     case .tappedPlusButtonToMakeRecord:
-      trackService?.tappedPlusButtonToMakeRecord()
+      trackPlusButtonTapped()
       
     case let .tappedConfirmButtonToRecord(recording):
-      trackService?.tappedConfirmButtonToRecord()
-      
-      if let memo = recording.memo {
-        trackService?.tappedConfirmButtonWithMemo(memo.count)
-      }
-      
-      trackService?.tappedConfirmButtonWithPhoto(recording.photo != nil)
+      trackConfirmButtonTapped()
+      trackConfirmButton(withMemo: recording.memo)
+      trackConfirmButton(withPhotoExists: recording.photo != nil)
     }
+  }
+  
+  private func trackMainCharacterTapped() {
+    guard !tappedMainCharacter else { return }
+    tappedMainCharacter = true
+    trackService?.tappedMainCharacter()
+  }
+  
+  private func trackPlusButtonTapped() {
+    trackService?.tappedPlusButtonToMakeRecord()
+  }
+  
+  private func trackConfirmButtonTapped() {
+    trackService?.tappedConfirmButtonToRecord()
+  }
+  
+  private func trackConfirmButton(withMemo memo: String?) {
+    guard let memo else { return }
+    trackService?.tappedConfirmButtonWithMemo(memo.count)
+  }
+  
+  private func trackConfirmButton(withPhotoExists exists: Bool) {
+    trackService?.tappedConfirmButtonWithPhoto(exists)
   }
 }
