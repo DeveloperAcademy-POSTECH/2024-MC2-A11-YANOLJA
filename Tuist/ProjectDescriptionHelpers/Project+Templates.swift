@@ -18,6 +18,9 @@ extension Project {
       name: name,
       destinations: destinations,
       dependencies: additionalTargets.map { TargetDependency.target(name: $0) }
+      + [
+        .external(name: "Mixpanel")
+      ]
     )
     targets += additionalTargets.flatMap({
       makeFrameworkTargets(

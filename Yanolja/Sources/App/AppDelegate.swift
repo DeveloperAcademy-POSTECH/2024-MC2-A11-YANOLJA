@@ -28,6 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     
+    TrackUserActivityManager.shared.configure(
+      token: PrivateKey.getMixpanel ?? "",
+      service: MixpanelService()
+    )
     UserDefaultsService().save(data: true, key: .isPopGestureEnabled)
     
     Task {
@@ -92,10 +96,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       
       // 이전 기록 삭제
       _ = historyRecordService.removeRecord(id: exRecord.id)
-      
-      self.recordUseCase.effect(.renewAllRecord)
       let recordList = recordUseCase.state.recordList
-      self.winRateUseCase.effect(.updateRecords(recordList))
+
+      await MainActor.run {
+        self.recordUseCase.effect(.renewAllRecord)
+        self.winRateUseCase.effect(.updateRecords(recordList))
+      }
     }
   }
   

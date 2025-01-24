@@ -39,6 +39,9 @@ struct DetailRecordView: View {
   
   @State private var makeBlur: Bool = false
   
+  // 이벤트 기록 여부를 추적
+  @State private var trackUploadPicture: Bool = false
+  
   init(
     to editType: RecordViewEditType,
     record: GameRecordWithScoreModel = .init(),
@@ -273,6 +276,8 @@ struct DetailRecordView: View {
               .contentShape(Rectangle())
               .onTapGesture {
                 showImagePicker.toggle()
+                // 사진 업로드 이벤트
+                // uploadPicture()
               }
               .sheet(
                 isPresented: $showImagePicker,
@@ -338,6 +343,7 @@ struct DetailRecordView: View {
                   changeRecords(recordUseCase.state.recordList)
                   dismiss()
                 }
+                TrackUserActivityManager.shared.effect(.tappedConfirmButtonToRecord(recording: recording))
               },
               label: {
                 Text("완료")
@@ -373,7 +379,7 @@ struct DetailRecordView: View {
       }
     }
   }
-  
+
   private var selectDate: some View {
     DatePicker(
       "날짜",
@@ -440,4 +446,3 @@ private extension GameRecordWithScoreModel {
     changeRecords: { _ in }
   )
 }
-

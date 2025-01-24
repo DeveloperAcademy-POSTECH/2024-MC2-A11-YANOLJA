@@ -9,12 +9,11 @@
 import SwiftUI
 
 struct MainCharacterWithBubbleView: View {
-  let characterModel: CharacterModel
-  
   @State private var isVisible: [Bool] = [false, false, false, false, false]
   @State private var isAnimating: [Bool] = [false, false, false, false, false]
   private let maxCount = 5
-  
+
+  let characterModel: CharacterModel
   let bubbleText: [String]
   
   var body: some View {
@@ -36,6 +35,7 @@ struct MainCharacterWithBubbleView: View {
     }
     .onTapGesture {
       showNextBubble()
+      TrackUserActivityManager.shared.effect(.tappedMainCharacter)
     }
   }
   
