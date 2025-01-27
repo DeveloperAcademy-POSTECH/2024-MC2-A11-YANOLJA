@@ -12,6 +12,7 @@ import Mixpanel
 struct MixpanelService: TrackUserActivityService {
   func initialize(token: String) {
     Mixpanel.initialize(token: token)
+    Mixpanel.mainInstance().useIPAddressForGeoLocation = false
   }
   
   func tappedMainCharacter() {
