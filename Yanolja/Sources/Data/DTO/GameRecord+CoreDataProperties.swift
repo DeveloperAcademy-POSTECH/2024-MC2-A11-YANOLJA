@@ -9,6 +9,7 @@
 
 import CoreData
 import Foundation
+// 커식 이해용 수정
 
 extension GameRecord: Identifiable {
   @nonobjc public class func fetchRequest() -> NSFetchRequest<GameRecord> {
