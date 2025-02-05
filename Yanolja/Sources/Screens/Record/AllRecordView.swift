@@ -14,6 +14,7 @@ struct AllRecordView: View {
   @Bindable var recordUseCase: RecordUseCase
   @State var selectedRecord: GameRecordWithScoreModel?
   
+  @Binding var plusButtonTapped: Bool
   @Binding var selectedYearFilter: String
   @State var selectedRecordFilter: RecordFilter = RecordFilter.initialValue
   @State var isAscending: Bool = true
@@ -78,7 +79,6 @@ struct AllRecordView: View {
             Button(
               action: {
                 selectedRecord = record
-                recordUseCase.effect(.tappedRecordCellToEditRecordSheet(true))
               },
               label: {
                 RecordCell(record: record)
@@ -92,39 +92,19 @@ struct AllRecordView: View {
     }
     .padding(.horizontal, 16)
     .sheet(
-      isPresented:
-          .init(
-            get: {
-              recordUseCase.state.editRecordSheet
-            },
-            set: { result in
-              recordUseCase
-                .effect(.tappedRecordCellToEditRecordSheet(result))
-            }
-          )
-      
-    ) {
-      if let selectedRecord = selectedRecord {
+      item: $selectedRecord,
+      content: { selectedRecord in
         DetailRecordView(
           to: .edit,
           record: selectedRecord,
           usecase: recordUseCase,
-          changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords)) }
+          updateRecords: { records in winRateUseCase.effect(.updateRecords(records))},
+          goBackAction: { self.selectedRecord = nil }
         )
       }
-    }
+    )
     .sheet(
-      isPresented:
-          .init(
-            get: {
-              recordUseCase.state.createRecordSheet
-            },
-            set: { result in
-              recordUseCase
-                .effect(.tappedCreateRecordSheet(result))
-              if !result { selectedRecord = nil }
-            }
-          )
+      isPresented: $plusButtonTapped
     ) {
       DetailRecordView(
         to: .create,
@@ -133,8 +113,8 @@ struct AllRecordView: View {
           vsTeam: winRateUseCase.state.myTeam != .noTeam ? winRateUseCase.state.myTeam.anyOtherTeam() : .doosan.anyOtherTeam()
         ),
         usecase: recordUseCase,
-        changeRecords: { updateRecords in winRateUseCase.effect(.updateRecords(updateRecords)) // 내부로 넣거나, 아예 밖으로 빼거나 
-        }
+        updateRecords: { records in winRateUseCase.effect(.updateRecords(records)) },
+        goBackAction: { plusButtonTapped = false }
       )
     }
   }
@@ -160,6 +140,7 @@ struct AllRecordView: View {
         recordList: recordList,
         recordService: RecordDataService()
       ),
+      plusButtonTapped: .constant(false),
       selectedYearFilter: .constant("전체")
     )
   }
