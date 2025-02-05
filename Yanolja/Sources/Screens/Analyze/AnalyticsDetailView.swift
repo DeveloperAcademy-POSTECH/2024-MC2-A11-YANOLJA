@@ -46,8 +46,10 @@ struct AnalyticsDetailView: View {
     switch filterOptionsCategory {
     case let .team(baseballTeam):
       return winRateUseCase.state.filteredRecordList.filter { $0.vsTeam == baseballTeam }
+        .sortByLatestDate(true)
     case let .stadiums(stadiums):
       return winRateUseCase.state.filteredRecordList.filter { $0.stadiums == stadiums }
+        .sortByLatestDate(true)
     }
   }
   
