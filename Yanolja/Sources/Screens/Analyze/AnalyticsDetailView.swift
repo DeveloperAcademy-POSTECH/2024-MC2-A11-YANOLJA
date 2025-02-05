@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-// MARK: - 브리
 struct AnalyticsDetailView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
+  @State var selectedRecord: GameRecordWithScoreModel?
   
   let filterOptionsCategory: AnalyticsFilter
   
@@ -146,21 +146,25 @@ struct AnalyticsDetailView: View {
               filteredRecordList,
               id: \.id
             ) { record in
-              NavigationLink(
-                destination: {
+              Button(
+                action: {
+                  selectedRecord = record
+                },
+                label: {
+                  RecordCell(record: record)
+                }
+              )
+              .sheet(
+                item: $selectedRecord,
+                content: { record in
                   DetailRecordView(
                     to: .edit,
                     record: record,
                     usecase: recordUseCase,
-                    changeRecords: { updateRecords in
-                      winRateUseCase.effect(.updateRecords(updateRecords)
-                      )
-                    }
+                    updateRecords: { records in winRateUseCase.effect(.updateRecords(records))},
+                    goBackAction: { selectedRecord = nil }
                   )
                   .navigationBarBackButtonHidden()
-                },
-                label: {
-                  RecordCell(record: record)
                 }
               )
             }

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AppView: View {
   @State private var path = NavigationPath()  // 네비게이션 경로 관리
+  @State var plusButtonTapped: Bool = false
   
   var winRateUseCase: WinRateUseCase
   var recordUseCase: RecordUseCase
@@ -40,6 +41,7 @@ struct AppView: View {
           winRateUseCase: winRateUseCase,
           userInfoUseCase: userInfoUseCase,
           recordUseCase: recordUseCase,
+          plusButtonTapped: $plusButtonTapped,
           selectedYearFilter: $selectedRecordYearFilter
         )
         .tabItem {
@@ -96,8 +98,7 @@ struct AppView: View {
                   Button(
                     action: {
                       TrackUserActivityManager.shared.effect(.tappedPlusButtonToMakeRecord)
-                      recordUseCase
-                        .effect(.tappedCreateRecordSheet(true))
+                      plusButtonTapped = true
                     },
                     label: { Image(systemName: "plus") }
                   )

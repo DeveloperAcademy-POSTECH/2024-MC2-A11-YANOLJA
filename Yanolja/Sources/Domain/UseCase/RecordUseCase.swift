@@ -12,10 +12,6 @@ import SwiftUI
 class RecordUseCase {
   // MARK: - State
   struct State {
-    // MARK: - View State
-    var createRecordSheet: Bool = false
-    var editRecordSheet: Bool = false
-    
     // MARK: - Data State
     var recordList: [GameRecordWithScoreModel] = []
   }
@@ -23,8 +19,6 @@ class RecordUseCase {
   // MARK: - Action
   enum Action {
     case renewAllRecord
-    case tappedCreateRecordSheet(Bool)
-    case tappedRecordCellToEditRecordSheet(Bool)
     case tappedSaveNewRecord(GameRecordWithScoreModel)
     case tappedEditNewRecord(GameRecordWithScoreModel) 
     case tappedDeleteRecord(UUID)
@@ -70,18 +64,10 @@ class RecordUseCase {
         return
       }
       
-    case let .tappedCreateRecordSheet(result):
-      self._state.createRecordSheet = result
-      return
-      
-    case let .tappedRecordCellToEditRecordSheet(result):
-      self._state.editRecordSheet = result
-      
       // 데이터 저장 요청
     case let .tappedSaveNewRecord(newRecord):
       _ = recordService.saveRecord(newRecord)
       _state.recordList.append(newRecord)
-      self._state.createRecordSheet = false
       
       // 데이터 수정 요청
     case let .tappedEditNewRecord(editRecord):
@@ -89,15 +75,12 @@ class RecordUseCase {
       if let index = _state.recordList.map({ $0.id }).firstIndex(of: editRecord.id) {
         _state.recordList[index] = editRecord
       }
-      self._state.editRecordSheet = false
       
       // 데이터 삭제 요청
     case let .tappedDeleteRecord(id):
       _ = recordService.removeRecord(id: id)
       _state.recordList = _state.recordList.filter { $0.id != id }
-      self._state.editRecordSheet = false
       return
-      
     }
   }
 }
