@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct AppView: View {
-  @State private var path = NavigationPath()  // 네비게이션 경로 관리
+  @ObservedObject var router = Router()
   @State var plusButtonTapped: Bool = false
   
   var winRateUseCase: WinRateUseCase
@@ -20,7 +20,7 @@ struct AppView: View {
   @State var selectedRecordYearFilter: String = YearFilter.initialValue
   
   var body: some View {
-    NavigationStack(path: $path) {
+    NavigationStack(path: $router.path) {
       TabView(selection: $selection) {
         MainView(
           winRateUseCase: winRateUseCase,
@@ -89,7 +89,7 @@ struct AppView: View {
                 //                      .offset(y: -2) }
                 //                  )
                 Button(
-                  action: { path.append(NavigationDestination.settings) },
+                  action: { router.navigate(to: .settings)  },
                   label: { Image(systemName: "gearshape") }
                 )
                 //                }
@@ -154,9 +154,8 @@ struct AppView: View {
         }
       )
       .interactiveDismissDisabled(true)
-      .navigationDestination(for: NavigationDestination.self) { destination in
-        switch destination {
-        case .settings:
+      .navigationDestination(for: Router.NavigationDestination.self) { destination in
+        if destination == .settings {
           SettingsView(
             winRateUseCase: winRateUseCase,
             userInfoUseCase: userInfoUseCase
@@ -166,7 +165,7 @@ struct AppView: View {
           .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
               Button(action: {
-                path.removeLast()
+                router.navigateBack()
               }) {
                 Image(systemName: "chevron.left")
                   .font(.system(size: 18, weight: .semibold))
@@ -194,6 +193,7 @@ struct AppView: View {
         }
       )
     }
+    .environmentObject(router)
   }
 }
 
