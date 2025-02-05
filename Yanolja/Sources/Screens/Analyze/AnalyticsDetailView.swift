@@ -62,8 +62,7 @@ struct AnalyticsDetailView: View {
   }
   
   var body: some View {
-    
-    NavigationStack {
+    VStack {
       VStack(spacing: 0) {
         HStack {
           Text("\(detailOptions)")
@@ -170,6 +169,8 @@ struct AnalyticsDetailView: View {
           .padding(.horizontal, 16)
         }
       }
+    
+      Spacer()
     }
   }
 }

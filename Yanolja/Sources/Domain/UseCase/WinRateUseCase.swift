@@ -12,8 +12,6 @@ import SwiftUI
 class WinRateUseCase {
   // MARK: - State
   struct State {
-    // MARK: - View State
-    var tappedTeamWinRateCell: Bool = false
     var selectedYearFilter: String = YearFilter.initialValue
     
     // MARK: - Data State
@@ -33,7 +31,6 @@ class WinRateUseCase {
     // MARK: - User Action
     case tappedTeamChange(BaseballTeam) // MARK: - 팀 변경 시 다른 형태로 값 주입 필요 (현재 기존 형태)
     case tappedAnalyticsYearFilter(to: String)
-    case tappedTeamWinRateCell
     case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
     case sendMyTeamInfo(BaseballTeam)
     case setMyTeamWinRate
@@ -100,9 +97,6 @@ class WinRateUseCase {
       let recordList = _state.recordList.filtered(years: year)
       self.vsAllTeamWinRate(recordList: recordList)
       self.vsAllStadiumsWinRate(recordList: recordList)
-      
-    case .tappedTeamWinRateCell:
-      _state.tappedTeamWinRateCell.toggle()
       
     case .updateRecords(let records):
       self._state.recordList = records
