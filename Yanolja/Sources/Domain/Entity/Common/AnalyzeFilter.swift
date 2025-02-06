@@ -24,4 +24,13 @@ enum AnalyticsFilter: Hashable {
       return "구장별"
     }
   }
+  
+  var selectedTitle: String {
+    switch self {
+    case let .team(title):
+      return title.name
+    case let .stadiums(title):
+      return title
+    }
+  }
 }

@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-// MARK: - 브리
 struct AnalyticsDetailView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
+  @State var selectedRecord: GameRecordWithScoreModel?
   
   let filterOptionsCategory: AnalyticsFilter
   
@@ -46,8 +46,10 @@ struct AnalyticsDetailView: View {
     switch filterOptionsCategory {
     case let .team(baseballTeam):
       return winRateUseCase.state.filteredRecordList.filter { $0.vsTeam == baseballTeam }
+        .sortByLatestDate(true)
     case let .stadiums(stadiums):
       return winRateUseCase.state.filteredRecordList.filter { $0.stadiums == stadiums }
+        .sortByLatestDate(true)
     }
   }
   
@@ -62,8 +64,7 @@ struct AnalyticsDetailView: View {
   }
   
   var body: some View {
-    
-    NavigationStack {
+    VStack {
       VStack(spacing: 0) {
         HStack {
           Text("\(detailOptions)")
@@ -147,21 +148,25 @@ struct AnalyticsDetailView: View {
               filteredRecordList,
               id: \.id
             ) { record in
-              NavigationLink(
-                destination: {
+              Button(
+                action: {
+                  selectedRecord = record
+                },
+                label: {
+                  RecordCell(record: record)
+                }
+              )
+              .sheet(
+                item: $selectedRecord,
+                content: { record in
                   DetailRecordView(
                     to: .edit,
                     record: record,
                     usecase: recordUseCase,
-                    changeRecords: { updateRecords in
-                      winRateUseCase.effect(.updateRecords(updateRecords)
-                      )
-                    }
+                    updateRecords: { records in winRateUseCase.effect(.updateRecords(records))},
+                    goBackAction: { selectedRecord = nil }
                   )
                   .navigationBarBackButtonHidden()
-                },
-                label: {
-                  RecordCell(record: record)
                 }
               )
             }
@@ -170,6 +175,8 @@ struct AnalyticsDetailView: View {
           .padding(.horizontal, 16)
         }
       }
+    
+      Spacer()
     }
   }
 }

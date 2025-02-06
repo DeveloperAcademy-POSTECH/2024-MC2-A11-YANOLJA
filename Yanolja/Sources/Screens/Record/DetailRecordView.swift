@@ -16,7 +16,6 @@ enum RecordViewEditType {
 }
 
 struct DetailRecordView: View {
-  @Environment(\.dismiss) var dismiss
   var recordUseCase: RecordUseCase
   
   @State var recording: GameRecordWithScoreModel = .init() // 수정할 때
@@ -27,7 +26,8 @@ struct DetailRecordView: View {
   @State private var changeMyTeam: BaseballTeam?
   
   private let editType: RecordViewEditType
-  private let changeRecords: ([GameRecordWithScoreModel]) -> Void
+  private let updateRecords: ([GameRecordWithScoreModel]) -> Void
+  private let goBackAction: () -> Void
   
   @State private var selectedOption: String = ""
   private let doubleHeader = [0: "DH1", 1: "DH2"]
@@ -46,12 +46,14 @@ struct DetailRecordView: View {
     to editType: RecordViewEditType,
     record: GameRecordWithScoreModel = .init(),
     usecase: RecordUseCase,
-    changeRecords: @escaping ([GameRecordWithScoreModel]) -> Void
+    updateRecords: @escaping ([GameRecordWithScoreModel]) -> Void,
+    goBackAction: @escaping () -> Void
   ) {
     self.editType = editType
     self._recording = State(initialValue: record)
     self.recordUseCase = usecase
-    self.changeRecords = changeRecords
+    self.updateRecords = updateRecords
+    self.goBackAction = goBackAction
   }
   
   var body: some View {
@@ -293,8 +295,8 @@ struct DetailRecordView: View {
           Button(
             action: {
               recordUseCase.effect(.tappedDeleteRecord(recording.id))
-              changeRecords(recordUseCase.state.recordList)
-              dismiss()
+              updateRecords(recordUseCase.state.recordList)
+              goBackAction()
             },
             label: {
               HStack{
@@ -326,7 +328,8 @@ struct DetailRecordView: View {
                   }
                   
                   recordUseCase.effect(.tappedSaveNewRecord(recording))
-                  changeRecords(recordUseCase.state.recordList)
+                  updateRecords(recordUseCase.state.recordList)
+                  goBackAction()
                 } else { // 수정 시
                   // 만약 스코어를 입력하지 않고 저장했다면 리스트에 "--" 반영
                   if recording.myTeamScore.isEmpty {
@@ -340,8 +343,8 @@ struct DetailRecordView: View {
                   }
                   
                   recordUseCase.effect(.tappedEditNewRecord(recording))
-                  changeRecords(recordUseCase.state.recordList)
-                  dismiss()
+                  updateRecords(recordUseCase.state.recordList)
+                  goBackAction()
                 }
                 TrackUserActivityManager.shared.effect(.tappedConfirmButtonToRecord(recording: recording))
               },
@@ -354,12 +357,7 @@ struct DetailRecordView: View {
           ToolbarItem(placement: .topBarLeading) {
             Button(
               action: {
-                if editType == .create { // 생성 시
-                  recordUseCase.effect(.tappedCreateRecordSheet(false))
-                } else { // 수정 시
-                  recordUseCase.effect(.tappedRecordCellToEditRecordSheet(false))
-                  dismiss()
-                }
+                goBackAction()
               },
               label: {
                 Text("취소")
@@ -443,6 +441,7 @@ private extension GameRecordWithScoreModel {
     usecase: RecordUseCase(
       recordService: RecordDataService()
     ),
-    changeRecords: { _ in }
+    updateRecords: { _ in },
+    goBackAction: { }
   )
 }

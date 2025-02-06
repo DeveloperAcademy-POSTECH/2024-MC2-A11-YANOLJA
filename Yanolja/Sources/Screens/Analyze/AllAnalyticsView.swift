@@ -4,7 +4,7 @@
 //
 //  Created by 박혜운 on 9/29/24.
 //  Copyright © 2024 com.mc2. All rights reserved.
-//   
+//
 
 import SwiftUI
 
@@ -12,10 +12,9 @@ struct AllAnalyticsView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var recordUseCase: RecordUseCase
   @Bindable var userInfoUseCase: UserInfoUseCase
-  @State var selectedCell: AnalyticsFilter?
   
+  @State var selectedCell: AnalyticsFilter?
   @State var selectedAnalyticsFilter: AnalyticsFilter = .initialValue
-  // MARK: - RecordList Order
   @State var isAscending: Bool = true
   
   var body: some View {
@@ -98,7 +97,6 @@ struct AllAnalyticsView: View {
               ForEach(sortTeamList, id: \.self.name) { vsTeam in
                 Button(
                   action: {
-                    winRateUseCase.effect(.tappedTeamWinRateCell)
                     selectedCell = .team(vsTeam)
                   },
                   label: {
@@ -114,7 +112,6 @@ struct AllAnalyticsView: View {
               ForEach(sortStadiumsList, id: \.self) { stadiums in
                 Button(
                   action: {
-                    winRateUseCase.effect(.tappedTeamWinRateCell)
                     selectedCell = .stadiums(stadiums)
                   },
                   label: {
@@ -134,25 +131,27 @@ struct AllAnalyticsView: View {
     .padding(.horizontal, 16)
     .navigationBarTitleDisplayMode(.large)
     .scrollIndicators(.never)
-    .sheet(
-      isPresented:
-          .init(
-            get: {
-              winRateUseCase.state.tappedTeamWinRateCell
-            },
-            set: { _ in
-              winRateUseCase.effect(.tappedTeamWinRateCell)
+    .navigationDestination(
+      item: $selectedCell,
+      destination: { selectedCell in
+        AnalyticsDetailView(
+          winRateUseCase: winRateUseCase,
+          recordUseCase: recordUseCase,
+          filterOptions: selectedCell
+        )
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(selectedCell.selectedTitle)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+          ToolbarItem(placement: .navigationBarLeading) {
+            Button(action: {
+              self.selectedCell = nil
+            }) {
+              Image(systemName: "chevron.left")
+                .font(.system(size: 18, weight: .semibold))
             }
-          ),
-      content: {
-        if let selectedCell {
-          AnalyticsDetailView(
-            winRateUseCase: winRateUseCase,
-            recordUseCase: recordUseCase,
-            filterOptions: selectedCell
-          )
-          .presentationDetents([.fraction(0.8)])
-          .presentationDragIndicator(.visible)
+            .tint(.black)
+          }
         }
       }
     )
@@ -163,7 +162,7 @@ struct AllAnalyticsView: View {
   AllAnalyticsView(
     winRateUseCase: WinRateUseCase(
       recordService: RecordDataService(),
-      myTeamService: UserDefaultsService(), 
+      myTeamService: UserDefaultsService(),
       gameRecordInfoService: .live
     ),
     recordUseCase: .init(
