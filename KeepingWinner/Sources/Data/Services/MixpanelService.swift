@@ -11,7 +11,7 @@ import Mixpanel
 
 struct MixpanelService: TrackUserActivityService {
   func initialize(token: String) {
-    Mixpanel.initialize(token: token)
+    Mixpanel.initialize(token: token, trackAutomaticEvents: true)
     Mixpanel.mainInstance().useIPAddressForGeoLocation = false
   }
   
