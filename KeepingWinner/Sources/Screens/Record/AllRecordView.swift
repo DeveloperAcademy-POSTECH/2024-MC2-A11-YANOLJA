@@ -134,7 +134,7 @@ struct AllRecordView: View {
         myTeamService: UserDefaultsService(),
         myNicknameService: UserDefaultsService(),
         changeIconService: ChangeAppIconService(),
-        settingsService: .live
+        settingsService: .preview
       ),
       recordUseCase: .init(
         recordList: recordList,

@@ -97,7 +97,7 @@ private struct NameBox: View {
       userInfoUseCase: .init(
         myTeamService: UserDefaultsService(), myNicknameService: UserDefaultsService(),
         changeIconService: ChangeAppIconService(),
-        settingsService: .live
+        settingsService: .preview
       )
     )
   }

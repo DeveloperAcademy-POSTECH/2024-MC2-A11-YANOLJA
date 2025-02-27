@@ -34,6 +34,7 @@ class WinRateUseCase {
     case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
     case sendMyTeamInfo(BaseballTeam)
     case setMyTeamWinRate
+    case onAppear
   }
   
   private let gameRecordInfoService: GameRecordInfoService
@@ -58,8 +59,6 @@ class WinRateUseCase {
     case .failure:
       break
     }
-    
-    effect(.setMyTeamWinRate)
   }
   
   // MARK: - Preview용
@@ -79,6 +78,9 @@ class WinRateUseCase {
   
   func effect(_ action: Action) {
     switch action {
+    case .onAppear:
+      effect(.setMyTeamWinRate)
+      
     case .setMyTeamWinRate:
       Task {
         if case let .success(winRate) = await gameRecordInfoService.teamWinRate(_state.myTeam.sliceName) {

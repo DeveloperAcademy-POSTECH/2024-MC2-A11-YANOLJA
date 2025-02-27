@@ -22,6 +22,7 @@ class UserInfoUseCase {
     case changeMyNickname(String)
     case setNotices
     case setBubbleTexts
+    case onAppear
   }
   
   private var myTeamService: MyTeamServiceInterface
@@ -50,6 +51,10 @@ class UserInfoUseCase {
   // MARK: - View Action
   func effect(_ action: Action) {
     switch action {
+    case .onAppear:
+      self.effect(.setNotices)
+      self.effect(.setBubbleTexts)
+      
     case .setNotices:
       Task {
         if case let .success(notices) = await settingsService.allNotices() {

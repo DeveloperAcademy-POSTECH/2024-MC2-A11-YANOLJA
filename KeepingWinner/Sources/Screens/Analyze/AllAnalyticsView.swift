@@ -128,6 +128,9 @@ struct AllAnalyticsView: View {
         }
       }
     }
+    .task {
+      winRateUseCase.effect(.onAppear)
+    }
     .padding(.horizontal, 16)
     .navigationBarTitleDisplayMode(.large)
     .scrollIndicators(.never)
@@ -172,7 +175,7 @@ struct AllAnalyticsView: View {
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
       changeIconService: ChangeAppIconService(),
-      settingsService: .live
+      settingsService: .preview
     )
   )
 }
