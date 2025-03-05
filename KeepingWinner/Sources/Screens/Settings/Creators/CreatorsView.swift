@@ -17,7 +17,6 @@ struct CreatorsView: View {
   var body: some View {
     VStack(spacing: 0) {
       ZStack{
-        
         Image("Creators")
           .resizable()
           .aspectRatio(contentMode: .fill)
@@ -34,6 +33,9 @@ struct CreatorsView: View {
               Text("인스타그램")
               Spacer()
               Text("@keeping_winner")
+                .foregroundStyle(.secondary)
+              Image(systemName: "chevron.right")
+                .foregroundStyle(.tertiary)
             }
             
           }
@@ -48,13 +50,15 @@ struct CreatorsView: View {
             HStack {
               Text("이메일")
               Spacer()
+              Text("go9danju"+"@gmail.com")
+                .foregroundStyle(.secondary)
               Image(systemName: "chevron.right")
+                .foregroundStyle(.tertiary)
             }
           }
         }
       }
-      .tint(.black)
-      
+      .foregroundStyle(.primary)
     }
   }
   
