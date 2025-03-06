@@ -25,9 +25,7 @@ struct CreatorsView: View {
       }
       
       List {
-        Section(header: Text("팀 승리지쿄")
-          .foregroundStyle(.secondary)) {
-
+        Section(header: Text("팀 승리지쿄")) {
           NavigationLink(destination: EmptyView()) {
             HStack {
               Text("인스타그램")
@@ -57,18 +55,18 @@ struct CreatorsView: View {
           })
         }
       }
-      .foregroundStyle(.primary)
+      .tint(.black)
     }
   }
   
   func openInstagram() {
-    let appURL = URL(string: "instagram://user?username=keeping_winner")! // 인스타그램 앱 URL
-    let webURL = URL(string: "https://instagram.com/keeping_winner")! // 웹 브라우저용 URL
+    let appURL = URL(string: "instagram://user?username=keeping_winner")!
+    let webURL = URL(string: "https://instagram.com/keeping_winner")!
     
     if UIApplication.shared.canOpenURL(appURL) {
-      openURL(appURL) // 인스타그램 앱 실행
+      openURL(appURL)
     } else {
-      openURL(webURL) // 웹 브라우저 실행
+      openURL(webURL)
     }
   }
 }
