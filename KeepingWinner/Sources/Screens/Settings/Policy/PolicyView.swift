@@ -13,8 +13,8 @@ struct PolicyView: View {
   let viewType: PolicyType
   var body: some View {
     WebContent(htmlFileName: viewType.rawValue, isLoading: $isLoading)
-        .loadingIndicator(isLoading: isLoading)
-        .ignoresSafeArea(edges: .bottom)
+      .loadingIndicator(isLoading: isLoading)
+      .ignoresSafeArea(edges: [.top, .bottom])
   }
 }
 

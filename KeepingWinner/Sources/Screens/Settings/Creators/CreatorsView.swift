@@ -55,6 +55,7 @@ struct CreatorsView: View {
           })
         }
       }
+      .scrollDisabled(true)
       .tint(.black)
     }
   }

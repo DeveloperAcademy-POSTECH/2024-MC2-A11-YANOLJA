@@ -38,7 +38,7 @@ struct SettingsView: View {
     userInfoUseCase: .init(
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService(), 
+      changeIconService: ChangeAppIconService(),
       settingsService: .live
     )
   )
