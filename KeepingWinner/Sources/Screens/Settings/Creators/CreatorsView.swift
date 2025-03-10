@@ -15,49 +15,47 @@ struct CreatorsView: View {
   @State private var showEmailView: Bool = false
   
   var body: some View {
-    VStack(spacing: 0) {
-      ZStack {
+    List {
+      Section() {
         Image("Creators")
           .resizable()
           .aspectRatio(contentMode: .fill)
           .frame(width: UIScreen.main.bounds.width)
+          .listRowInsets(EdgeInsets())
           .background(Color.brandColor)
       }
       
-      List {
-        Section(header: Text("팀 승리지쿄")) {
-          NavigationLink(destination: EmptyView()) {
-            HStack {
-              Text("인스타그램")
-              Spacer()
-              Text("@keeping_winner")
-                .foregroundStyle(.secondary)
-            }
+      Section(header: Text("팀 승리지쿄")) {
+        NavigationLink(destination: EmptyView()) {
+          HStack {
+            Text("인스타그램")
+            Spacer()
+            Text("@keeping_winner")
+              .foregroundStyle(.secondary)
           }
-          .simultaneousGesture(TapGesture().onEnded {
-            openInstagram()
-          })
-          
-          NavigationLink(destination: EmptyView()) {
-            HStack {
-              Text("이메일")
-              Spacer()
-              Text("go9danju"+"@gmail.com")
-                .foregroundStyle(.secondary)
-            }
-          }
-          .simultaneousGesture(TapGesture().onEnded {
-            if MFMailComposeViewController.canSendMail() {
-              email.send(openURL: openURL)
-            } else {
-              showEmailView = true
-            }
-          })
         }
+        .simultaneousGesture(TapGesture().onEnded {
+          openInstagram()
+        })
+        
+        NavigationLink(destination: EmptyView()) {
+          HStack {
+            Text("이메일")
+            Spacer()
+            Text("go9danju"+"@gmail.com")
+              .foregroundStyle(.secondary)
+          }
+        }
+        .simultaneousGesture(TapGesture().onEnded {
+          if MFMailComposeViewController.canSendMail() {
+            email.send(openURL: openURL)
+          } else {
+            showEmailView = true
+          }
+        })
       }
-      .scrollDisabled(true)
-      .tint(.black)
     }
+    .tint(.black)
   }
   
   func openInstagram() {
