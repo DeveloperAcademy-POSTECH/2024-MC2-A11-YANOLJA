@@ -13,11 +13,10 @@ struct NoticesView: View {
   var body: some View {
     List {
       ForEach(notices) { notice in
-        Section(header: Text(notice.date)) {
-          NoticeBlock(notice: notice)
-        }
+        NoticeBlock(notice: notice)
       }
     }
+    .padding(.top, -20)
     .tint(.black)
   }
 }
@@ -32,8 +31,13 @@ private struct NoticeBlock: View {
         isExpanded.toggle()
       }
     }) {
-      HStack {
-        Text(notice.title)
+      HStack{
+        VStack(alignment: .leading) {
+          Text(notice.title)
+          Text(notice.date)
+            .font(.subheadline)
+            .foregroundColor(.gray)
+        }
         Spacer()
         Image("chevron")
           .padding(0)
