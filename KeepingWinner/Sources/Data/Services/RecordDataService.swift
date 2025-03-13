@@ -12,133 +12,171 @@ import UIKit
 
 // MARK: - v1.0 이후 에디꺼
 class RecordDataService: RecordDataServiceInterface {
-    private let container: NSPersistentContainer
+  private let container: NSPersistentContainer
+  
+  init() {
+    container = NSPersistentContainer(name: "Baseball")
+    container.loadPersistentStores { (storeDescription, error) in
+      if let error = error as NSError? {
+        fatalError("Unresolved error \(error), \(error.userInfo)")
+      }
+    }
+  }
+  
+  // 모든 기록을 불러옵니다
+  func readAllRecord(baseballTeams: [BaseballTeamModel], stadiums: [StadiumModel]) -> Result<[RecordModel], Error> {
+    let recordContext = container.viewContext
+    let fetchRequest: NSFetchRequest<RecordData> = RecordData.fetchRequest()
     
-    init() {
-        container = NSPersistentContainer(name: "Baseball")
-        container.loadPersistentStores { (storeDescription, error) in
-            if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
+    do {
+      let fetchedRecords = try recordContext.fetch(fetchRequest)
+      let gameRecords = fetchedRecords.map { recordData -> RecordModel in
+        var image: UIImage? = nil
+        if let photoData = recordData.photo {
+          image = UIImage(data: photoData) // Data -> UIImage 변환
         }
+        let myTeam = baseballTeams.find(symbol: recordData.myTeam ?? "") ?? .dummy
+        let vsTeam = baseballTeams.find(symbol: recordData.vsTeam ?? "") ?? .dummy
+        let stadium = stadiums.find(symbol: recordData.stadiums ?? "") ?? .dummy
+        
+        return RecordModel(
+          id: recordData.id ?? UUID(),
+          date: recordData.date ?? Date(),
+          stadium: stadium,
+          isDoubleHeader: Int(recordData.isDoubleHeader),
+          myTeam: myTeam,
+          vsTeam: vsTeam,
+          myTeamScore: String(recordData.myTeamScore),
+          vsTeamScore: String(recordData.vsTeamScore),
+          isCancel: recordData.isCancel,
+          memo: recordData.memo,
+          photo: image // UIImage 반환
+        )
+      }
+      return .success(gameRecords)
+    } catch {
+      return .failure(error)
+    }
+  }
+  
+  // 새로운 기록을 저장합니다
+  func saveRecord(_ record: RecordModel) -> Result<VoidResponse, Error> {
+    let recordContext = container.viewContext
+    let newRecordData = RecordData(context: recordContext)
+    
+    newRecordData.id = record.id
+    newRecordData.date = record.date
+    newRecordData.myTeam = record.myTeam.symbol
+    newRecordData.vsTeam = record.vsTeam.symbol
+    newRecordData.myTeamScore = Int32(record.myTeamScore) ?? 0
+    newRecordData.vsTeamScore = Int32(record.vsTeamScore) ?? 0
+    newRecordData.isCancel = record.isCancel
+    newRecordData.isDoubleHeader = Int32(record.isDoubleHeader)
+    newRecordData.stadiums = record.stadium.symbol
+    newRecordData.memo = record.memo
+    
+    // UIImage -> Data 변환 후 저장
+    if let photo = record.photo {
+      newRecordData.photo = photo.jpegData(compressionQuality: 1.0)
     }
     
-    // 모든 기록을 불러옵니다
-    func readAllRecord() -> Result<[GameRecordWithScoreModel], Error> {
-        let recordContext = container.viewContext
-        let fetchRequest: NSFetchRequest<RecordData> = RecordData.fetchRequest()
-        
-        do {
-            let fetchedRecords = try recordContext.fetch(fetchRequest)
-            let gameRecords = fetchedRecords.map { recordData -> GameRecordWithScoreModel in
-                var image: UIImage? = nil
-                if let photoData = recordData.photo {
-                    image = UIImage(data: photoData) // Data -> UIImage 변환
-                }
-                
-                return GameRecordWithScoreModel(
-                    id: recordData.id ?? UUID(),
-                    date: recordData.date ?? Date(),
-                    stadiums: recordData.stadiums ?? "",
-                    myTeam: BaseballTeam(rawValue: recordData.myTeam ?? "") ?? .doosan,
-                    vsTeam: BaseballTeam(rawValue: recordData.vsTeam ?? "") ?? .doosan.anyOtherTeam(),
-                    isDoubleHeader: Int(recordData.isDoubleHeader),
-                    myTeamScore: String(recordData.myTeamScore),
-                    vsTeamScore: String(recordData.vsTeamScore),
-                    isCancel: recordData.isCancel,
-                    memo: recordData.memo,
-                    photo: image // UIImage 반환
-                )
-            }
-            return .success(gameRecords)
-        } catch {
-            return .failure(error)
-        }
+    do {
+      try recordContext.save()
+      return .success(VoidResponse())
+    } catch {
+      return .failure(error)
     }
+  }
+  
+  // 기존의 기록을 수정합니다
+  func editRecord(_ record: RecordModel) -> Result<VoidResponse, Error> {
+    let recordContext = container.viewContext
+    let fetchRequest: NSFetchRequest<RecordData> = RecordData.fetchRequest()
+    fetchRequest.predicate = NSPredicate(format: "id == %@", record.id as CVarArg)
     
-    // 새로운 기록을 저장합니다
-    func saveRecord(_ record: GameRecordWithScoreModel) -> Result<VoidResponse, Error> {
-        let recordContext = container.viewContext
-        let newRecordData = RecordData(context: recordContext)
-        
-        newRecordData.id = record.id
-        newRecordData.date = record.date
-        newRecordData.myTeam = record.myTeam.rawValue
-        newRecordData.vsTeam = record.vsTeam.rawValue
-        newRecordData.myTeamScore = Int32(record.myTeamScore) ?? 0
-        newRecordData.vsTeamScore = Int32(record.vsTeamScore) ?? 0
-        newRecordData.isCancel = record.isCancel
-        newRecordData.isDoubleHeader = Int32(record.isDoubleHeader)
-        newRecordData.stadiums = record.stadiums
-        newRecordData.memo = record.memo
+    do {
+      let results = try recordContext.fetch(fetchRequest)
+      if let recordToEdit = results.first {
+        // 기존 데이터 수정
+        recordToEdit.date = record.date
+        recordToEdit.myTeam = record.myTeam.symbol
+        recordToEdit.vsTeam = record.vsTeam.symbol
+        recordToEdit.myTeamScore = Int32(record.myTeamScore) ?? 0
+        recordToEdit.vsTeamScore = Int32(record.vsTeamScore) ?? 0
+        recordToEdit.isCancel = record.isCancel
+        recordToEdit.isDoubleHeader = Int32(record.isDoubleHeader)
+        recordToEdit.stadiums = record.stadium.symbol
+        recordToEdit.memo = record.memo
         
         // UIImage -> Data 변환 후 저장
         if let photo = record.photo {
-            newRecordData.photo = photo.jpegData(compressionQuality: 1.0)
+          recordToEdit.photo = photo.jpegData(compressionQuality: 1.0)
+        } else {
+          recordToEdit.photo = nil // 사진이 없을 경우 기존 데이터를 삭제
         }
         
-        do {
-            try recordContext.save()
-            return .success(VoidResponse())
-        } catch {
-            return .failure(error)
-        }
+        try recordContext.save()
+        return .success(VoidResponse())
+      } else {
+        return .failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Record not found"]))
+      }
+    } catch {
+      return .failure(error)
     }
+  }
+  
+  // 기존의 기록을 삭제합니다
+  func removeRecord(id: UUID) -> Result<VoidResponse, Error> {
+    let recordContext = container.viewContext
+    let fetchRequest: NSFetchRequest<RecordData> = RecordData.fetchRequest()
+    fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
     
-    // 기존의 기록을 수정합니다
-    func editRecord(_ record: GameRecordWithScoreModel) -> Result<VoidResponse, Error> {
-        let recordContext = container.viewContext
-        let fetchRequest: NSFetchRequest<RecordData> = RecordData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", record.id as CVarArg)
-        
-        do {
-            let results = try recordContext.fetch(fetchRequest)
-            if let recordToEdit = results.first {
-                // 기존 데이터 수정
-                recordToEdit.date = record.date
-                recordToEdit.myTeam = record.myTeam.rawValue
-                recordToEdit.vsTeam = record.vsTeam.rawValue
-                recordToEdit.myTeamScore = Int32(record.myTeamScore) ?? 0
-                recordToEdit.vsTeamScore = Int32(record.vsTeamScore) ?? 0
-                recordToEdit.isCancel = record.isCancel
-                recordToEdit.isDoubleHeader = Int32(record.isDoubleHeader)
-                recordToEdit.stadiums = record.stadiums
-                recordToEdit.memo = record.memo
-                
-                // UIImage -> Data 변환 후 저장
-                if let photo = record.photo {
-                    recordToEdit.photo = photo.jpegData(compressionQuality: 1.0)
-                } else {
-                  recordToEdit.photo = nil // 사진이 없을 경우 기존 데이터를 삭제
-                }
-                
-                try recordContext.save()
-                return .success(VoidResponse())
-            } else {
-                return .failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Record not found"]))
-            }
-        } catch {
-            return .failure(error)
-        }
+    do {
+      let results = try recordContext.fetch(fetchRequest)
+      if let recordToDelete = results.first {
+        recordContext.delete(recordToDelete)
+        try recordContext.save()
+        return .success(VoidResponse())
+      } else {
+        return .failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Record not found"]))
+      }
+    } catch {
+      return .failure(error)
     }
+  }
+}
+
+extension RecordDataService: RecordUpdateServiceInterface {
+  func saveRecord(
+    id: UUID,
+    date: Date,
+    stadiumSymbol: String,
+    isDoubleHeader: Int,
+    myTeamSymbol: String,
+    vsTeamSymbol: String,
+    myTeamScore: String,
+    vsTeamScore: String,
+    isCancel: Bool
+  ) -> Result<VoidResponse, Error> {
     
-    // 기존의 기록을 삭제합니다
-    func removeRecord(id: UUID) -> Result<VoidResponse, Error> {
-        let recordContext = container.viewContext
-        let fetchRequest: NSFetchRequest<RecordData> = RecordData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-        
-        do {
-            let results = try recordContext.fetch(fetchRequest)
-            if let recordToDelete = results.first {
-                recordContext.delete(recordToDelete)
-                try recordContext.save()
-                return .success(VoidResponse())
-            } else {
-                return .failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Record not found"]))
-            }
-        } catch {
-            return .failure(error)
-        }
+    let recordContext = container.viewContext
+    let newRecordData = RecordData(context: recordContext)
+    
+    newRecordData.id = id
+    newRecordData.date = date
+    newRecordData.myTeam = myTeamSymbol
+    newRecordData.vsTeam = vsTeamSymbol
+    newRecordData.myTeamScore = Int32(myTeamScore) ?? 0
+    newRecordData.vsTeamScore = Int32(vsTeamScore) ?? 0
+    newRecordData.isCancel = isCancel
+    newRecordData.isDoubleHeader = Int32(isDoubleHeader)
+    newRecordData.stadiums = stadiumSymbol
+    
+    do {
+      try recordContext.save()
+      return .success(VoidResponse())
+    } catch {
+      return .failure(error)
     }
+  }
 }
