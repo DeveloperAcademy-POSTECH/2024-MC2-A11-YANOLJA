@@ -1,14 +1,13 @@
 //
-//  Array<GameRecordWithScoreModel>+Sort.swift
-//  Yanolja
+//  Array<RecordModel> + sortByLatestDate.swift
+//  KeepingWinner
 //
-//  Created by 박혜운 on 10/8/24.
-//  Copyright © 2024 com.mc2. All rights reserved.
+//  Created by 박혜운 on 3/16/25.
 //
 
 import Foundation
 
-extension Array<GameRecordWithScoreModel> {
+extension Array<RecordModel> {
   func sortByLatestDate(_ byLatest: Bool) -> Self {
     if byLatest {
       return self.sorted { $0.date > $1.date }

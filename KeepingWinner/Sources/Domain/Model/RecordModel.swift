@@ -27,11 +27,11 @@ struct RecordModel: Identifiable {
     id: UUID = .init(),
     date: Date = .now,
     stadium: StadiumModel,
-    isDoubleHeader: Int = 0, // (0, 1, 2)
+    isDoubleHeader: Int = -1, // (-1, 0, 1)
     myTeam: BaseballTeamModel,
     vsTeam: BaseballTeamModel,
-    myTeamScore: String = "",
-    vsTeamScore: String = "",
+    myTeamScore: String = "0",
+    vsTeamScore: String = "0",
     isCancel: Bool = false,
     memo: String? = nil,
     photo: UIImage? = nil

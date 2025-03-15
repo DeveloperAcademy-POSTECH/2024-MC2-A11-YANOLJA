@@ -9,6 +9,7 @@
 import Foundation
 
 enum YearFilter {
-  static let list: [String] = ["전체", "2024", "2023"]
+  static let list: [String] = ["전체"] + (KeepingWinningRule.dataLimitYear...KeepingWinningRule.dataUpdateYear).reversed()
+    .map { String($0) }
   static let initialValue: String = list.first ?? "전체"
 }

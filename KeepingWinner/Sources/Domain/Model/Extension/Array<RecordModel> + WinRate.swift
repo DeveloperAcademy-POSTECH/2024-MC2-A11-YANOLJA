@@ -1,14 +1,13 @@
 //
-//  Array<GameRecordWithScoreModel>+WinRate.swift
-//  Yanolja
+//  Array<RecordModel> + WinRate.swift
+//  KeepingWinner
 //
-//  Created by 박혜운 on 10/8/24.
-//  Copyright © 2024 com.mc2. All rights reserved.
+//  Created by 박혜운 on 3/16/25.
 //
 
 import Foundation
 
-extension Array<GameRecordWithScoreModel> {
+extension Array<RecordModel> {
   var winRate: Int? {
     let totalGames = self.filter { $0.result != .cancel }.count // 취소를 제외한 경기 중 무승부를 포함한 전체 게임 수
     let drawCount = self.filter { $0.result == .draw}.count // 무승부 수

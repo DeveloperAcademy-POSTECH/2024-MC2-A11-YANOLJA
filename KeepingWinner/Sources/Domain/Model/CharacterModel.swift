@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct CharacterModel {
-  var myTeam: BaseballTeam
+  var symbol: String
+  var colorHex: String
   var totalWinRate: Int?
 
   var emotionByWinRate: CharacterEmotionType {
@@ -28,5 +29,11 @@ struct CharacterModel {
         return .excellent
       }
     }
+  }
+}
+
+extension CharacterModel {
+  var color: Color {
+    return Color(hexString: self.colorHex)
   }
 }
