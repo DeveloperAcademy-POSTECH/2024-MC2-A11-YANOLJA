@@ -9,6 +9,12 @@
 import Foundation
 
 struct GameRecordInfoService {
-  var gameRecord: (_ date: Date, _ myTeam: String) async -> Result<[GameRecordWithScoreModel], Error>
+  var gameRecord: (
+    _ date: Date,
+    _ myTeam: String,
+    _ baseballTeams: [BaseballTeamModel],
+    _ stadiums: [StadiumModel]
+  ) async -> Result<[RecordModel], Error>
+  
   var teamWinRate: (_ myTeam: String) async -> Result<Int?, Error>
 }

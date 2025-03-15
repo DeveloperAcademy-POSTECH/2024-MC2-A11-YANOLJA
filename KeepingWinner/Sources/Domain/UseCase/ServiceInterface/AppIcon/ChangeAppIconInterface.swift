@@ -9,5 +9,5 @@
 import Foundation
 
 protocol ChangeAppIconInterface {
-  func requestChangeAppIcon(to team: BaseballTeam)
+  func requestChangeAppIcon(symbol: String)
 }

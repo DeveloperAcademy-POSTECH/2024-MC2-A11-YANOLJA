@@ -9,8 +9,8 @@
 import Foundation
 
 protocol MyTeamServiceInterface {
-  func readMyTeam() -> BaseballTeam?
-  func saveTeam(to newTeam: BaseballTeam)
+  func readMyTeam(baseballTeams: [BaseballTeamModel]) -> BaseballTeamModel
+  func saveTeam(symbol: String)
 }
 
 extension MyTeamServiceInterface {
