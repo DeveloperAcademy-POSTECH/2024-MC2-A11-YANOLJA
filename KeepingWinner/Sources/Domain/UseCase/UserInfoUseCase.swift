@@ -11,14 +11,16 @@ import SwiftUI
 @Observable
 class UserInfoUseCase {
   struct State {
-    var myTeam: BaseballTeam?
+    var baseballTeams: [BaseballTeamModel] = []
+
+    var myTeam: BaseballTeamModel = .noTeam
     var myNickname: String?
-    var bubbleTextList: [String] = []
+    var bubbleTextList: [String] = KeepingWinningRule.defaultBubbleTexts
     var notices: [NoticeModel] = []
   }
   
   enum Action {
-    case changeMyTeam(BaseballTeam)
+    case changeMyTeam(BaseballTeamModel)
     case changeMyNickname(String)
     case setNotices
     case setBubbleTexts
@@ -29,8 +31,8 @@ class UserInfoUseCase {
   private var myNicknameService: MyNicknameServiceInterface
   private var changeAppIconService: ChangeAppIconInterface
   private var settingsService: SettingsService
-  private var _state: State = .init() // 원본 State, Usecase 내부에서만 접근가능
-  var state: State { _state } // View에서 접근하는 state
+  private var baseballTeamService: BaseballTeamService = .live
+  private(set) var state: State = .init()
   
   init(
     myTeamService: MyTeamServiceInterface,
@@ -42,10 +44,9 @@ class UserInfoUseCase {
     self.myTeamService = myTeamService
     self.myNicknameService = myNicknameService
     self.settingsService = settingsService
-    _state.myNickname = myNicknameService.readMyNickname()
-    _state.myTeam = myTeamService.readMyTeam()
-    self.effect(.setNotices)
-    self.effect(.setBubbleTexts)
+    state.myNickname = myNicknameService.readMyNickname()
+    state.baseballTeams = baseballTeamService.teams()
+    state.myTeam = myTeamService.readMyTeam(baseballTeams: state.baseballTeams)
   }
   
   // MARK: - View Action
@@ -58,28 +59,38 @@ class UserInfoUseCase {
     case .setNotices:
       Task {
         if case let .success(notices) = await settingsService.allNotices() {
-          _state.notices = notices
+          await MainActor.run {
+            state.notices = notices
+          }
         }
       }
       
     case .setBubbleTexts:
       Task {
-        if case let .success(bubbleTextList) = await settingsService.characterBubbleTexts(_state.myTeam?.sliceName ?? BaseballTeam.noTeam.sliceName) {
-          _state.bubbleTextList = bubbleTextList
+        let myTeamName = state.myTeam.name()
+        if case let .success(
+          bubbleTextList
+        ) = await settingsService.characterBubbleTexts(myTeamName) {
+          await MainActor.run {
+            self.state.bubbleTextList = bubbleTextList
+          }
         } else {
-          _state.bubbleTextList = BaseballTeam.defaultBubbleTexts
+          await MainActor.run {
+            self.state.bubbleTextList = KeepingWinningRule.defaultBubbleTexts
+          }
         }
       }
       
     case let .changeMyTeam(newTeam):
-      myTeamService.saveTeam(to: newTeam)
-      changeAppIconService.requestChangeAppIcon(to: newTeam)
-      _state.myTeam = newTeam
+      let symbol = newTeam.symbol
+      myTeamService.saveTeam(symbol: symbol)
+      changeAppIconService.requestChangeAppIcon(symbol: symbol) 
+      state.myTeam = newTeam
       self.effect(.setBubbleTexts)
       
     case let .changeMyNickname(newName):
       myNicknameService.saveNickname(to: newName)
-      _state.myNickname = newName
+      state.myNickname = newName
     }
   }
 }
