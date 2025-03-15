@@ -26,12 +26,14 @@ struct BaseballTeamDTO {
 struct BaseballHistoryDTO {
   let name: String
   let colorHex: String
+  let subColorHex: String
   let startYear: Int
   let dueYear: Int?
   
-  init(name: String, colorHex: String, startYear: Int, dueYear: Int? = nil) {
+  init(name: String, colorHex: String, subColorHex: String, startYear: Int, dueYear: Int? = nil) {
     self.name = name
     self.colorHex = colorHex
+    self.subColorHex = subColorHex
     self.startYear = startYear
     self.dueYear = dueYear
   }
@@ -42,6 +44,7 @@ extension BaseballHistoryDTO {
     return .init(
       name: self.name,
       colorHex: self.colorHex,
+      subColorHex: self.subColorHex,
       startYear: self.startYear,
       dueYear: self.dueYear
     )
