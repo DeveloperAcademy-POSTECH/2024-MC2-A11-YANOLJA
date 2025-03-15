@@ -96,77 +96,71 @@ extension BaseballTeamService {
       
       let doosan = BaseballTeamDTO(
         symbol: "doosan",
-        teamHistories: [.init(name: "두산 베어스", colorHex: "13254B", startYear: 2015)],
+        teamHistories: [.init(name: "두산 베어스", colorHex: "13254B", subColorHex: "CFDFFF", startYear: 2015)],
         homeHistories: [doosanHome1]
       )
       
       let lotte = BaseballTeamDTO(
         symbol: "lotte",
-        teamHistories: [.init(name: "롯데 자이언츠", colorHex: "62AEE0", startYear: 2015)],
+        teamHistories: [.init(name: "롯데 자이언츠", colorHex: "62AEE0", subColorHex: "D2EDFF", startYear: 2015)],
         homeHistories: [lotteHome1]
       )
       
       let samsung = BaseballTeamDTO(
         symbol: "samsung",
-        teamHistories: [.init(name: "삼성 라이온즈", colorHex: "1466B0", startYear: 2015)],
+        teamHistories: [.init(name: "삼성 라이온즈", colorHex: "1466B0", subColorHex: "B8DDFF", startYear: 2015)],
         homeHistories: [samsungHome1]
       )
       
       let hanwha = BaseballTeamDTO(
         symbol: "hanwha",
-        teamHistories: [.init(name: "한화 이글스", colorHex: "F27422", startYear: 2015)],
+        teamHistories: [.init(name: "한화 이글스", colorHex: "F27422", subColorHex: "FDE6CB", startYear: 2015)],
         homeHistories: [hanwhaHome1]
       )
       
       let kiwoom = BaseballTeamDTO(
         symbol: "kiwoom",
-        teamHistories: [.init(name: "키움 히어로즈", colorHex: "811428", startYear: 2019)],
-        homeHistories: [kiwoomHome1]
-      )
-      
-      let nexen = BaseballTeamDTO(
-        symbol: "kiwoom",
-        teamHistories: [.init(name: "넥센 히어로즈", colorHex: "811428", startYear: 2015, dueYear: 2018)],
-        homeHistories: [nexenHome1]
+        teamHistories: [
+          .init(name: "키움 히어로즈", colorHex: "811428", subColorHex: "F3CAD1", startYear: 2019),
+          .init(name: "넥센 히어로즈", colorHex: "811428", subColorHex: "F3CAD1", startYear: 2015, dueYear: 2018)
+        ],
+        homeHistories: [kiwoomHome1, nexenHome1]
       )
       
       let kia = BaseballTeamDTO(
         symbol: "kia",
-        teamHistories: [.init(name: "KIA 타이거즈", colorHex: "EA0029", startYear: 2015)],
+        teamHistories: [.init(name: "KIA 타이거즈", colorHex: "EA0029", subColorHex: "FED2D4", startYear: 2015)],
         homeHistories: [kiaHome1]
       )
       
       let kt = BaseballTeamDTO(
         symbol: "kt",
-        teamHistories: [.init(name: "KT 위즈", colorHex: "221E1F", startYear: 2015)],
+        teamHistories: [.init(name: "KT 위즈", colorHex: "221E1F", subColorHex: "DCDADA", startYear: 2015)],
         homeHistories: [ktHome1]
       )
       
       let lg = BaseballTeamDTO(
         symbol: "lg",
-        teamHistories: [.init(name: "LG 트윈스", colorHex: "C22038", startYear: 2015)],
+        teamHistories: [.init(name: "LG 트윈스", colorHex: "C22038", subColorHex: "FFC7D0", startYear: 2015)],
         homeHistories: [lgHome1]
       )
       
       let nc = BaseballTeamDTO(
         symbol: "nc",
-        teamHistories: [.init(name: "NC 다이노스", colorHex: "C39D7B", startYear: 2015)],
+        teamHistories: [.init(name: "NC 다이노스", colorHex: "C39D7B", subColorHex: "F1E2D0", startYear: 2015)],
         homeHistories: [ncHome1]
       )
       
       let ssg = BaseballTeamDTO(
         symbol: "ssg",
-        teamHistories: [.init(name: "SSG 랜더스", colorHex: "CD202E", startYear: 2021)],
-        homeHistories: [ssgHome1]
+        teamHistories: [
+          .init(name: "SSG 랜더스", colorHex: "CD202E", subColorHex: "FFC2C7", startYear: 2021),
+          .init(name: "SK 와이번스", colorHex: "CD202E", subColorHex: "FFC2C7", startYear: 2015, dueYear: 2020)
+        ],
+        homeHistories: [ssgHome1, skHome1]
       )
       
-      let sk = BaseballTeamDTO(
-        symbol: "ssg",
-        teamHistories: [.init(name: "SK 와이번스", colorHex: "CD202E", startYear: 2015, dueYear: 2020)],
-        homeHistories: [ssgHome1]
-      )
-      
-      let baseballDTOs = [doosan, lotte, samsung, hanwha, kiwoom, kia, kt, lg, nc, ssg, sk, nexen]
+      let baseballDTOs = [doosan, lotte, samsung, hanwha, kiwoom, kia, kt, lg, nc, ssg]
 
       return baseballDTOs.map { $0.convert }
     }
