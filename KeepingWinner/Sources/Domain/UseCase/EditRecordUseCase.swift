@@ -34,7 +34,7 @@ final class EditRecordUseCase {
   // MARK: - Action
   enum Action {
     case onAppear(RecordEditType)
-    case _loadBaseballTeamNames
+    case _loadBaseballTeams
     case _loadStadiums
     case _loadMyTeamInfo
     case _saveNewRecord
@@ -76,7 +76,7 @@ final class EditRecordUseCase {
     switch action {
     case let .onAppear(type):
       effect(._loadStadiums)
-      effect(._loadBaseballTeamNames)
+      effect(._loadBaseballTeams)
       effect(._loadMyTeamInfo)
       
       if case .edit(let exRecord) = type {
@@ -97,7 +97,7 @@ final class EditRecordUseCase {
         state.record = state._resetRecord
       }
       
-    case ._loadBaseballTeamNames:
+    case ._loadBaseballTeams:
       self.state.baseballTeams = self.baseballTeamService.teams()
       return
       
@@ -166,10 +166,11 @@ final class EditRecordUseCase {
       }
       
     case let .inputScoreMyTeam(isMyTeam, score):
+      let num = Int(score.prefix(2)) ?? 0
       if isMyTeam {
-        state.record.myTeamScore = String(score.prefix(2))
+        state.record.myTeamScore = String(num)
       } else {
-        state.record.vsTeamScore = String(score.prefix(2))
+        state.record.vsTeamScore = String(num)
       }
       
       case .tappedIsCancel:
@@ -207,7 +208,7 @@ final class EditRecordUseCase {
       let editRecord = state.record
       _ = myRecordService.editRecord(editRecord)
       
-    case let .tappedDeleteRecord:
+    case .tappedDeleteRecord:
       _ = myRecordService.removeRecord(id: state.record.id)
     }
   }
