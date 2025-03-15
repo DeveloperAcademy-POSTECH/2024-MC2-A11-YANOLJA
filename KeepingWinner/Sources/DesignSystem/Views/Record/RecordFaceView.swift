@@ -49,7 +49,7 @@ struct RecordFaceView: View {
       }
       .aspectRatio(1, contentMode: .fit)
       .frame(width: 120)
-      .foregroundColor(characterModel.myTeam.mainColor)
+      .foregroundColor(Color(hexString: characterModel.colorHex))
     }
 
   }
@@ -57,6 +57,10 @@ struct RecordFaceView: View {
 
 #Preview {
   RecordFaceView(
-    characterModel: .init(myTeam: .kt, totalWinRate: 100)
+    characterModel: .init(
+      symbol: KeepingWinningRule.noTeamSymbol,
+      colorHex: KeepingWinningRule.noTeamColorHex,
+      totalWinRate: 100
+    )
   )
 }

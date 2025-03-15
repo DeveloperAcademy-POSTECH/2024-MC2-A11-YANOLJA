@@ -11,3 +11,4 @@ import Foundation
 struct StadiumsDTO: Codable {
   let stadiums: [String]
 }
+

@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct TotalRecordCell: View {
-  let recordList: [GameRecordWithScoreModel]
-  let myTeam: BaseballTeam
+  let recordList: [RecordModel]
+  let myTeam: BaseballTeamModel?
   
   var body: some View {
     VStack {
@@ -32,7 +32,8 @@ struct TotalRecordCell: View {
         Spacer()
         RecordFaceView(
           characterModel: .init(
-            myTeam: myTeam,
+            symbol: myTeam?.symbol ?? KeepingWinningRule.noTeamSymbol,
+            colorHex: myTeam?.colorHex() ?? KeepingWinningRule.noTeamColorHex,
             totalWinRate: listInfo.winRate
           )
         )
@@ -77,6 +78,6 @@ struct TotalRecordCell: View {
 #Preview {
   TotalRecordCell(
     recordList: [],
-    myTeam: .doosan
+    myTeam: .dummy
   )
 }

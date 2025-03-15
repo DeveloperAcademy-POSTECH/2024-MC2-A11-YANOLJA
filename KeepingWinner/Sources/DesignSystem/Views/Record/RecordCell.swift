@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct RecordCell: View {
-  let record: GameRecordWithScoreModel
+  let record: RecordModel
   
   var body: some View {
     ZStack {
@@ -31,7 +31,9 @@ struct RecordCell: View {
           Spacer()
           VStack {
             HStack(spacing: 0) {
-              Text(record.myTeam.name.split(separator: " ").first ?? "")
+              Text(
+                record.myTeam.name(year: record.date.year)
+              )
                 .font(.title)
                 .bold()
                 .foregroundStyle(.black)
@@ -43,7 +45,7 @@ struct RecordCell: View {
                 .foregroundStyle(.gray)
                 .opacity(record.isCancel ? 0.5 : 1)
                 .frame(width: 16)
-              Text(record.vsTeam.name.split(separator: " ").first ?? "")
+              Text(record.vsTeam.name(year: record.date.year))
                 .font(.title)
                 .foregroundStyle(.black)
                 .bold()
@@ -70,7 +72,7 @@ struct RecordCell: View {
                 .opacity(record.isCancel ? 0.5 : 1)
                 .foregroundStyle(.date)
             }
-            Text(record.stadiums)
+            Text(record.stadium.name())
               .font(.caption2)
               .opacity(record.isCancel ? 0.5 : 1)
               .foregroundStyle(.date)
@@ -122,7 +124,7 @@ struct RecordCell: View {
     }
     switch record.result {
     case .win:
-      return record.myTeam.mainColor
+      return record.myTeam.color()
     case .lose:
       return Color(.systemGray4)
     case .draw:
@@ -150,5 +152,7 @@ struct RecordCell: View {
 }
 
 #Preview {
-  RecordCell(record: .init(myTeamScore: "3", vsTeamScore: "0"))
+  RecordCell(
+    record: .init(stadium: .dummy, myTeam: .dummy, vsTeam: .dummy)
+  )
 }

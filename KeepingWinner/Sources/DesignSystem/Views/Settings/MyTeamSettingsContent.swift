@@ -9,26 +9,31 @@
 import SwiftUI
 
 struct MyTeamSettingsContent: View {
-  @Binding var selectedTeam: BaseballTeam?
+  let baseballTeams: [BaseballTeamModel]
+  @Binding var selectedTeam: BaseballTeamModel?
   private var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
   
-  init(selectedTeam: Binding<BaseballTeam?>) {
+  init(
+    baseballTeams: [BaseballTeamModel],
+    selectedTeam: Binding<BaseballTeamModel?>
+  ) {
+    self.baseballTeams = baseballTeams
     self._selectedTeam = selectedTeam
   }
   
   var body: some View {
     LazyVGrid(columns: columns) {
-      ForEach(BaseballTeam.allCases, id: \.self) { team in
+      ForEach(baseballTeams, id: \.id) { model in
         Button(
           action: {
-            selectedTeam = team
+            selectedTeam = model
           },
           label: {
-            MyTeamSelectCell(team: team)
+            MyTeamSelectCell(baseballTeam: model)
             .cornerRadiusWithBorder(
               radius: 20,
               borderColor: Color(.systemGray3),
-              lineWidth: selectedTeam == team ? 2 : 0
+              lineWidth: selectedTeam?.name() == model.name() ? 2 : 0
             )
           }
         )
@@ -42,6 +47,7 @@ struct MyTeamSettingsContent: View {
 
 #Preview {
   MyTeamSettingsContent(
+    baseballTeams: [],
     selectedTeam: .constant(nil)
   )
 }

@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct OnboardingView: View {
-  let onBoardingResultInfo: (BaseballTeam, String) -> Void
-  
-  @State var selectedTeam: BaseballTeam? = nil
+  let onBoardingResultInfo: (BaseballTeamModel, String) -> Void
+  let baseballTeams: [BaseballTeamModel]
+  @State var selectedTeam: BaseballTeamModel? = nil
   @State var selectedUserNickname: String = ""
   @State var tappedSelectedTeamConfirm: Bool = false
   
@@ -26,7 +26,10 @@ struct OnboardingView: View {
       .padding(.top, 20)
       
       VStack(spacing: 0) {
-        MyTeamSettingsContent(selectedTeam: $selectedTeam)
+        MyTeamSettingsContent(
+          baseballTeams: baseballTeams,
+          selectedTeam: $selectedTeam
+        )
         
         Spacer()
         
@@ -107,7 +110,8 @@ struct OnboardingView: View {
 // MARK: - 실제 화면
 #Preview {
   OnboardingView(
-    onBoardingResultInfo: { (_, _) in }
+    onBoardingResultInfo: { (_, _) in },
+    baseballTeams: []
   )
 }
 
@@ -115,6 +119,7 @@ struct OnboardingView: View {
 #Preview {
   OnboardingView(
     onBoardingResultInfo: { (_, _) in },
+    baseballTeams: [],
     tappedSelectedTeamConfirm: true
   )
 }

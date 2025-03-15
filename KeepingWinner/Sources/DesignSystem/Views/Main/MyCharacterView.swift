@@ -48,7 +48,7 @@ struct MyCharacterView: View {
             Image(.mainCharacter4Line)
           }
         }
-        .foregroundColor(characterModel.myTeam.mainColor)
+        .foregroundColor(Color(hexString: characterModel.colorHex))
       }
     }
   }
@@ -57,6 +57,10 @@ struct MyCharacterView: View {
 
 #Preview {
   MyCharacterView(
-    characterModel: .init(myTeam: .kiwoom, totalWinRate: 100)
+    characterModel: .init(
+      symbol: KeepingWinningRule.noTeamSymbol,
+      colorHex: KeepingWinningRule.noTeamColorHex,
+      totalWinRate: 100
+    )
   )
 }

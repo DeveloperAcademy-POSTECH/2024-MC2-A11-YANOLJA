@@ -9,23 +9,20 @@
 import SwiftUI
 
 struct AnalyticsListFilterButton: View {
-  @Binding var selectedAnalyticsFilter: AnalyticsFilter
+  @Binding var selectedRecordGrouping: RecordGrouping
+  let groupingOptions: [RecordGrouping]
   
   var body: some View {
     Menu {
-      AnalyticsFilterLabel(
-        selectedAnalyticsFilter: $selectedAnalyticsFilter,
-        recordFilter: .team(.doosan),
-        showLabel: AnalyticsFilter.team(.doosan).label
-      )
-      AnalyticsFilterLabel(
-        selectedAnalyticsFilter: $selectedAnalyticsFilter,
-        recordFilter: .stadiums(""),
-        showLabel: AnalyticsFilter.stadiums("").label
-      )
+      ForEach(groupingOptions, id: \.title) { option in
+        GroupingSelectorLabel(
+          selectedRecordGrouping: $selectedRecordGrouping,
+          recordGrouping: option
+        )
+      }
     } label: {
       HStack(spacing: 4) {
-        Text(selectedAnalyticsFilter.label)
+        Text(selectedRecordGrouping.title)
           .font(.subheadline)
           .foregroundStyle(.gray)
           .bold()
@@ -39,5 +36,8 @@ struct AnalyticsListFilterButton: View {
 }
 
 #Preview {
-  AnalyticsListFilterButton(selectedAnalyticsFilter: .constant(.team(.doosan)))
+  AnalyticsListFilterButton(
+    selectedRecordGrouping: .constant(WeekdayRecordGrouping()),
+    groupingOptions: [WeekdayRecordGrouping()]
+  )
 }

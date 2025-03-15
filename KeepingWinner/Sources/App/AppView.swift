@@ -13,11 +13,10 @@ struct AppView: View {
   @State var plusButtonTapped: Bool = false
   
   var winRateUseCase: WinRateUseCase
-  var recordUseCase: RecordUseCase
+  var recordUseCase: AllRecordUseCase
   var userInfoUseCase: UserInfoUseCase
   
   @State var selection: Tab = .main
-  @State var selectedRecordYearFilter: String = YearFilter.initialValue
   
   var body: some View {
     NavigationStack(path: $router.path) {
@@ -41,8 +40,7 @@ struct AppView: View {
           winRateUseCase: winRateUseCase,
           userInfoUseCase: userInfoUseCase,
           recordUseCase: recordUseCase,
-          plusButtonTapped: $plusButtonTapped,
-          selectedYearFilter: $selectedRecordYearFilter
+          plusButtonTapped: $plusButtonTapped
         )
         .tabItem {
           Image(systemName: "plus.app")
@@ -68,7 +66,7 @@ struct AppView: View {
         {
           switch selection {
           case .main: return "나의 직관 승률"
-          case .record: return "\(selectedRecordYearFilter) 직관 기록"
+          case .record: return "\(recordUseCase.state.selectedYearFilter) 직관 기록"
           case .analytics: return "\(winRateUseCase.state.selectedYearFilter) 승률 분석"
           }
         }()
@@ -103,17 +101,19 @@ struct AppView: View {
                     label: { Image(systemName: "plus") }
                   )
                   Menu {
-                    ForEach(YearFilter.list, id: \.self) { selectedFilter in
+                    ForEach(YearFilter.list, id: \.self) { selectedYear in
                       Button(
                         action: {
-                          selectedRecordYearFilter = selectedFilter
+                          recordUseCase
+                            .effect(.tappedYearFilter(to: selectedYear))
                         }
                       ) {
                         HStack {
-                          if selectedRecordYearFilter == selectedFilter {
+                          if recordUseCase
+                            .state.selectedYearFilter == selectedYear {
                             Image(systemName: "checkmark")
                           }
-                          Text(selectedFilter)
+                          Text(selectedYear)
                         }
                       }
                     }
@@ -126,7 +126,7 @@ struct AppView: View {
                   ForEach(YearFilter.list, id: \.self) { selectedFilter in
                     Button(
                       action: {
-                        winRateUseCase.effect(.tappedAnalyticsYearFilter(to: selectedFilter))
+                        winRateUseCase.effect(.tappedYearFilter(to: selectedFilter))
                       }
                     ) {
                       HStack {
@@ -147,7 +147,9 @@ struct AppView: View {
         )
       }
       .sheet(
-        isPresented: .init(get: { userInfoUseCase.state.myTeam != nil && userInfoUseCase.state.myNickname == nil }, set: { _ in }),
+        isPresented: .init(
+          get: { !userInfoUseCase.state.myTeam.isNoTeam && userInfoUseCase.state.myNickname == nil },
+          set: { _ in }),
         content: {
           NicknameChangeView(userInfoUseCase: userInfoUseCase, noNicknameUser: true)
             .presentationDetents([.fraction(0.9)])
@@ -176,10 +178,8 @@ struct AppView: View {
         }
       }
       .fullScreenCover(
-        isPresented: .init(
-          get: {
-            return userInfoUseCase.state.myTeam == nil
-          },
+        isPresented: Binding<Bool>.init(
+          get: { return userInfoUseCase.state.myTeam.isNoTeam },
           set: { _ in }
         ),
         content: {
@@ -188,12 +188,16 @@ struct AppView: View {
               userInfoUseCase.effect(.changeMyTeam(myTeam))
               userInfoUseCase.effect(.changeMyNickname(nickname))
               winRateUseCase.effect(.tappedTeamChange(myTeam))
-            }
+            },
+            baseballTeams: recordUseCase.state.baseballTeams
           )
         }
       )
     }
     .environmentObject(router)
+    .onAppear {
+      recordUseCase.effect(.onAppear)
+    }
   }
 }
 
@@ -211,7 +215,7 @@ struct AppView: View {
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
       changeIconService: ChangeAppIconService(),
-      settingsService: .live
+      settingsService: .preview
     )
   )
 }
