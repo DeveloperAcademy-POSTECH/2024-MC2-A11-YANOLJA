@@ -9,9 +9,9 @@
 import UIKit
 
 struct ChangeAppIconService: ChangeAppIconInterface {
-  func requestChangeAppIcon(to team: BaseballTeam) {
+  func requestChangeAppIcon(symbol: String) {
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-      self.changeICon(iconName: team.rawValue.uppercased())
+      self.changeICon(iconName: symbol.uppercased())
     }
   }
 }

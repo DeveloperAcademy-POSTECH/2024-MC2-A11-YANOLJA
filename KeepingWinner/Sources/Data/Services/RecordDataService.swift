@@ -10,9 +10,8 @@ import Foundation
 import CoreData
 import UIKit
 
-// MARK: - v1.0 이후 에디꺼
 class RecordDataService: RecordDataServiceInterface {
-  private let container: NSPersistentContainer
+  let container: NSPersistentContainer
   
   init() {
     container = NSPersistentContainer(name: "Baseball")
@@ -84,6 +83,7 @@ class RecordDataService: RecordDataServiceInterface {
       try recordContext.save()
       return .success(VoidResponse())
     } catch {
+      print("Core Data 저장 실패: \(error.localizedDescription)")
       return .failure(error)
     }
   }
@@ -140,41 +140,6 @@ class RecordDataService: RecordDataServiceInterface {
       } else {
         return .failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Record not found"]))
       }
-    } catch {
-      return .failure(error)
-    }
-  }
-}
-
-extension RecordDataService: RecordUpdateServiceInterface {
-  func saveRecord(
-    id: UUID,
-    date: Date,
-    stadiumSymbol: String,
-    isDoubleHeader: Int,
-    myTeamSymbol: String,
-    vsTeamSymbol: String,
-    myTeamScore: String,
-    vsTeamScore: String,
-    isCancel: Bool
-  ) -> Result<VoidResponse, Error> {
-    
-    let recordContext = container.viewContext
-    let newRecordData = RecordData(context: recordContext)
-    
-    newRecordData.id = id
-    newRecordData.date = date
-    newRecordData.myTeam = myTeamSymbol
-    newRecordData.vsTeam = vsTeamSymbol
-    newRecordData.myTeamScore = Int32(myTeamScore) ?? 0
-    newRecordData.vsTeamScore = Int32(vsTeamScore) ?? 0
-    newRecordData.isCancel = isCancel
-    newRecordData.isDoubleHeader = Int32(isDoubleHeader)
-    newRecordData.stadiums = stadiumSymbol
-    
-    do {
-      try recordContext.save()
-      return .success(VoidResponse())
     } catch {
       return .failure(error)
     }
