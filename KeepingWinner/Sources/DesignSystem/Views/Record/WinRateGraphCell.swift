@@ -63,5 +63,9 @@ struct WinRateGraphCell: View {
 }
 
 #Preview {
-  WinRateGraphCell(myTeamSubColor: BaseballTeam.kiwoom.subColor, detailOptionsName: BaseballTeam.ssg.name, winRate: 50)
+  WinRateGraphCell(
+    myTeamSubColor: .doosan1,
+    detailOptionsName: "옵션이름",
+    winRate: 33
+  )
 }

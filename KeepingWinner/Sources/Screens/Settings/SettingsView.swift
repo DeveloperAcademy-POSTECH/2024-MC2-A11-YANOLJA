@@ -71,7 +71,7 @@ struct ContentView: View {
             Image(.myPageFace)
               .resizable()
               .renderingMode(.template)
-              .foregroundStyle(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
+              .foregroundStyle(userInfoUseCase.state.myTeam.color())
             Image(.myPageLine)
               .resizable()
           }
