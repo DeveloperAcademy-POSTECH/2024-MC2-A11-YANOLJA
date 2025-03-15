@@ -12,7 +12,7 @@ enum RecordFilter: CaseIterable, Hashable {
   static let allCases: [RecordFilter] = [
     .all,
     teamOptions("doosan"),
-    stadiumsOptions("잠실종합운동장야구장" ?? ""),
+    stadiumsOptions("잠실종합운동장야구장"),
     .resultsOptions(.win)
   ]
   static let initialValue: Self = .all
