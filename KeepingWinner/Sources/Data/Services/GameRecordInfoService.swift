@@ -22,12 +22,13 @@ extension GameRecordInfoService {
         switch result {
         case let .success(gameDTO):
           let recordList = gameDTO.map { dto in
-            let myTeam = baseballTeams.first { $0.name() == dto.myTeam } ?? .dummy
-            let vsTeam = baseballTeams.first { $0.name() == dto.vsTeam } ?? .dummy
+            let date = dto.date.toCalendarDate()
+            let myTeam = baseballTeams.first { $0.name(year: date.year) == dto.myTeam } ?? .dummy
+            let vsTeam = baseballTeams.first { $0.name(year: date.year) == dto.vsTeam } ?? .dummy
             let stadium = stadiums.first { $0.symbol == dto.stadium } ?? .dummy
             
             return RecordModel(
-              date: dto.date.toCalendarDate(),
+              date: date,
               stadium: stadium,
               isDoubleHeader: dto.doubleHeaderGameOrder,
               myTeam: myTeam,
