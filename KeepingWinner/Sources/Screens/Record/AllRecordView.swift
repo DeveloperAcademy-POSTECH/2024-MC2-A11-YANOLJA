@@ -44,7 +44,9 @@ struct AllRecordView: View {
           sortByLatestDate: .init(
             get: { recordUseCase.state.isAscending },
             set: { _ in recordUseCase.effect(.tappedAscending) }
-          )
+          ),
+          firstTitle: "최근 순",
+          secondTitle: "이전 순"
         )
       }
       

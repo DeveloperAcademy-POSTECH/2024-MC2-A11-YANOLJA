@@ -51,7 +51,9 @@ struct AllAnalyticsView: View {
                 set: { _ in
                   winRateUseCase.effect(.tappedAscending)
                 }
-              )
+              ),
+              firstTitle: "승률 높은 순",
+              secondTitle: "승률 낮은 순"
             )
           }
           .foregroundStyle(.gray)
