@@ -78,7 +78,8 @@ private struct NameBox: View {
           .scaledToFit()
           .frame(height: 10)
         Text(
-          userInfoUseCase.state.myTeam?.name() ?? KeepingWinningRule.noTeamName
+          userInfoUseCase.state.myTeam?
+            .name(type: .full) ?? KeepingWinningRule.noTeamName
         )
           .font(.footnote)
         Image(systemName: "sparkle")
