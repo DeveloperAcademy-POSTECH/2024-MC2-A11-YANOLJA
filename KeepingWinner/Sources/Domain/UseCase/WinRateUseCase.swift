@@ -114,9 +114,9 @@ class WinRateUseCase {
     case ._loadMyTeamInfo:
       let myTeam = self.userInfoService.readMyTeam(baseballTeams: state.baseballTeams)
       self.state.myTeam = myTeam ?? BaseballTeamModel.noTeam
-      if !self.state.myTeam.isNoTeam {
-        effect(._loadMyTeamWinRate)
-      }
+//      if !self.state.myTeam.isNoTeam {
+//        effect(._loadMyTeamWinRate)
+//      }
       
     case ._loadMyTeamWinRate:
       Task { await loadMyTeamWinRate() }

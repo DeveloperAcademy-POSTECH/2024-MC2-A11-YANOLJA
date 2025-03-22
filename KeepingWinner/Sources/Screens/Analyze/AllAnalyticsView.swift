@@ -22,55 +22,10 @@ struct AllAnalyticsView: View {
       Spacer()
         .frame(height: 30)
       
-      TotalRecordCell(
+      TotalWinRateCell(
         recordList: yearFilteredRecordList,
         myTeam: userInfoUseCase.state.myTeam
       )
-      
-      Spacer()
-        .frame(height: 10)
-      
-      HStack(spacing: 11) {
-        VStack(alignment: .leading, spacing: 8) {
-          Text("우리 팀 승률")
-            .font(.footnote)
-          HStack {
-            Spacer()
-            Text("\(winRateUseCase.state.myTeamRealWinRate?.toString ?? "--")%")
-              .font(.title2)
-              .bold()
-          }
-        }
-        .padding(16)
-        .background {
-          RoundedRectangle(cornerRadius: 14)
-            .stroke(style: StrokeStyle(lineWidth: 0.33))
-            .foregroundStyle(.gray)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        
-        VStack(alignment: .leading, spacing: 8) {
-          Text("나의 직관 승률")
-            .font(.footnote)
-          HStack {
-            Spacer()
-            if let totalWinRate = yearFilteredRecordList.winRate {
-              Text("\(totalWinRate)%")
-            } else {
-              Text("--%")
-            }
-          }
-          .font(.title2)
-          .bold()
-        }
-        .padding(16)
-        .background {
-          RoundedRectangle(cornerRadius: 14)
-            .stroke(lineWidth: 0.33)
-            .foregroundStyle(.gray)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-      }
       
       Spacer()
         .frame(height: 24)
