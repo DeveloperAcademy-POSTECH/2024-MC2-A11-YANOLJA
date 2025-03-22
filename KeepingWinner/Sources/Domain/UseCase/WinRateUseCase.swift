@@ -20,6 +20,7 @@ class WinRateUseCase {
     var myTeamRealWinRate: Int?
     var isAscending: Bool = true
     
+    var isPresentedYearFilterSheet: Bool = false
     var selectedYearFilter: String = YearFilter.initialValue
     
     fileprivate var records: [RecordModel] = []
@@ -43,7 +44,8 @@ class WinRateUseCase {
   enum Action {
     // MARK: - User Action
     case tappedTeamChange(BaseballTeamModel) // MARK: - 팀 변경 시 다른 형태로 값 주입 필요 (현재 기존 형태)
-    case tappedYearFilter(to: String)
+    case setYearFilter(to: String)
+    case presentingYearFilter(Bool)
     
     case _loadBaseballTeams
     case _loadStadiums
@@ -138,6 +140,9 @@ class WinRateUseCase {
       state.isAscending.toggle()
       effect(._sortCategories)
       
+    case .presentingYearFilter(let presenting):
+      state.isPresentedYearFilterSheet = presenting
+      
     case ._sortCategories:
       let categories = state.selectedGroupingOption.categories(validYear: state.selectedYearFilter)
       
@@ -202,7 +207,7 @@ class WinRateUseCase {
       effect(._setGroupingOptions)
       effect(._loadMyTeamWinRate)
       
-    case let .tappedYearFilter(year):
+    case let .setYearFilter(year):
       state.selectedYearFilter = year
       effect(.tappedGroupingOption(state.selectedGroupingOption))
       

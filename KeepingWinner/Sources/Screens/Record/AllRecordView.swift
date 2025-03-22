@@ -126,6 +126,12 @@ struct AllRecordView: View {
         goBackAction: { plusButtonTapped = false }
       )
     }
+    .yearPickerSheet(
+      isPresented: recordUseCase.state.isPresentedYearFilterSheet,
+      selectedYear: recordUseCase.state.selectedYearFilter,
+      changeYearTo: { year in recordUseCase.effect(.setYearFilter(to: year)) },
+      goBackAction: { recordUseCase.effect(.presentingYearFilter(false)) }
+    )
   }
 }
 
