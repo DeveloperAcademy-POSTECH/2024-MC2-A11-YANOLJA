@@ -17,20 +17,12 @@ class WinRateUseCase {
     
     // MARK: - Data State
     var myTeam: BaseballTeamModel = .noTeam
-    var myTeamWinRate: Int?
-    var recordWinRate: Int? = 88
+    var myTeamRealWinRate: Int?
     var isAscending: Bool = true
     
     var selectedYearFilter: String = YearFilter.initialValue
     
     fileprivate var records: [RecordModel] = []
-    var yearFilteredRecordList: [RecordModel] {
-      if selectedYearFilter != "전체" {
-        return self.records.filter { $0.date.year == selectedYearFilter }
-      } else {
-        return self.records
-      }
-    }
     
     var groupingOptions: [RecordGrouping] = []
     var selectedGroupingOption: RecordGrouping = WeekdayRecordGrouping()
@@ -38,6 +30,15 @@ class WinRateUseCase {
     var selectedGroupingOptionCategories: [String] = []
     
     var selectedGroupingOptionRecords: [String: [RecordModel]] = [:]
+    
+    var recordWinRate: Int? { self.records.winRate }
+    var yearFilteredRecordList: [RecordModel] {
+      if selectedYearFilter != "전체" {
+        return self.records.filter { $0.date.year == selectedYearFilter }
+      } else {
+        return self.records
+      }
+    }
   }
   
   // MARK: - Action
@@ -208,9 +209,9 @@ class WinRateUseCase {
     let result = await gameRecordInfoService.teamWinRate(state.myTeam.name())
     
     if case let .success(winRate) = result {
-      state.myTeamWinRate = winRate
+      state.myTeamRealWinRate = winRate
     } else {
-      state.myTeamWinRate = nil
+      state.myTeamRealWinRate = nil
     }
   }
 }

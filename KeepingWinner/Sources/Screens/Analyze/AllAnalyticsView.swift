@@ -36,7 +36,7 @@ struct AllAnalyticsView: View {
               .font(.footnote)
             HStack {
               Spacer()
-              Text("\(winRateUseCase.state.myTeamWinRate?.toString ?? "--")%")
+              Text("\(winRateUseCase.state.myTeamRealWinRate?.toString ?? "--")%")
                 .font(.title2)
                 .bold()
             }
