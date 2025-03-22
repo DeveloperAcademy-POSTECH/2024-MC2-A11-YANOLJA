@@ -16,9 +16,8 @@ protocol CheckValidYear {
 
 extension CheckValidYear {
   func isValid(in year: Int) -> Bool {
-    guard let nowYear = Int(Date.now.year) else { return false }
     let startYear = self.startYear
-    let dueYear = self.dueYear ?? nowYear
+    let dueYear = self.dueYear ?? 9999
     return (startYear...dueYear).contains(year)
   }
 }
