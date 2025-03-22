@@ -22,7 +22,10 @@ final class EditRecordUseCase {
     var _candidateMyTeamSymbol: String?
     
     var baseballTeams: [BaseballTeamModel] = []
-    var stadiums: [StadiumModel] = []
+    var _stadiums: [StadiumModel] = []
+    var stadiums: [StadiumModel] {
+      get { _stadiums.filter { $0.isValid(in: Int(record.date.year) ?? KeepingWinningRule.dataUpdateYear) } }
+    }
     var record: RecordModel = .init(stadium: .dummy, myTeam: .dummy, vsTeam: .dummyOther)
     
     var networkLoading = false
@@ -78,7 +81,12 @@ final class EditRecordUseCase {
       effect(._loadStadiums)
       effect(._loadBaseballTeams)
       
-      if case .edit(let exRecord) = type {
+      if case .edit(var exRecord) = type {
+        let exStadiums = state._stadiums.filter { $0.isValid(in: Int(exRecord.date.year) ?? KeepingWinningRule.dataUpdateYear) }
+        if !exStadiums.map ({ $0.symbol }).contains(exRecord.stadium.symbol) {
+          let first = exStadiums.first ?? .dummy
+          exRecord.stadium = first
+        }
         self.state.record = exRecord
       } else {
         let recordYear = state.record.date.year
@@ -101,7 +109,7 @@ final class EditRecordUseCase {
       return
       
     case ._loadStadiums:
-      self.state.stadiums = self.stadiumService.stadiums()
+      self.state._stadiums = self.stadiumService.stadiums()
       return
       
     case let ._loadRealRecords(date, teamName):
@@ -112,7 +120,7 @@ final class EditRecordUseCase {
           date,
           teamName,
           state.baseballTeams,
-          state.stadiums
+          state._stadiums
         )
         
         await MainActor.run {
@@ -133,7 +141,7 @@ final class EditRecordUseCase {
       effect(._loadRealRecords(date, myTeamName))
 
     case .tappedChangeStadium(let symbol):
-      state.record.stadium = state.stadiums.find(symbol: symbol) ?? .dummy
+      state.record.stadium = state._stadiums.find(symbol: symbol) ?? .dummy
       
     case .tappedChangeMyTeam(let symbol):
       state._candidateMyTeamSymbol = symbol
