@@ -112,8 +112,9 @@ struct AllAnalyticsView: View {
                   },
                   label: {
                     WinRateGraphCell(
-                      myTeamSubColor: userInfoUseCase.state.myTeam
-                        .subColor(), // 서브 컬러 수정
+                      myTeamSubColor: userInfoUseCase.state.myTeam?
+                        .subColor() ?? BaseballTeamModel.noTeam
+                        .subColor(),
                       detailOptionsName: category,
                       winRate: winRateUseCase.state
                         .selectedGroupingOptionRecords[category]?.winRate

@@ -18,15 +18,21 @@ struct MainView: View {
       
       WinRatePercentage(
         totalWinRate: winRateUseCase.state.recordWinRate,
-        teamColor: userInfoUseCase.state.myTeam.color()
+        teamColor: userInfoUseCase.state.myTeam?
+          .color() ?? BaseballTeamModel.noTeam.color()
       )
-      .foregroundColor(userInfoUseCase.state.myTeam.color())
+      .foregroundColor(
+        userInfoUseCase.state.myTeam?
+          .color() ?? BaseballTeamModel.noTeam
+          .color()
+      )
       .padding(.bottom, 8)
       
       MainCharacterWithBubbleView(
         characterModel: .init(
-          symbol: userInfoUseCase.state.myTeam.symbol,
-          colorHex: userInfoUseCase.state.myTeam.colorHex(),
+          symbol: userInfoUseCase.state.myTeam?.symbol ?? BaseballTeamModel.noTeam.symbol,
+          colorHex: userInfoUseCase.state.myTeam?
+            .colorHex() ?? BaseballTeamModel.noTeam.colorHex(),
           totalWinRate: winRateUseCase.state.recordWinRate
         ),
         bubbleText: userInfoUseCase.state.bubbleTextList
@@ -71,7 +77,9 @@ private struct NameBox: View {
           .resizable()
           .scaledToFit()
           .frame(height: 10)
-        Text(userInfoUseCase.state.myTeam.name())
+        Text(
+          userInfoUseCase.state.myTeam?.name() ?? KeepingWinningRule.noTeamName
+        )
           .font(.footnote)
         Image(systemName: "sparkle")
           .resizable()

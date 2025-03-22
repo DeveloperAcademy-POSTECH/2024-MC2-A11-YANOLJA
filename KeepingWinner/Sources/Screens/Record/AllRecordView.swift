@@ -37,7 +37,7 @@ struct AllRecordView: View {
         RecordListFilterButton(
           recordUseCase: recordUseCase,
           selectedRecordFilter: $selectedRecordFilter,
-          myTeamSymbol: userInfoUseCase.state.myTeam.symbol
+          myTeamSymbol: userInfoUseCase.state.myTeam?.symbol ?? BaseballTeamModel.noTeam.symbol
         )
         Spacer()
         RecordListOrderButton(

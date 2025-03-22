@@ -18,6 +18,7 @@ final class EditRecordUseCase {
   struct State {
     var _resetRecord: RecordModel = .init(stadium: .dummy, myTeam: .dummy, vsTeam: .dummyOther)
     var _realRecords: [RecordModel] = []
+    var _myTeam: RecordModel?
     var _candidateMyTeamSymbol: String?
     
     var baseballTeams: [BaseballTeamModel] = []
@@ -36,7 +37,6 @@ final class EditRecordUseCase {
     case onAppear(RecordEditType)
     case _loadBaseballTeams
     case _loadStadiums
-    case _loadMyTeamInfo
     case _saveNewRecord
     case _saveEditRecord
     
@@ -77,22 +77,21 @@ final class EditRecordUseCase {
     case let .onAppear(type):
       effect(._loadStadiums)
       effect(._loadBaseballTeams)
-      effect(._loadMyTeamInfo)
       
       if case .edit(let exRecord) = type {
         self.state.record = exRecord
       } else {
         let recordYear = state.record.date.year
-        let recordMyTeam = state.record.myTeam
-        let isNoTeam = recordMyTeam.isNoTeam
-        
-        let myTeam = isNoTeam ? state.baseballTeams.first ?? .dummy : recordMyTeam
-        let vsTeam = state.baseballTeams.first(without: myTeam.symbol) ?? .dummy
-        let stadium = myTeam.homeStadium(year: recordYear) ?? .dummy
+        let myTeam = self.userInfoService.readMyTeam(
+          baseballTeams: state.baseballTeams
+        ) ?? BaseballTeamModel.noTeam
+        let recordMyTeam = myTeam.isNoTeam ? state.baseballTeams.first ?? .dummy : myTeam
+        let recordVsTeam = state.baseballTeams.first(without: recordMyTeam.symbol) ?? .dummy
+        let stadium = recordMyTeam.homeStadium(year: recordYear) ?? .dummy
         
         state._resetRecord.id = state.record.id
-        state._resetRecord.myTeam = myTeam
-        state._resetRecord.vsTeam = vsTeam
+        state._resetRecord.myTeam = recordMyTeam
+        state._resetRecord.vsTeam = recordVsTeam
         state._resetRecord.stadium = stadium
         state.record = state._resetRecord
       }
@@ -104,10 +103,6 @@ final class EditRecordUseCase {
     case ._loadStadiums:
       self.state.stadiums = self.stadiumService.stadiums()
       return
-      
-    case ._loadMyTeamInfo:
-      let myTeam = self.userInfoService.readMyTeam(baseballTeams: state.baseballTeams)
-      self.state.record.myTeam = myTeam
       
     case let ._loadRealRecords(date, teamName):
       state._realRecords = []

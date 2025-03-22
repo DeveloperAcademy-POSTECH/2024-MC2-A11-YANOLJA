@@ -160,7 +160,7 @@ extension BaseballTeamService {
         homeHistories: [ssgHome1, skHome1]
       )
       
-      let baseballDTOs = [doosan, lotte, samsung, hanwha, kiwoom, kia, kt, lg, nc, ssg]
+      let baseballDTOs = [doosan, lotte, samsung, kiwoom, hanwha, kia, kt, lg, nc, ssg]
 
       return baseballDTOs.map { $0.convert }
     }

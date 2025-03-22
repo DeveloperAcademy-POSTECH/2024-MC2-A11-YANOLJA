@@ -148,7 +148,7 @@ struct AppView: View {
       }
       .sheet(
         isPresented: .init(
-          get: { !userInfoUseCase.state.myTeam.isNoTeam && userInfoUseCase.state.myNickname == nil },
+          get: { userInfoUseCase.state.myTeam != nil && userInfoUseCase.state.myNickname == nil },
           set: { _ in }),
         content: {
           NicknameChangeView(userInfoUseCase: userInfoUseCase, noNicknameUser: true)
@@ -179,7 +179,7 @@ struct AppView: View {
       }
       .fullScreenCover(
         isPresented: Binding<Bool>.init(
-          get: { return userInfoUseCase.state.myTeam.isNoTeam },
+          get: { return userInfoUseCase.state.myTeam == nil },
           set: { _ in }
         ),
         content: {
@@ -189,7 +189,8 @@ struct AppView: View {
               userInfoUseCase.effect(.changeMyNickname(nickname))
               winRateUseCase.effect(.tappedTeamChange(myTeam))
             },
-            baseballTeams: recordUseCase.state.baseballTeams
+            baseballTeams:
+              userInfoUseCase.state.myTeamOptions
           )
         }
       )

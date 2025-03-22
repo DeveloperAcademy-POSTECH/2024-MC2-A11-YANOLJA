@@ -32,8 +32,9 @@ struct TotalRecordCell: View {
         Spacer()
         RecordFaceView(
           characterModel: .init(
-            symbol: myTeam?.symbol ?? KeepingWinningRule.noTeamSymbol,
-            colorHex: myTeam?.colorHex() ?? KeepingWinningRule.noTeamColorHex,
+            symbol: myTeam?.symbol ??
+            BaseballTeamModel.noTeam.symbol,
+            colorHex: myTeam?.colorHex() ?? BaseballTeamModel.noTeam.colorHex(),
             totalWinRate: listInfo.winRate
           )
         )

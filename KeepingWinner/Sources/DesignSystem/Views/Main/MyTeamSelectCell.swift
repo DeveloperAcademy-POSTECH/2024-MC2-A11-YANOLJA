@@ -34,5 +34,5 @@ struct MyTeamSelectCell: View {
 }
 
 #Preview {
-  MyTeamSelectCell(baseballTeam: .noTeam)
+  MyTeamSelectCell(baseballTeam: BaseballTeamModel.noTeam)
 }

@@ -16,7 +16,7 @@ class WinRateUseCase {
     var stadiums: [StadiumModel] = []
     
     // MARK: - Data State
-    var myTeam: BaseballTeamModel = .noTeam
+    var myTeam: BaseballTeamModel = BaseballTeamModel.noTeam
     var myTeamRealWinRate: Int?
     var isAscending: Bool = true
     
@@ -113,8 +113,10 @@ class WinRateUseCase {
       
     case ._loadMyTeamInfo:
       let myTeam = self.userInfoService.readMyTeam(baseballTeams: state.baseballTeams)
-      self.state.myTeam = myTeam
-      effect(._loadMyTeamWinRate)
+      self.state.myTeam = myTeam ?? BaseballTeamModel.noTeam
+      if !self.state.myTeam.isNoTeam {
+        effect(._loadMyTeamWinRate)
+      }
       
     case ._loadMyTeamWinRate:
       Task { await loadMyTeamWinRate() }
