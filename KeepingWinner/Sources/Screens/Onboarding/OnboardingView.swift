@@ -48,6 +48,9 @@ struct OnboardingView: View {
             }
           }
         )
+        .safeAreaInset(edge: .bottom) {
+            Color.clear.frame(height:0)
+        }
         .disabled(selectedTeam == nil)
         .padding(.horizontal, 16)
       }
@@ -85,6 +88,9 @@ struct OnboardingView: View {
                 }
               }
             )
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: 0)
+            }
             .disabled(selectedUserNickname.isEmpty)
           }
           .padding(.horizontal, 16)
