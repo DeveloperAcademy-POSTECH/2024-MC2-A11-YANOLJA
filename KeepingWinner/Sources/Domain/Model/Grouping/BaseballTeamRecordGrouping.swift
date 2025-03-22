@@ -24,5 +24,9 @@ struct BaseballTeamRecordGrouping: RecordGrouping {
     
     return record.vsTeam.symbol == categoryStadium.symbol
   }
+  
+  func sortPriority(_ lhs: String, _ rhs: String) -> Bool {
+    lhs.compare(rhs, locale: Locale(identifier: "ko_KR")) == .orderedAscending
+  }
 }
 

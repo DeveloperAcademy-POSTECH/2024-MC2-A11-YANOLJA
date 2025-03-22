@@ -23,12 +23,10 @@ class WinRateUseCase {
     var selectedYearFilter: String = YearFilter.initialValue
     
     fileprivate var records: [RecordModel] = []
-    
     var groupingOptions: [RecordGrouping] = []
     var selectedGroupingOption: RecordGrouping = WeekdayRecordGrouping()
     
     var selectedGroupingOptionCategories: [String] = []
-    
     var selectedGroupingOptionRecords: [String: [RecordModel]] = [:]
     
     var recordWinRate: Int? { self.records.winRate }
@@ -141,23 +139,41 @@ class WinRateUseCase {
       effect(._sortCategories)
       
     case ._sortCategories:
-      state.selectedGroupingOptionCategories = state.selectedGroupingOption
-        .categories(validYear: state.selectedYearFilter)
-        .sorted(by: {
-          let leftRecords = state.selectedGroupingOptionRecords[$0] ?? []
-          let rightRecords = state.selectedGroupingOptionRecords[$1] ?? []
-          let left = leftRecords.winRate ?? -1
-          let right = rightRecords.winRate ?? -1
-          if left == -1 && right == -1 {
-            return leftRecords.count >= rightRecords.count
-          } else if left == -1 {
-            return false
-          } else if right == -1 {
-            return true
-          } else {
-            return state.isAscending ? left > right : left < right
+      let categories = state.selectedGroupingOption.categories(validYear: state.selectedYearFilter)
+      
+      state.selectedGroupingOptionCategories = categories.sorted { lhs, rhs in
+        let leftRecords = state.selectedGroupingOptionRecords[lhs] ?? []
+        let rightRecords = state.selectedGroupingOptionRecords[rhs] ?? []
+        
+        let leftWinRate = leftRecords.winRate ?? -1
+        let rightWinRate = rightRecords.winRate ?? -1
+        
+        let isLeftCancelled = leftWinRate == -1
+        let isRightCancelled = rightWinRate == -1
+        
+        // 둘 다 취소 경기
+        if isLeftCancelled && isRightCancelled {
+          // 동일한 경기 수라면 custom sort 기준
+          if leftRecords.count == rightRecords.count {
+            return state.selectedGroupingOption.sortPriority(lhs, rhs)
           }
-        })
+          // 더 많은 경기 수 우선
+          return leftRecords.count > rightRecords.count
+        }
+        
+        // 한쪽만 취소 경기
+        if isLeftCancelled { return false }
+        if isRightCancelled { return true }
+        
+        // 둘 다 정상 경기
+        if leftWinRate == rightWinRate {
+          return state.selectedGroupingOption.sortPriority(lhs, rhs)
+        }
+        
+        // 승률 기준 정렬
+        return state.isAscending ? leftWinRate > rightWinRate : leftWinRate < rightWinRate
+      }
+      
       
     case ._setGroupingOptions:
       let baseballGrouping = BaseballTeamRecordGrouping(
@@ -184,7 +200,7 @@ class WinRateUseCase {
     case let .tappedTeamChange(team):
       state.myTeam = team
       effect(._setGroupingOptions)
-      effect(._loadMyTeamWinRate) 
+      effect(._loadMyTeamWinRate)
       
     case let .tappedYearFilter(year):
       state.selectedYearFilter = year
