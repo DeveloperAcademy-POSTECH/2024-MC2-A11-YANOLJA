@@ -29,10 +29,9 @@ struct StadiumModel: Hashable, CheckValidYear {
   }
   
   func name(
-    year: String = String(KeepingWinningRule.dataUpdateYear)
+    year: String = Date.now.year
   ) -> String {
-    let recentYear = Int(Date.now.year) ?? KeepingWinningRule.dataUpdateYear
-    let year = Int(year) ?? recentYear
+    let year = Int(year) ?? KeepingWinningRule.dataUpdateYear
     let name = self.histories.filter {
       $0.isValid(in: year)
     }.first?.name ?? ""
