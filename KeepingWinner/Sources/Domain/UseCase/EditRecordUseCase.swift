@@ -114,15 +114,21 @@ final class EditRecordUseCase {
           state.baseballTeams,
           state.stadiums
         )
-        state.networkLoading = false
+        
+        await MainActor.run {
+          state.networkLoading = false
+        }
         guard case let .success(realRecords) = result else { return }
         state._realRecords = realRecords
         
-        effect(._matchRecordToRealRecordsFirst(true))
+        await MainActor.run {
+          state._realRecords = realRecords.compactMap { $0 }
+          effect(._matchRecordToRealRecordsFirst(true))
+        }
       }
       
     case .tappedChangeDate(let date):
-      let myTeamName = state.record.myTeam.name()
+      let myTeamName = state.record.myTeam.name(year: date.year)
       state.record.date = date
       effect(._loadRealRecords(date, myTeamName))
 
