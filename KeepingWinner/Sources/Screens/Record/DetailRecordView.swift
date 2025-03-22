@@ -41,7 +41,7 @@ struct DetailRecordView: View {
   }
   
   var body: some View {
-    NavigationStack {
+    NavigationView {
       List {
         Section(
           "직관 정보",
