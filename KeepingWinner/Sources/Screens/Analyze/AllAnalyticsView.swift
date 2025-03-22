@@ -17,7 +17,6 @@ struct AllAnalyticsView: View {
   
   var body: some View {
     let yearFilteredRecordList = winRateUseCase.state.yearFilteredRecordList
-    NavigationStack {
       VStack(spacing: 0) {
         Spacer()
           .frame(height: 30)
@@ -149,8 +148,8 @@ struct AllAnalyticsView: View {
             }
           }
         }
-      )
-    }
+      }
+    )
     .padding(.horizontal, 16)
     .navigationBarTitleDisplayMode(.large)
     .scrollIndicators(.never)
