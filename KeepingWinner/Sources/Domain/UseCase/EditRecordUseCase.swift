@@ -119,7 +119,7 @@ final class EditRecordUseCase {
           state.networkLoading = false
         }
         guard case let .success(realRecords) = result else { return }
-        state._realRecords = realRecords
+        guard realRecords.compactMap({ $0 }).count == realRecords.count else { return }
         
         await MainActor.run {
           state._realRecords = realRecords.compactMap { $0 }

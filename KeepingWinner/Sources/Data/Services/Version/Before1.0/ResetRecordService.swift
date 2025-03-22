@@ -38,12 +38,12 @@ struct ResetRecordService {
         stadiumService.stadiums()
       )
 
-      if case let .success(gameDatas) = result, let gameData = gameDatas.first {
-        myScore = gameData.myTeamScore
-        vsScore = gameData.vsTeamScore
-        stadiumSymbol = gameData.stadium.symbol
-        isDoubleHeader = gameData.isDoubleHeader
-        isCancel = gameData.isCancel
+      if case let .success(gameDatas) = result, let gameData = gameDatas.first, let data = gameData {
+        myScore = data.myTeamScore
+        vsScore = data.vsTeamScore
+        stadiumSymbol = data.stadium.symbol
+        isDoubleHeader = data.isDoubleHeader
+        isCancel = data.isCancel
       }
       
       // 이전 기록을 토대로 새로운 기록 저장

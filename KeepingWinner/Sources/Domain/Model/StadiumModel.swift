@@ -46,7 +46,7 @@ struct StadiumModel: Hashable, CheckValidYear {
 }
 
 extension StadiumModel {
-  static let dummy = Self.init(symbol: "", histories: [], startYear: 0, dueYear: nil)
+  static let dummy = Self.init(symbol: "고척스카이돔", histories: [], startYear: 0, dueYear: nil)
 }
 
 extension Array<StadiumModel> {
