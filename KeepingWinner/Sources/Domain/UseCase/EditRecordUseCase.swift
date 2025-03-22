@@ -176,6 +176,8 @@ final class EditRecordUseCase {
       
       case .tappedIsCancel:
       state.record.isCancel = !state.record.isCancel
+      state.record.myTeamScore = state.record.isCancel ? "-" : "0"
+      state.record.vsTeamScore = state.record.isCancel ? "-" : "0"
       
     case let .inputMemo(memo):
       state.record.memo = String(memo.prefix(15))
