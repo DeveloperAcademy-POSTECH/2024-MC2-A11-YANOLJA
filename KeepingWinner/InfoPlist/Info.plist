@@ -8,6 +8,7 @@
 	<string>$(BASE_URL)</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>SixCaps-Regular.ttf</string>
 		<string>SquadaOne-Regular.ttf</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
@@ -149,5 +150,8 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>카드 이미지를 사진 앨범에 저장하려면 권한이 필요합니다.
+</string>
 </dict>
 </plist>
