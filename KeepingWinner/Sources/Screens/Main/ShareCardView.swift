@@ -47,19 +47,26 @@ struct ShareCardView: View {
         }
         .padding(.bottom, 16)
         
-        HStack(spacing: 0) {
-          saveButton
-          
-          Spacer().frame(width: 8)
-          
-          shareButton
-        }
+        shareCardActionButtons
       }
       
       if saveState == .saving {
         overlayView("저장 중...")
       } else if saveState == .saved {
         overlayView("저장됨", systemImage: "checkmark")
+      }
+    }
+  }
+  
+  @ViewBuilder
+  private var shareCardActionButtons: some View {
+    if winRateUseCase.state.recordWinRate != nil {
+      HStack(spacing: 0) {
+        saveButton
+        
+        Spacer().frame(width: 8)
+        
+        shareButton
       }
     }
   }
