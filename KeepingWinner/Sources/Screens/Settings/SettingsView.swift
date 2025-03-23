@@ -150,7 +150,6 @@ struct ContentView: View {
         NavigationLink(
           destination: {
             NoticesView(notices: userInfoUseCase.state.notices)
-              .onAppear { userInfoUseCase.effect(.onAppear) }
               .navigationTitle("공지사항")
               .navigationBarBackButtonHidden(true)
               .toolbar {

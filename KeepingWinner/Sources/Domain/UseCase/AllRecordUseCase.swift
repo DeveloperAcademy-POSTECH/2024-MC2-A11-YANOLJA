@@ -55,9 +55,9 @@ final class AllRecordUseCase {
   func effect(_ action: Action) {
     switch action {
     case .onAppear:
-      effect(.renewAllRecord)
       effect(._loadBaseballTeamNames)
       effect(._loadStadiums)
+      effect(.renewAllRecord)
       
     case ._loadBaseballTeamNames:
       self.state.baseballTeams = self.baseballTeamService.teams()
