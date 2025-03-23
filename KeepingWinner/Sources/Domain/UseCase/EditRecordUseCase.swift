@@ -45,9 +45,9 @@ final class EditRecordUseCase {
     
     case _loadRealRecords(Date, String)
     case _matchRecordToRealRecordsFirst(Bool)
-    case tappedChangeMyTeamConfirmButton
     case _showTeamChangeAlert(Bool)
     
+    case tappedChangeMyTeamConfirmButton
     case tappedChangeDate(Date)
     case tappedChangeStadium(String)
     case tappedDoubleButton(Bool)
@@ -138,95 +138,92 @@ final class EditRecordUseCase {
         }
       }
         
+      case .tappedChangeDate(let date):
+        let myTeamName = state.record.myTeam.name(year: date.year)
+        state.record.date = date
+        effect(._loadRealRecords(date, myTeamName))
+        
+      case .tappedChangeStadium(let symbol):
+        state.record.stadium = state._stadiums.find(symbol: symbol) ?? .dummy
+        
+      case .tappedChangeMyTeam(let symbol):
+        state._candidateMyTeamSymbol = symbol
+        effect(._showTeamChangeAlert(true))
+        
+      case ._showTeamChangeAlert(let show):
+        state.teamChangeAlert = show
+        
+      case .tappedChangeMyTeamConfirmButton:
+        guard let symbol = state._candidateMyTeamSymbol else { return }
+        let date = state.record.date
+        state.record.vsTeam = state.baseballTeams.first(without: symbol) ?? .dummy
+        state.record.myTeam = state.baseballTeams.find(symbol: symbol) ?? .dummy
+        effect(._loadRealRecords(date, state.record.myTeam.name()))
+        
+        state._candidateMyTeamSymbol = nil
+        effect(._showTeamChangeAlert(false))
+        
+      case .tappedChangeVsTeam(let symbol):
+        let vsTeam = state.baseballTeams.find(symbol: symbol) ?? .dummy
+        state.record.vsTeam = vsTeam
+        
+      case .tappedDoubleButton(let nowState):
+        state.record.isDoubleHeader = nowState ? 0 : -1
+        
+      case .tappedFirstDoubleButton(let isFirst):
+        if state._realRecords.count < 2 {
+          state.record.isDoubleHeader = isFirst ? 0 : 1
+        } else {
+          effect(._matchRecordToRealRecordsFirst(isFirst))
         }
-      }
-      
-    case .tappedChangeDate(let date):
-      let myTeamName = state.record.myTeam.name(year: date.year)
-      state.record.date = date
-      effect(._loadRealRecords(date, myTeamName))
-
-    case .tappedChangeStadium(let symbol):
-      state.record.stadium = state._stadiums.find(symbol: symbol) ?? .dummy
-      
-    case .tappedChangeMyTeam(let symbol):
-      state._candidateMyTeamSymbol = symbol
-      effect(._showTeamChangeAlert(true))
-      
-    case ._showTeamChangeAlert(let show):
-      state.teamChangeAlert = show
-      
-    case .tappedChangeMyTeamConfirmButton:
-      guard let symbol = state._candidateMyTeamSymbol else { return }
-      let date = state.record.date
-      state.record.vsTeam = state.baseballTeams.first(without: symbol) ?? .dummy
-      state.record.myTeam = state.baseballTeams.find(symbol: symbol) ?? .dummy
-      effect(._loadRealRecords(date, state.record.myTeam.name()))
-      
-      state._candidateMyTeamSymbol = nil
-      effect(._showTeamChangeAlert(false))
-      
-    case .tappedChangeVsTeam(let symbol):
-      let vsTeam = state.baseballTeams.find(symbol: symbol) ?? .dummy
-      state.record.vsTeam = vsTeam
-      
-    case .tappedDoubleButton(let nowState):
-      state.record.isDoubleHeader = nowState ? 0 : -1
-      
-    case .tappedFirstDoubleButton(let isFirst):
-      if state._realRecords.isEmpty {
-        state.record.isDoubleHeader = isFirst ? 0 : 1
-      } else {
-        effect(._matchRecordToRealRecordsFirst(isFirst))
-      }
-      
-    case let .inputScoreMyTeam(isMyTeam, score):
-      let num = Int(score.prefix(2)) ?? 0
-      if isMyTeam {
-        state.record.myTeamScore = String(num)
-      } else {
-        state.record.vsTeamScore = String(num)
-      }
-      
+        
+      case let .inputScoreMyTeam(isMyTeam, score):
+        let num = Int(score.prefix(2)) ?? 0
+        if isMyTeam {
+          state.record.myTeamScore = String(num)
+        } else {
+          state.record.vsTeamScore = String(num)
+        }
+        
       case .tappedIsCancel:
-      state.record.isCancel = !state.record.isCancel
-      state.record.myTeamScore = state.record.isCancel ? "-" : "0"
-      state.record.vsTeamScore = state.record.isCancel ? "-" : "0"
-      
-    case let .inputMemo(memo):
-      state.record.memo = String(memo.prefix(15))
-      
-    case let .selectPhoto(photo):
-      state.record.photo = photo
-      
-    case .tappedPhoto:
-      state.record.photo = nil
-      
-    case ._matchRecordToRealRecordsFirst(let first):
-      guard let realRecord = first ? state._realRecords.first : state._realRecords.last else { return }
-      
-      state.record.date = realRecord.date
-      state.record.stadium = realRecord.stadium
-      state.record.isDoubleHeader = realRecord.isDoubleHeader
-      state.record.myTeam = realRecord.myTeam
-      state.record.vsTeam = realRecord.vsTeam
-      state.record.myTeamScore = realRecord.myTeamScore
-      state.record.vsTeamScore = realRecord.vsTeamScore
-      state.record.isCancel = realRecord.isCancel
-
-    case .tappedConfirmToNew(let isNewRecord):
-      isNewRecord ? effect(._saveNewRecord) : effect(._saveEditRecord)
-      
-    case ._saveNewRecord:
-      let newRecord = state.record
-      _ = myRecordService.saveRecord(newRecord)
-      
-    case ._saveEditRecord:
-      let editRecord = state.record
-      _ = myRecordService.editRecord(editRecord)
-      
-    case .tappedDeleteRecord:
-      _ = myRecordService.removeRecord(id: state.record.id)
+        state.record.isCancel = !state.record.isCancel
+        state.record.myTeamScore = state.record.isCancel ? "-" : "0"
+        state.record.vsTeamScore = state.record.isCancel ? "-" : "0"
+        
+      case let .inputMemo(memo):
+        state.record.memo = String(memo.prefix(15))
+        
+      case let .selectPhoto(photo):
+        state.record.photo = photo
+        
+      case .tappedPhoto:
+        state.record.photo = nil
+        
+      case ._matchRecordToRealRecordsFirst(let first):
+        guard let realRecord = first ? state._realRecords.first : state._realRecords.last else { return }
+        
+        state.record.date = realRecord.date
+        state.record.stadium = realRecord.stadium
+        state.record.isDoubleHeader = realRecord.isDoubleHeader
+        state.record.myTeam = realRecord.myTeam
+        state.record.vsTeam = realRecord.vsTeam
+        state.record.myTeamScore = realRecord.myTeamScore
+        state.record.vsTeamScore = realRecord.vsTeamScore
+        state.record.isCancel = realRecord.isCancel
+        
+      case .tappedConfirmToNew(let isNewRecord):
+        isNewRecord ? effect(._saveNewRecord) : effect(._saveEditRecord)
+        
+      case ._saveNewRecord:
+        let newRecord = state.record
+        _ = myRecordService.saveRecord(newRecord)
+        
+      case ._saveEditRecord:
+        let editRecord = state.record
+        _ = myRecordService.editRecord(editRecord)
+        
+      case .tappedDeleteRecord:
+        _ = myRecordService.removeRecord(id: state.record.id)
+      }
     }
   }
-}
