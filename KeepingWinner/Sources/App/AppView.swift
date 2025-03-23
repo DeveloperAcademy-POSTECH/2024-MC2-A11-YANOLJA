@@ -20,7 +20,6 @@ struct AppView: View {
   @State var selection: Tab = .main
   
   var body: some View {
-    ZStack {
       NavigationStack(path: $router.path) {
         TabView(selection: $selection) {
           MainView(
@@ -34,9 +33,7 @@ struct AppView: View {
             Text("홈")
           }
           .tag(Tab.main)
-          .onAppear {
-            TrackUserActivityManager.shared.effect(.mainTabOnAppear)
-          }
+          .onAppear { TrackUserActivityManager.shared.effect(.mainTabOnAppear) }
           
           AllRecordView(
             winRateUseCase: winRateUseCase,
@@ -171,9 +168,7 @@ struct AppView: View {
           }
         )
       }
-      .environmentObject(router)
-      
-      if(cardButtonTapped) {
+      .overlayIf(cardButtonTapped) {
         ShareCardView(
           winRateUseCase: winRateUseCase,
           userInfoUseCase: userInfoUseCase,
@@ -186,7 +181,7 @@ struct AppView: View {
           cardButtonTapped: $cardButtonTapped
         )
       }
-    }
+      .environmentObject(router)
   }
 }
 
