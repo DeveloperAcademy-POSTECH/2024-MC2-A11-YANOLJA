@@ -17,7 +17,7 @@ enum KeepingWinningRule {
   static let noTeamSubColorHex: String = "EAEAEA"
   static let noTeamBaseballModel: BaseballTeamModel = .init(
     symbol: Self.noTeamSymbol,
-    teamHistories: [.init(name: Self.noTeamName, colorHex: Self.noTeamColorHex, subColorHex: Self.noTeamSubColorHex, startYear: Self.dataLimitYear, dueYear: Self.dataUpdateYear)],
+    teamHistories: [.init(name: Self.noTeamName, colorHex: Self.noTeamColorHex, subColorHex: Self.noTeamSubColorHex, startYear: Self.dataLimitYear, dueYear: nil)],
     homeHistories: []
   )
 }

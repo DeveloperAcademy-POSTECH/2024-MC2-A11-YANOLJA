@@ -14,7 +14,7 @@ struct GameRecordInfoService {
     _ myTeam: String,
     _ baseballTeams: [BaseballTeamModel],
     _ stadiums: [StadiumModel]
-  ) async -> Result<[RecordModel], Error>
+  ) async -> Result<[RecordModel?], Error>
   
   var teamWinRate: (_ myTeam: String) async -> Result<Int?, Error>
 }

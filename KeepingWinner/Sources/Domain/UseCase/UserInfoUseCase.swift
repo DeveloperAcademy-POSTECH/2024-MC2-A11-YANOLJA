@@ -11,9 +11,9 @@ import SwiftUI
 @Observable
 class UserInfoUseCase {
   struct State {
-    var baseballTeams: [BaseballTeamModel] = []
+    var myTeamOptions: [BaseballTeamModel] = []
 
-    var myTeam: BaseballTeamModel = .noTeam
+    var myTeam: BaseballTeamModel?
     var myNickname: String?
     var bubbleTextList: [String] = KeepingWinningRule.defaultBubbleTexts
     var notices: [NoticeModel] = []
@@ -45,8 +45,8 @@ class UserInfoUseCase {
     self.myNicknameService = myNicknameService
     self.settingsService = settingsService
     state.myNickname = myNicknameService.readMyNickname()
-    state.baseballTeams = baseballTeamService.teams()
-    state.myTeam = myTeamService.readMyTeam(baseballTeams: state.baseballTeams)
+    state.myTeamOptions = baseballTeamService.teams() + [BaseballTeamModel.noTeam]
+    state.myTeam = myTeamService.readMyTeam(baseballTeams: state.myTeamOptions)
   }
   
   // MARK: - View Action
@@ -67,7 +67,7 @@ class UserInfoUseCase {
       
     case .setBubbleTexts:
       Task {
-        let myTeamName = state.myTeam.name()
+        let myTeamName = state.myTeam?.name() ?? BaseballTeamModel.noTeam.name()
         if case let .success(
           bubbleTextList
         ) = await settingsService.characterBubbleTexts(myTeamName) {

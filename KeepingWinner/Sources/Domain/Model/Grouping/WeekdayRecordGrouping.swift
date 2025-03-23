@@ -22,4 +22,11 @@ struct WeekdayRecordGrouping: RecordGrouping {
     
     return self.categories(validYear: "")[adjustedIndex] == category
   }
+  
+  func sortPriority(_ lhs: String, _ rhs: String) -> Bool {
+    let categoreis = self.categories(validYear: "")
+    let lhsIndex = categoreis.firstIndex(of: lhs) ?? .zero
+    let rhsIndex = categoreis.firstIndex(of: rhs) ?? .zero
+    return lhsIndex < rhsIndex
+  }
 }

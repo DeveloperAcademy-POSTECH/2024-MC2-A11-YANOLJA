@@ -31,9 +31,7 @@ struct RecordCell: View {
           Spacer()
           VStack {
             HStack(spacing: 0) {
-              Text(
-                record.myTeam.name(year: record.date.year)
-              )
+              Text(record.myTeam.name(year: record.date.year))
                 .font(.title)
                 .bold()
                 .foregroundStyle(.black)
@@ -72,7 +70,7 @@ struct RecordCell: View {
                 .opacity(record.isCancel ? 0.5 : 1)
                 .foregroundStyle(.date)
             }
-            Text(record.stadium.name())
+            Text(record.stadium.name(year: record.date.year))
               .font(.caption2)
               .opacity(record.isCancel ? 0.5 : 1)
               .foregroundStyle(.date)

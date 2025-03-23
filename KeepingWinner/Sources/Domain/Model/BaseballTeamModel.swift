@@ -46,11 +46,10 @@ struct BaseballTeamModel: Hashable {
   }
   
   func name(
-    year: String = String(KeepingWinningRule.dataUpdateYear),
+    year: String = Date.now.year,
     type: BaseballTeamName = .company
   ) -> String {
-    let recentYear = KeepingWinningRule.dataUpdateYear
-    let year = Int(year) ?? recentYear
+    let year = Int(year) ?? KeepingWinningRule.dataUpdateYear
     let fullName = self.teamHistories.filter {
       $0.isValid(in: year)
     }.first?.name ?? KeepingWinningRule.noTeamName
@@ -66,7 +65,7 @@ struct BaseballTeamModel: Hashable {
   }
   
   func colorHex(
-    year: String = String(KeepingWinningRule.dataUpdateYear),
+    year: String = Date.now.year,
     type: BaseballTeamName = .company
   ) -> String {
     let recentYear = KeepingWinningRule.dataUpdateYear
@@ -83,7 +82,8 @@ struct BaseballTeamModel: Hashable {
   }
   
   func homeStadiums(year: String) -> [StadiumModel] {
-    let year = Int(year) ?? KeepingWinningRule.dataUpdateYear
+    let recentYear = Int(Date.now.year) ?? KeepingWinningRule.dataUpdateYear
+    let year = Int(year) ?? recentYear
     return self.homeHistories.map { $0.stadium }.filter { $0.isValid(in: year) }
   }
   
@@ -105,7 +105,7 @@ struct BaseballTeamModel: Hashable {
 
 extension BaseballTeamModel {
   func color(
-    year: String = String(KeepingWinningRule.dataUpdateYear),
+    year: String = Date.now.year,
     type: BaseballTeamName = .company
   ) -> Color {
     let recentYear = KeepingWinningRule.dataUpdateYear
@@ -118,7 +118,7 @@ extension BaseballTeamModel {
   }
   
   func subColor(
-    year: String = String(KeepingWinningRule.dataUpdateYear),
+    year: String = Date.now.year,
     type: BaseballTeamName = .company
   ) -> Color {
     let recentYear = KeepingWinningRule.dataUpdateYear
