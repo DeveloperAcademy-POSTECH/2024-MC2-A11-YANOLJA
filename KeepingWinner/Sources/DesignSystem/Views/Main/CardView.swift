@@ -18,43 +18,50 @@ struct CardView: View {
       .fill(Color.white)
       .frame(width: 280, height: 470)
       .overlay {
-        HStack(spacing: 0) {
-          ZStack {
-            Image(.shareCardBackground)
-              .renderingMode(.template)
-              .foregroundColor(Color(hexString: characterModel.colorHex))
-              .overlay(
-                ZStack {
-                  VStack(spacing: 0) {
-                    WinRatePercentage(totalWinRate: recordWinRate)
-                      .padding(.top, 34)
-                    Spacer()
-                  }
-                  
-                  VStack(spacing: 0) {
-                    Spacer()
+        if recordWinRate != nil {
+          HStack(spacing: 0) {
+            ZStack {
+              Image(.shareCardBackground)
+                .renderingMode(.template)
+                .foregroundColor(Color(hexString: characterModel.colorHex))
+                .overlay(
+                  ZStack {
+                    VStack(spacing: 0) {
+                      WinRatePercentage(totalWinRate: recordWinRate)
+                        .padding(.top, 34)
+                      Spacer()
+                    }
                     
-                    MyCharacterView(characterModel: characterModel)
-                      .frame(width: 195, height: 196)
-                      .padding(.bottom, 5)
+                    VStack(spacing: 0) {
+                      Spacer()
+                      
+                      MyCharacterView(characterModel: characterModel)
+                        .frame(width: 195, height: 196)
+                        .padding(.bottom, 5)
+                    }
                   }
-                }
-              )
+                )
+            }
+            
+            Line().dashed()
+              .frame(width: 2)
+              .padding(.leading, 13)
+              .padding(.trailing, 12)
+            
+            VStack(spacing: 0) {
+              CardNameBox(
+                myTeam: myTeam,
+                myNickname: myNickname
+              ).rotated()
+              Spacer()
+            }
+            .padding(.top, 16)
           }
-          
-          Line().dashed()
-            .frame(width: 2)
-            .padding(.leading, 13)
-            .padding(.trailing, 12)
-          
-          VStack(spacing: 0) {
-            CardNameBox(
-              myTeam: myTeam,
-              myNickname: myNickname
-            ).rotated()
-            Spacer()
-          }
-          .padding(.top, 16)
+        } else {
+          Text("아직 직관 기록이 없습니다.\n기록을 추가하고 공유해보세요!")
+            .font(.footnote)
+            .foregroundStyle(.black.opacity(0.5))
+            .multilineTextAlignment(.center)
         }
       }
   }
@@ -104,7 +111,7 @@ struct CardNameBox: View {
 
 #Preview {
   CardView(
-    recordWinRate: 100,
+    recordWinRate: nil,
     myTeam: "두산 베어스",
     myNickname: "부리부리",
     characterModel: .init(
