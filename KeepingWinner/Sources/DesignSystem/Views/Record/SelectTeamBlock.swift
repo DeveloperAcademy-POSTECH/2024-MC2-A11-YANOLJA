@@ -40,7 +40,7 @@ struct SelectTeamBlock: View {
           "",
           selection: .init(
             get: {
-              baseballTeams.map{ $0.symbol}.contains(selectedTeamSymbol) ? selectedTeamSymbol : (baseballTeams.first ?? .dummy).symbol
+              baseballTeams.map{ $0.symbol }.contains(selectedTeamSymbol) ? selectedTeamSymbol : (baseballTeams.first ?? .dummy).symbol
             },
             set: { selectedTeamSymbol = $0 }
           ),

@@ -1,14 +1,13 @@
 //
-//  TotalRecordCell.swift
-//  Yanolja
+//  TotalWinRateCell.swift
+//  KeepingWinner
 //
-//  Created by 유지수 on 10/3/24.
-//  Copyright © 2024 com.mc2. All rights reserved.
+//  Created by 박혜운 on 3/23/25.
 //
 
 import SwiftUI
 
-struct TotalRecordCell: View {
+struct TotalWinRateCell: View {
   let recordList: [RecordModel]
   let myTeam: BaseballTeamModel?
   
@@ -16,17 +15,29 @@ struct TotalRecordCell: View {
     VStack {
       HStack() {
         VStack(alignment: .leading, spacing: 0) {
-          Text("총 \(recordList.count)경기")
+          Text("나의 직관 승률")
             .font(.footnote)
           Spacer()
             .frame(height: 8)
             .frame(maxWidth: .infinity)
-          HStack(spacing: 6) {
-            Text("\(listInfo.winCount)승")
-            Text("\(listInfo.loseCount)패")
-            Text("\(listInfo.drawCount)무")
+          HStack(alignment: .bottom, spacing: 7) {
+            Group {
+              if let winRate = recordList.winRate {
+                Text("\(winRate)%")
+              } else {
+                Text("--%")
+              }
+            }
+            .font(.title)
+            
+            HStack(spacing: 6) {
+              Text("\(listInfo.winCount)승")
+              Text("\(listInfo.loseCount)패")
+              Text("\(listInfo.drawCount)무")
+            }
+            .padding(.bottom, 3)
+            .font(.callout)
           }
-          .font(.title)
           .bold()
         }
         Spacer()

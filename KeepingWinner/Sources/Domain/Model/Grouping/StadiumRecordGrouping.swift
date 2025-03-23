@@ -28,4 +28,8 @@ struct StadiumRecordGrouping: RecordGrouping {
     let categoryStadium = stadiums[categoryIndex]
     return record.stadium.symbol == categoryStadium.symbol
   }
+  
+  func sortPriority(_ lhs: String, _ rhs: String) -> Bool {
+    lhs.sortKRPriority(rhs)
+  }
 }

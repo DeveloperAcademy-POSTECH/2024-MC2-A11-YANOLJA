@@ -26,25 +26,39 @@ struct RecordListFilterButton: View {
           id: \.symbol) { team in
             let name = team
               .name(year: recordUseCase.state.selectedYearFilter, type: .full)
-          RecordFilterLabel(
-            selectedRecordFilter: $selectedRecordFilter,
-            recordFilter: .teamOptions(name),
-            showLabel: name
-          )
-          .tag(team)
-        }
+            RecordFilterLabel(
+              selectedRecordFilter: $selectedRecordFilter,
+              recordFilter: .teamOptions(name),
+              showLabel: name
+            )
+            .tag(team)
+          }
       }
       Menu(RecordFilter.stadiumsOptions("").label) {
         // MARK: - 구장별 선택 시 전체 유의 수정
-        ForEach(recordUseCase.state.stadiums, id: \.self) { stadium in
-          let name = stadium.name(year: recordUseCase.state.selectedYearFilter)
-          RecordFilterLabel(
-            selectedRecordFilter: $selectedRecordFilter,
-            recordFilter: .stadiumsOptions(name),
-            showLabel: name
-          )
-          .tag(stadium)
-        }
+        ForEach(
+          recordUseCase.state.stadiums
+            .filter { $0.isValid(
+              in: Int(
+                recordUseCase.state.selectedYearFilter
+              ) ?? KeepingWinningRule.dataUpdateYear
+            )
+            }
+            .sorted(by: {
+              let lhs = $0.name(year: recordUseCase.state.selectedYearFilter)
+              let rhs = $1.name(year: recordUseCase.state.selectedYearFilter)
+              return lhs.sortKRPriority(rhs)
+            })
+          ,
+          id: \.self) { stadium in
+            let name = stadium.name(year: recordUseCase.state.selectedYearFilter)
+            RecordFilterLabel(
+              selectedRecordFilter: $selectedRecordFilter,
+              recordFilter: .stadiumsOptions(name),
+              showLabel: name
+            )
+            .tag(stadium)
+          }
       }
       Menu(RecordFilter.resultsOptions(.cancel).label) {
         ForEach(GameResult.allCases, id: \.self) { result in

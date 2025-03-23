@@ -18,8 +18,6 @@ struct StadiumDTO: CheckValidYear {
     id: UUID = .init(),
     symbol: String,
     histories: [StadiumNameHistoryDTO] = [],
-    latitude: Double = 0,
-    longitude: Double = 0,
     startYear: Int = 0,
     dueYear: Int? = nil
   ) {

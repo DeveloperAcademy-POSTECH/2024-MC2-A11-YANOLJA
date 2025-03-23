@@ -23,4 +23,8 @@ struct HomeAwayRecordGrouping: RecordGrouping {
     let isHomeRecord = myTeamHomeSymbols.contains(record.stadium.symbol)
     return category == "홈" ? isHomeRecord : !isHomeRecord
   }
+  
+  func sortPriority(_ lhs: String, _ rhs: String) -> Bool {
+    return lhs == "홈"
+  }
 }

@@ -74,8 +74,8 @@ struct MyCharacterView: View {
 #Preview {
   MyCharacterView(
     characterModel: .init(
-      symbol: KeepingWinningRule.noTeamSymbol,
-      colorHex: KeepingWinningRule.noTeamColorHex,
+      symbol: BaseballTeamModel.noTeam.symbol,
+      colorHex: BaseballTeamModel.noTeam.colorHex(),
       totalWinRate: 100
     )
   )

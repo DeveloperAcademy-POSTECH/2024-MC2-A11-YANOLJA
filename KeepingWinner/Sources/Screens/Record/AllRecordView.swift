@@ -37,14 +37,16 @@ struct AllRecordView: View {
         RecordListFilterButton(
           recordUseCase: recordUseCase,
           selectedRecordFilter: $selectedRecordFilter,
-          myTeamSymbol: userInfoUseCase.state.myTeam.symbol
+          myTeamSymbol: userInfoUseCase.state.myTeam?.symbol ?? BaseballTeamModel.noTeam.symbol
         )
         Spacer()
         RecordListOrderButton(
           sortByLatestDate: .init(
             get: { recordUseCase.state.isAscending },
             set: { _ in recordUseCase.effect(.tappedAscending) }
-          )
+          ),
+          firstTitle: "최근 순",
+          secondTitle: "이전 순"
         )
       }
       
@@ -98,7 +100,6 @@ struct AllRecordView: View {
     .sheet(
       item: $selectedRecord,
       content: { selectedRecord in
-
         DetailRecordView(
           to: .edit(selectedRecord),
           editRecord: { record in
@@ -126,6 +127,12 @@ struct AllRecordView: View {
         goBackAction: { plusButtonTapped = false }
       )
     }
+    .yearPickerSheet(
+      isPresented: recordUseCase.state.isPresentedYearFilterSheet,
+      selectedYear: recordUseCase.state.selectedYearFilter,
+      changeYearTo: { year in recordUseCase.effect(.setYearFilter(to: year)) },
+      goBackAction: { recordUseCase.effect(.presentingYearFilter(false)) }
+    )
   }
 }
 

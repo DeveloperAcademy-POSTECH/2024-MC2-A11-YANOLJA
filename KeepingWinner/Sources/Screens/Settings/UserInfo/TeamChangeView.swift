@@ -46,7 +46,7 @@ struct TeamChangeView: View {
     
     VStack(spacing: 0) {
       MyTeamSettingsContent(
-        baseballTeams: userInfoUseCase.state.baseballTeams,
+        baseballTeams: userInfoUseCase.state.myTeamOptions,
         selectedTeam: $selectedTeam
       )
         .presentationDragIndicator(.visible)

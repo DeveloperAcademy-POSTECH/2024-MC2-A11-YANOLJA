@@ -13,6 +13,7 @@ final class AllRecordUseCase {
   // MARK: - State
   struct State {
     var isAscending: Bool = true
+    var isPresentedYearFilterSheet: Bool = false
     var selectedYearFilter: String = YearFilter.initialValue
     var selectedFilterOptions: [String: [String]] = [:]
     
@@ -27,8 +28,10 @@ final class AllRecordUseCase {
     case _loadBaseballTeamNames
     case _loadStadiums
     
-    case tappedYearFilter(to: String)
+    case presentingYearFilter(Bool)
     case tappedAscending
+    
+    case setYearFilter(to: String)
     
     case renewAllRecord
     case newRecord(RecordModel)
@@ -64,8 +67,11 @@ final class AllRecordUseCase {
       self.state.stadiums = self.stadiumService.stadiums()
       return
       
-    case let .tappedYearFilter(year):
+    case let .setYearFilter(year):
       state.selectedYearFilter = year
+      
+    case .presentingYearFilter(let presenting):
+      state.isPresentedYearFilterSheet = presenting
       
     case .tappedAscending:
       state.isAscending.toggle()

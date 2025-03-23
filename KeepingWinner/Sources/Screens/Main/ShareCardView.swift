@@ -40,7 +40,8 @@ struct ShareCardView: View {
           
           CardView(
             recordWinRate: winRateUseCase.state.recordWinRate,
-            myTeam: userInfoUseCase.state.myTeam.name(type: .full),
+            myTeam: userInfoUseCase.state.myTeam?
+              .name(type: .full) ?? KeepingWinningRule.noTeamName,
             myNickname: userInfoUseCase.state.myNickname,
             characterModel: characterModel
           )
@@ -76,7 +77,8 @@ struct ShareCardView: View {
       DispatchQueue.main.async {
         let image = CardView(
           recordWinRate: winRateUseCase.state.recordWinRate,
-          myTeam: userInfoUseCase.state.myTeam.name(type: .full),
+          myTeam: userInfoUseCase.state.myTeam?
+            .name(type: .full) ?? KeepingWinningRule.noTeamName,
           myNickname: userInfoUseCase.state.myNickname,
           characterModel: characterModel
         )
@@ -102,7 +104,8 @@ struct ShareCardView: View {
       DispatchQueue.main.async {
         let image = CardView(
           recordWinRate: winRateUseCase.state.recordWinRate,
-          myTeam: userInfoUseCase.state.myTeam.name(type: .full),
+          myTeam: userInfoUseCase.state.myTeam?
+            .name(type: .full) ?? KeepingWinningRule.noTeamName,
           myNickname: userInfoUseCase.state.myNickname,
           characterModel: characterModel
         )

@@ -20,10 +20,9 @@ struct UserDefaultsService {
 }
 
 extension UserDefaultsService: MyTeamServiceInterface {
-  func readMyTeam(baseballTeams: [BaseballTeamModel]) -> BaseballTeamModel {
-    guard let symbol = self.load(type: String.self, key: .myTeam) else { return KeepingWinningRule.noTeamBaseballModel }
-    return baseballTeams
-      .find(symbol: symbol) ?? KeepingWinningRule.noTeamBaseballModel
+  func readMyTeam(baseballTeams: [BaseballTeamModel]) -> BaseballTeamModel? {
+    guard let symbol = self.load(type: String.self, key: .myTeam) else { return BaseballTeamModel.noTeam }
+    return baseballTeams.find(symbol: symbol)
   }
   
   func saveTeam(symbol: String) {

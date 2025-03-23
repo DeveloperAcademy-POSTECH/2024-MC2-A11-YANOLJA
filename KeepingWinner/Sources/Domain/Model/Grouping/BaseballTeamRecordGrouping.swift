@@ -24,5 +24,9 @@ struct BaseballTeamRecordGrouping: RecordGrouping {
     
     return record.vsTeam.symbol == categoryStadium.symbol
   }
+  
+  func sortPriority(_ lhs: String, _ rhs: String) -> Bool {
+    lhs.sortKRPriority(rhs)
+  }
 }
 

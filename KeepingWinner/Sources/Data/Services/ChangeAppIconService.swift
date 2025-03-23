@@ -10,7 +10,7 @@ import UIKit
 
 struct ChangeAppIconService: ChangeAppIconInterface {
   func requestChangeAppIcon(symbol: String) {
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
       self.changeICon(iconName: symbol.uppercased())
     }
   }

@@ -101,46 +101,21 @@ struct AppView: View {
                       },
                       label: { Image(systemName: "plus") }
                     )
-                    Menu {
-                      ForEach(YearFilter.list, id: \.self) { selectedYear in
-                        Button(
-                          action: {
-                            recordUseCase
-                              .effect(.tappedYearFilter(to: selectedYear))
-                          }
-                        ) {
-                          HStack {
-                            if recordUseCase
-                              .state.selectedYearFilter == selectedYear {
-                              Image(systemName: "checkmark")
-                            }
-                            Text(selectedYear)
-                          }
-                        }
-                      }
-                    } label: {
-                      Image(systemName: "calendar")
-                    }
+                    
+                    Button(
+                      action: {
+                        recordUseCase.effect(.presentingYearFilter(true))
+                      },
+                      label: { Image(systemName: "calendar") }
+                    )
                   }
                 case .analytics:
-                  Menu {
-                    ForEach(YearFilter.list, id: \.self) { selectedFilter in
-                      Button(
-                        action: {
-                          winRateUseCase.effect(.tappedYearFilter(to: selectedFilter))
-                        }
-                      ) {
-                        HStack {
-                          if winRateUseCase.state.selectedYearFilter == selectedFilter {
-                            Image(systemName: "checkmark")
-                          }
-                          Text(selectedFilter)
-                        }
-                      }
-                    }
-                  } label: {
-                    Image(systemName: "calendar")
-                  }
+                  Button(
+                    action: {
+                      winRateUseCase.effect(.presentingYearFilter(true))
+                    },
+                    label: { Image(systemName: "calendar") }
+                  )
                 }
               }
               .tint(.black)
@@ -149,7 +124,7 @@ struct AppView: View {
         }
         .sheet(
           isPresented: .init(
-            get: { !userInfoUseCase.state.myTeam.isNoTeam && userInfoUseCase.state.myNickname == nil },
+            get: { userInfoUseCase.state.myTeam != nil && userInfoUseCase.state.myNickname == nil },
             set: { _ in }),
           content: {
             NicknameChangeView(userInfoUseCase: userInfoUseCase, noNicknameUser: true)
@@ -180,7 +155,7 @@ struct AppView: View {
         }
         .fullScreenCover(
           isPresented: Binding<Bool>.init(
-            get: { return userInfoUseCase.state.myTeam.isNoTeam },
+            get: { return userInfoUseCase.state.myTeam == nil },
             set: { _ in }
           ),
           content: {
@@ -190,23 +165,22 @@ struct AppView: View {
                 userInfoUseCase.effect(.changeMyNickname(nickname))
                 winRateUseCase.effect(.tappedTeamChange(myTeam))
               },
-              baseballTeams: recordUseCase.state.baseballTeams
+              baseballTeams:
+                userInfoUseCase.state.myTeamOptions
             )
           }
         )
       }
       .environmentObject(router)
-      .onAppear {
-        recordUseCase.effect(.onAppear)
-      }
       
       if(cardButtonTapped) {
         ShareCardView(
           winRateUseCase: winRateUseCase,
           userInfoUseCase: userInfoUseCase,
           characterModel: .init(
-            symbol: userInfoUseCase.state.myTeam.symbol,
-            colorHex: userInfoUseCase.state.myTeam.colorHex(),
+            symbol: userInfoUseCase.state.myTeam?.symbol ?? KeepingWinningRule.noTeamSymbol,
+            colorHex: userInfoUseCase.state.myTeam?
+              .colorHex() ?? KeepingWinningRule.noTeamColorHex,
             totalWinRate: winRateUseCase.state.recordWinRate
           ),
           cardButtonTapped: $cardButtonTapped

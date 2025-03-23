@@ -21,23 +21,28 @@ extension GameRecordInfoService {
         
         switch result {
         case let .success(gameDTO):
-          let recordList = gameDTO.map { dto in
-            let myTeam = baseballTeams.first { $0.name() == dto.myTeam } ?? .dummy
-            let vsTeam = baseballTeams.first { $0.name() == dto.vsTeam } ?? .dummy
-            let stadium = stadiums.first { $0.symbol == dto.stadium } ?? .dummy
+          let records: [RecordModel?] = gameDTO.map { dto in
+            let date = dto.date.toCalendarDate()
+            let myTeam = baseballTeams.first { $0.name(year: date.year) == dto.myTeam }
+            let vsTeam = baseballTeams.first { $0.name(year: date.year) == dto.vsTeam }
+            let stadium = stadiums.first { $0.symbol == dto.stadium }
             
-            return RecordModel(
-              date: dto.date.toCalendarDate(),
-              stadium: stadium,
-              isDoubleHeader: dto.doubleHeaderGameOrder,
-              myTeam: myTeam,
-              vsTeam: vsTeam,
-              myTeamScore: dto.myTeamScore,
-              vsTeamScore: dto.vsTeamScore,
-              isCancel: dto.cancel
-            )
+            if let myTeam, let vsTeam, let stadium {
+              return RecordModel(
+                date: date,
+                stadium: stadium,
+                isDoubleHeader: dto.doubleHeaderGameOrder,
+                myTeam: myTeam,
+                vsTeam: vsTeam,
+                myTeamScore: dto.myTeamScore,
+                vsTeamScore: dto.vsTeamScore,
+                isCancel: dto.cancel
+              )
+            } else {
+              return nil
+            }
           }
-          return .success(recordList)
+          return .success(records)
         case let .failure(error): return .failure(error)
         }
       }, teamWinRate: { myTeam in
