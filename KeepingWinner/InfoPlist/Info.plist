@@ -153,5 +153,9 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>카드 이미지를 사진 앨범에 저장하려면 권한이 필요합니다.
 </string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>instagram-stories</string>
+	</array>
 </dict>
 </plist>

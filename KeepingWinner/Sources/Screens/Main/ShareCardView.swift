@@ -26,10 +26,15 @@ struct ShareCardView: View {
           Button(action: {
             cardButtonTapped = false
           }) {
-            Image(systemName: "xmark")
-              .font(.callout)
-              .bold()
-              .foregroundStyle(.white)
+            Rectangle()
+              .foregroundStyle(.clear)
+              .frame(width: 24, height: 24)
+              .overlay(
+                Image(systemName: "xmark")
+                  .font(.callout)
+                  .bold()
+                  .foregroundStyle(.white)
+              )
           }
           .padding(.bottom, 8)
           
@@ -87,7 +92,19 @@ struct ShareCardView: View {
   
   private var shareButton: some View {
     Button(action: {
-      
+      DispatchQueue.main.async {
+        let image = CardView(
+          recordWinRate: winRateUseCase.state.recordWinRate,
+          myTeam: userInfoUseCase.state.myTeam.name(type: .full),
+          myNickname: userInfoUseCase.state.myNickname,
+          characterModel: characterModel
+        )
+          .drawingGroup()
+          .asUIImage(size: CGSize(width: 280, height: 470))
+          .clipped(cornerRadius: 20)
+        
+        sharedToInstagramStory(image)
+      }
     }) {
       Label("스토리 공유", image: .instagramIcon)
         .font(.callout.bold())
@@ -101,7 +118,7 @@ struct ShareCardView: View {
   
   private func overlayView(_ text: String, systemImage: String? = nil) -> some View {
     Rectangle()
-      .foregroundStyle(.ultraThinMaterial)
+      .foregroundStyle(Color(hexString: "252525", opacity: 0.55))
       .ignoresSafeArea()
       .overlay(
         VStack(spacing: 23) {
@@ -123,6 +140,7 @@ struct ShareCardView: View {
       )
   }
   
+  // 이미지 공유 버튼을 통한 PNG 이미지 저장
   private func saveImageToAlbum(_ image: UIImage) {
     saveState = .saving
     
@@ -152,6 +170,53 @@ struct ShareCardView: View {
         }
       }
     }
+  }
+  
+  // 인스타그램 공유 버튼을 통한 인스타그램 스토리 이동
+  private func sharedToInstagramStory(_ image: UIImage) {
+    // MARK: - Meta Application ID
+    // 업데이트 이전 애플리케이션 ID를 개발 단계에서 라이브 단계로 바꿔놓아야 함! >> 브리 역할
+    let applicationID = "1318753709238862"
+    guard let urlScheme = URL(string: "instagram-stories://share?source_application=\(applicationID)") else {
+      presentShareSheet(for: image)
+      return
+    }
+    
+    guard UIApplication.shared.canOpenURL(urlScheme) else {
+      presentShareSheet(for: image)
+      return
+    }
+    
+    let pasteboardItems: [String: Any] = [
+      "com.instagram.sharedSticker.backgroundTopColor": "#\(characterModel.colorHex)",
+      "com.instagram.sharedSticker.backgroundBottomColor": "#\(characterModel.colorHex)",
+      "com.instagram.sharedSticker.stickerImage": image.pngData() as Any
+    ]
+    
+    let pasteboardOptions = [UIPasteboard.OptionsKey.expirationDate: Date().addingTimeInterval(300)]
+    UIPasteboard.general.setItems([pasteboardItems], options: pasteboardOptions)
+    
+    UIApplication.shared.open(urlScheme)
+  }
+  
+  private func presentShareSheet(for image: UIImage) {
+    guard let pngData = image.pngData() else { return }
+    
+    let fileName = makeFileName()
+    let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+    try? pngData.write(to: tempURL)
+    
+    let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
+    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+       let rootVC = windowScene.windows.first?.rootViewController {
+      rootVC.present(activityVC, animated: true)
+    }
+  }
+  
+  private func makeFileName() -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyMMddHHmmss"
+    return "승리지쿄_\(formatter.string(from: Date())).png"
   }
 }
 
