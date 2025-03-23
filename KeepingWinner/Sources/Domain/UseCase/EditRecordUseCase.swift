@@ -102,6 +102,8 @@ final class EditRecordUseCase {
         state._resetRecord.vsTeam = recordVsTeam
         state._resetRecord.stadium = stadium
         state.record = state._resetRecord
+        let recordDate = state.record.date
+        effect(._loadRealRecords(recordDate, recordMyTeam.name(year: recordDate.year)))
       }
       
     case ._loadBaseballTeams:
@@ -125,13 +127,17 @@ final class EditRecordUseCase {
         
         await MainActor.run {
           state.networkLoading = false
+          
+          switch result {
+          case let .success(realRecords):
+            guard realRecords.compactMap({ $0 }).count == realRecords.count else { return }
+              state._realRecords = realRecords.compactMap { $0 }
+              effect(._matchRecordToRealRecordsFirst(true))
+          case .failure: break
+          }
         }
-        guard case let .success(realRecords) = result else { return }
-        guard realRecords.compactMap({ $0 }).count == realRecords.count else { return }
+      }
         
-        await MainActor.run {
-          state._realRecords = realRecords.compactMap { $0 }
-          effect(._matchRecordToRealRecordsFirst(true))
         }
       }
       
