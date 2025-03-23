@@ -43,7 +43,13 @@ struct RecordListFilterButton: View {
                 recordUseCase.state.selectedYearFilter
               ) ?? KeepingWinningRule.dataUpdateYear
             )
-            },
+            }
+            .sorted(by: {
+              let lhs = $0.name(year: recordUseCase.state.selectedYearFilter)
+              let rhs = $1.name(year: recordUseCase.state.selectedYearFilter)
+              return lhs.sortKRPriority(rhs)
+            })
+          ,
           id: \.self) { stadium in
             let name = stadium.name(year: recordUseCase.state.selectedYearFilter)
             RecordFilterLabel(
