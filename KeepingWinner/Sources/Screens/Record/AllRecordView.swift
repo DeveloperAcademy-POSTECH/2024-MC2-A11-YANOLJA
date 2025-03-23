@@ -100,7 +100,6 @@ struct AllRecordView: View {
     .sheet(
       item: $selectedRecord,
       content: { selectedRecord in
-
         DetailRecordView(
           to: .edit(selectedRecord),
           editRecord: { record in

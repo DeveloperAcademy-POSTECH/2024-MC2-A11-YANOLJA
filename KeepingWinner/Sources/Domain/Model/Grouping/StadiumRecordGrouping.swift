@@ -30,6 +30,6 @@ struct StadiumRecordGrouping: RecordGrouping {
   }
   
   func sortPriority(_ lhs: String, _ rhs: String) -> Bool {
-    lhs.compare(rhs, locale: Locale(identifier: "ko_KR")) == .orderedAscending
+    lhs.sortKRPriority(rhs)
   }
 }
