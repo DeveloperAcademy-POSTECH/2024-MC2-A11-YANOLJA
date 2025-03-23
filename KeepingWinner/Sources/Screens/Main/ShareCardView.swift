@@ -126,18 +126,28 @@ struct ShareCardView: View {
   private func saveImageToAlbum(_ image: UIImage) {
     saveState = .saving
     
+    guard let pngData = image.pngData() else {
+      return
+    }
+    
     PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
       guard status == .authorized else {
         saveState = .idle
         return
       }
       
-      UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-      
-      DispatchQueue.main.async {
-        saveState = .saved
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+      PHPhotoLibrary.shared().performChanges({
+        let options = PHAssetResourceCreationOptions()
+        let creationRequest = PHAssetCreationRequest.forAsset()
+        creationRequest.addResource(with: .photo, data: pngData, options: options)
+      }) { success, error in
+        if success {
+          saveState = .saved
+          
+          DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            saveState = .idle
+          }
+        } else if error != nil {
           saveState = .idle
         }
       }
