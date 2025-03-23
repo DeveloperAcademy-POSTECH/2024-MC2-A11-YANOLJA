@@ -116,6 +116,7 @@ struct ShareCardView: View {
     }
   }
   
+  // 이미지 저장했을 때 알림
   private func overlayView(_ text: String, systemImage: String? = nil) -> some View {
     Rectangle()
       .foregroundStyle(Color(hexString: "252525", opacity: 0.55))
@@ -199,6 +200,7 @@ struct ShareCardView: View {
     UIApplication.shared.open(urlScheme)
   }
   
+  // 공유 시트 함수
   private func presentShareSheet(for image: UIImage) {
     guard let pngData = image.pngData() else { return }
     
@@ -213,6 +215,7 @@ struct ShareCardView: View {
     }
   }
   
+  // 파일 이름 겹치지 않도록 설정
   private func makeFileName() -> String {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyMMddHHmmss"
