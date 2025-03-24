@@ -9,233 +9,80 @@
 import SwiftUI
 import UIKit
 
-// 내가 보이는 뷰를 생성하거나 편집하는 enum
-enum RecordViewEditType {
-  case create
-  case edit
-}
-
 struct DetailRecordView: View {
-  var recordUseCase: RecordUseCase
+  var recordUseCase: EditRecordUseCase
   
-  @State var recording: GameRecordWithScoreModel = .init() // 수정할 때
+  private let editType: RecordEditType
+  private let editRecord: ((RecordModel) -> Void)?
+  private let newRecord: ((RecordModel) -> Void)?
+  private let removeRecord: ((UUID) -> Void)?
   
-  @State private var realRecordInfoList: [GameRecordWithScoreModel] = []
-  @State private var showingAlert: Bool = false
-  @State private var isDataLoading = false
-  @State private var changeMyTeam: BaseballTeam?
-  
-  private let editType: RecordViewEditType
-  private let updateRecords: ([GameRecordWithScoreModel]) -> Void
   private let goBackAction: () -> Void
-  
-  @State private var selectedOption: String = ""
-  private let doubleHeader = [0: "DH1", 1: "DH2"]
-  private var isDH: Bool { recording.isDoubleHeader != -1 }
   
   @State private var showImagePicker = false
   @State private var selectedUIImage: UIImage?
   @State private var image: Image?
-  
   @State private var makeBlur: Bool = false
   
-  // 이벤트 기록 여부를 추적
-  @State private var trackUploadPicture: Bool = false
-  
   init(
-    to editType: RecordViewEditType,
-    record: GameRecordWithScoreModel = .init(),
-    usecase: RecordUseCase,
-    updateRecords: @escaping ([GameRecordWithScoreModel]) -> Void,
+    to editType: RecordEditType,
+    usecase: EditRecordUseCase = .init(),
+    editRecord: ((RecordModel) -> Void)? = nil,
+    newRecord: ((RecordModel) -> Void)? = nil,
+    removeRecord: ((UUID) -> Void)? = nil,
     goBackAction: @escaping () -> Void
   ) {
     self.editType = editType
-    self._recording = State(initialValue: record)
     self.recordUseCase = usecase
-    self.updateRecords = updateRecords
+    self.editRecord = editRecord
+    self.newRecord = newRecord
+    self.removeRecord = removeRecord
     self.goBackAction = goBackAction
   }
   
   var body: some View {
-    NavigationStack {
+    NavigationView {
       List {
         Section(
           "직관 정보",
           content: {
             selectDate
             
-            // 경기장 Picker
-            Picker(
-              "경기장",
-              selection: $recording.stadiums
-            ) {
-              ForEach(BaseballStadiums.nameList, id: \.self) {
-                Text($0)
-              }
-            }
-            .accentColor(.gray)
-            .pickerStyle(.menu)
+            selectStadium
             
-            HStack(spacing: 10) {
-              SelectTeamBlock(
-                type: .my, // 나의 팀
-                selectedTeam: .init( // 이미지와 팀이름 선택
-                  get: { recording.myTeam },
-                  set: { selectedMyTeam in
-                    showingAlert = true
-                    changeMyTeam = selectedMyTeam
-                  }
-                                   )
-              )
-              .padding(.top, 4)
-              .alert(isPresented: $showingAlert) {
-                Alert(
-                  title: Text("알림"),
-                  message: Text("모든 직관 기록은 \n 나의 직관 승률에 반영됩니다. \n 그래도 나의 팀을 변경하시겠습니까?"),
-                  primaryButton:
-                      .destructive(Text("취소")) {
-                        
-                      },
-                  secondaryButton:
-                      .default( Text("확인") ) {
-                        // MARK: - 나의 팀 변경: 동시에 상태 팀 선택 리스트 제한
-                        if let myTeam = changeMyTeam {
-                          recording.myTeam = myTeam
-                          if recording.vsTeam == myTeam {
-                            recording.vsTeam = recording.vsTeam.anyOtherTeam()
-                          }
-                          Task {
-                            realRecordInfoList = await loadRealGameRecordsInfo()
-                            recording = realRecordInfoList.first?.keepMemoPhoto(in: recording) ?? resetScoreCancelDoubleHeaderAbout(recording)
-                          }
-                        }
-                      }
-                )
-              }
-              
-              Text("VS")
-                .font(.title2)
-                .foregroundStyle(.gray)
-              
-              SelectTeamBlock(
-                type: .vs(myteam: recording.myTeam),
-                selectedTeam: $recording.vsTeam
-              )
-            }
+            selectTeam
             
-            Toggle(isOn: .init(get: { isDH }, set: { isDH in recording.isDoubleHeader = isDH ? 0 : -1 })) {
-              Text("더블헤더")
-            }
+            toggleDoubleButton
+            
           }
         )
         
         // 더블헤더 선택
-        if isDH {
-          Picker("더블헤더 선택", selection: .init(
-            get: { recording.isDoubleHeader },
-            set: { doubleHeaderNum in
-              recording.isDoubleHeader = doubleHeaderNum
-              if doubleHeaderNum == 1 {
-                recording = realRecordInfoList.last?.keepMemoPhoto(in: recording) ?? recording
-              } else {
-                recording = realRecordInfoList.first?.keepMemoPhoto(in: recording) ?? recording
-              }
-            }
-          )) {
-            ForEach(doubleHeader.keys.sorted(), id: \.self) { key in
-              Text(doubleHeader[key] ?? "")
-            }
-          }
-          .pickerStyle(.inline)
+        if recordUseCase.state.isDoubleHeader {
+          selectDoubleHeader
         }
         
         // 경기 결과 표시
         Section(
           "경기 결과",
           content: {
-            HStack(spacing: 0) {
-              Text("스코어")
-                .foregroundStyle(recording.isCancel ? .gray : .black)
-              Spacer()
-              
-              // 스코어 입력 : 취소 시 disabled
-              TextField(
-                "--",
-                text: Binding(
-                  get: {
-                    recording.myTeamScore == "--" ? "" : recording.myTeamScore
-                  },
-                  set: { newValue in
-                    recording.myTeamScore = newValue.isEmpty ? "" : newValue
-                  }))
-              .keyboardType(.numberPad)
-              .multilineTextAlignment(.center)
-              .frame(width: 94, height: 32)
-              .background(
-                RoundedRectangle(cornerRadius: 8)
-                  .foregroundStyle(recording.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
-              )
-              .font(.headline)
-              .foregroundStyle(recording.isCancel ? .gray : .black)
-              
-              Text(":")
-                .foregroundStyle(recording.isCancel ? .gray.opacity(0.4) : .gray)
-                .padding(.horizontal, 21)
-              
-              TextField(
-                "--",
-                text: Binding(
-                  get: {
-                    recording.vsTeamScore == "--" ? "" : recording.vsTeamScore
-                  },
-                  set: { newValue in
-                    recording.vsTeamScore = newValue.isEmpty ? "" : newValue
-                  }))
-              .keyboardType(.numberPad)
-              .multilineTextAlignment(.center)
-              .frame(width: 94, height: 32)
-              .background(
-                RoundedRectangle(cornerRadius: 8)
-                  .foregroundStyle(recording.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
-              )
-              .font(.headline)
-              .foregroundStyle(recording.isCancel ? .gray : .black)
-            }
-            .disabled(recording.isCancel)
-            
-            Toggle(isOn: $recording.isCancel) {
-              Text("취소")
-            }
+            inputScoreField
+            toggleCancelButton
           })
         
         // (Optional) 메모 추가
         Section(
           "메모 (선택)",
           content: {
-            TextField("한 줄 메모를 남겨 보세요.", text: Binding(
-              get: { recording.memo ?? "" },
-              set: { recording.memo = $0.isEmpty ? nil : $0 }
-            ))
-            .overlay(
-              alignment: .trailing,
-              content: {
-                Text("\(recording.memo?.count ?? 0) / 15")
-                  .font(.callout)
-                  .foregroundStyle(Color(uiColor: .systemGray2))
-              }
-            )
-            .onChange(of: recording.memo ?? "") { oldValue, newValue in
-              if newValue.count > 15 {
-                recording.memo = String(newValue.prefix(15))
-              }
-            }
-          })
+            inputMemoField
+          }
+        )
         
         // (Optional) 사진 추가
         Section(
           "사진 (선택)",
           content: {
-            if let image = recording.photo {
+            if let image = recordUseCase.state.record.photo {
               VStack {
                 if makeBlur {
                   ZStack {
@@ -252,7 +99,7 @@ struct DetailRecordView: View {
                       .aspectRatio(1, contentMode: .fill)
                       .foregroundStyle(.white)
                       .onTapGesture {
-                        recording.photo = nil
+                        recordUseCase.effect(.tappedPhoto)
                         makeBlur.toggle()
                       }
                   }
@@ -276,26 +123,23 @@ struct DetailRecordView: View {
                 Spacer()
               }
               .contentShape(Rectangle())
-              .onTapGesture {
-                showImagePicker.toggle()
-                // 사진 업로드 이벤트
-                // uploadPicture()
-              }
+              .onTapGesture { showImagePicker.toggle() }
               .sheet(
                 isPresented: $showImagePicker,
                 onDismiss: {
-                  loadImage()
+                  guard let selectedUIImage else { return }
+                  recordUseCase.effect(.selectPhoto(selectedUIImage))
                 }) {
                   ImagePicker(image: $selectedUIImage)
                 }
             }
           })
         
-        if editType == .edit {
+        if case .edit = editType {
           Button(
             action: {
-              recordUseCase.effect(.tappedDeleteRecord(recording.id))
-              updateRecords(recordUseCase.state.recordList)
+              recordUseCase.effect(.tappedDeleteRecord)
+              removeRecord?(recordUseCase.state.record.id)
               goBackAction()
             },
             label: {
@@ -309,44 +153,41 @@ struct DetailRecordView: View {
           )
         }
       }
-      .loadingIndicator(isLoading: isDataLoading)
+      .loadingIndicator(isLoading: recordUseCase.state.networkLoading)
+      .alert(
+        isPresented: .init(
+          get: { recordUseCase.state.teamChangeAlert },
+          set: { recordUseCase.effect(._showTeamChangeAlert($0)) }
+        )
+      ) {
+        Alert(
+          title: Text("알림"),
+          message: Text("모든 직관 기록은 \n 나의 직관 승률에 반영됩니다. \n 그래도 나의 팀을 변경하시겠습니까?"),
+          primaryButton:
+              .destructive(Text("취소")) {},
+          secondaryButton:
+              .default( Text("확인") ) {
+                recordUseCase.effect(.tappedChangeMyTeamConfirmButton)
+              }
+        )
+      }
       .toolbar(
         content: {
           ToolbarItem(placement: .topBarTrailing) {
             Button(
               action: {
-                if editType == .create { // 생성 시
-                  // 만약 스코어를 입력하지 않고 저장했다면 리스트에 "--" 반영
-                  if recording.myTeamScore.isEmpty {
-                    recording.myTeamScore = "0"
-                  }
-                  if recording.vsTeamScore.isEmpty {
-                    recording.vsTeamScore = "0"
-                  }
-                  if recording.isCancel {
-                    recording.isCancel = true
-                  }
-                  
-                  recordUseCase.effect(.tappedSaveNewRecord(recording))
-                  updateRecords(recordUseCase.state.recordList)
-                  goBackAction()
-                } else { // 수정 시
-                  // 만약 스코어를 입력하지 않고 저장했다면 리스트에 "--" 반영
-                  if recording.myTeamScore.isEmpty {
-                    recording.myTeamScore = "0"
-                  }
-                  if recording.vsTeamScore.isEmpty {
-                    recording.vsTeamScore = "0"
-                  }
-                  if recording.isCancel {
-                    recording.isCancel = true
-                  }
-                  
-                  recordUseCase.effect(.tappedEditNewRecord(recording))
-                  updateRecords(recordUseCase.state.recordList)
-                  goBackAction()
-                }
-                TrackUserActivityManager.shared.effect(.tappedConfirmButtonToRecord(recording: recording))
+                var new: Bool = false
+                if case .new = editType { new = true }
+                recordUseCase.effect(.tappedConfirmToNew(new))
+                editRecord?(recordUseCase.state.record)
+                newRecord?(recordUseCase.state.record)
+                goBackAction()
+                TrackUserActivityManager.shared
+                  .effect(
+                    .tappedConfirmButtonToRecord(
+                      recording: recordUseCase.state.record
+                    )
+                  )
               },
               label: {
                 Text("완료")
@@ -371,77 +212,186 @@ struct DetailRecordView: View {
       .navigationBarTitleDisplayMode(.inline)
     }
     .task {
-      realRecordInfoList = await loadRealGameRecordsInfo()
-      if editType == .create {
-        recording = realRecordInfoList.first ?? recording
-      }
+      recordUseCase.effect(.onAppear(editType))
     }
   }
-
+  
   private var selectDate: some View {
     DatePicker(
       "날짜",
       selection: .init(
-        get: {
-          recording.date
-        },
+        get: { recordUseCase.state.record.date },
         set: { date in
-          recording.date = date
-          Task {
-            realRecordInfoList = await loadRealGameRecordsInfo()
-            recording = realRecordInfoList.first?.keepMemoPhoto(in: recording) ?? resetScoreCancelDoubleHeaderAbout(recording)
-          }
+          recordUseCase.effect(.tappedChangeDate(date))
         }
       ),
+      in: Calendar.current
+        .date(from: DateComponents(year: 2015, month: 1, day: 1))!...Date(),
       displayedComponents: [.date]
     )
   }
   
-  private func loadImage() {
-    guard let selectedImage = selectedUIImage else { return }
-    recording.photo = selectedImage
+  private var selectStadium: some View {
+    Picker(
+      "경기장",
+      selection: .init(
+        get: { recordUseCase.state.record.stadium.symbol }, // 선택된 값이 Stadium 모델 자체여야 함
+        set: { stadium in
+          recordUseCase.effect(.tappedChangeStadium(stadium))
+        }
+      )
+    ) {
+      ForEach(recordUseCase.state.stadiums, id: \.id) { stadium in
+        Text(stadium.name(year: recordUseCase.state.record.date.year))
+          .tag(stadium.symbol) // tag를 Stadium 모델 전체로 설정
+      }
+    }
+    .accentColor(.gray)
+    .pickerStyle(.menu)
   }
   
-  private func loadRealGameRecordsInfo() async -> [GameRecordWithScoreModel] {
-    isDataLoading = true
-    let service = GameRecordInfoService.live
-    let result = await service.gameRecord(recording.date, recording.myTeam.sliceName)
-    isDataLoading = false
-    guard case var .success(recordList) = result else { return [] }
-    recordList.indices.forEach { recordList[$0].id = recording.id }
-    return recordList
+  private var selectTeam: some View {
+    HStack(spacing: 10) {
+      SelectTeamBlock(
+        type: .my,
+        baseballTeams: recordUseCase.state.baseballTeams,
+        year: recordUseCase.state.record.date.year,
+        selectedTeamSymbol: .init(
+          get: { recordUseCase.state.record.myTeam.symbol },
+          set: { selected in
+            recordUseCase.effect(.tappedChangeMyTeam(selected))
+          }
+        )
+      )
+      .padding(.top, 4)
+      
+      Text("VS")
+        .font(.title2)
+        .foregroundStyle(.gray)
+      
+      SelectTeamBlock(
+        type: .vs,
+        baseballTeams: recordUseCase.state.baseballTeams
+          .filter { $0.symbol != recordUseCase.state.record.myTeam.symbol },
+        year: recordUseCase.state.record.date.year,
+        selectedTeamSymbol: .init(
+          get: { recordUseCase.state.record.vsTeam.symbol },
+          set: { selected in
+            recordUseCase.effect(.tappedChangeVsTeam(selected))
+          }
+        )
+      )
+    }
   }
   
-  private func resetScoreCancelDoubleHeaderAbout(_ record: GameRecordWithScoreModel) -> GameRecordWithScoreModel {
-    var new = record
-    new.myTeamScore = "0"
-    new.vsTeamScore = "0"
-    new.isDoubleHeader = -1
-    new.isCancel = false
-    
-    return new
+  private var toggleDoubleButton: some View {
+    Toggle(
+      isOn: .init(
+        get: { recordUseCase.state.isDoubleHeader },
+        set: { recordUseCase.effect(.tappedDoubleButton($0)) }
+      )
+    ) {
+      Text("더블헤더")
+    }
   }
-}
-
-private extension GameRecordWithScoreModel {
-  func keepMemoPhoto(in exRecord: GameRecordWithScoreModel) -> GameRecordWithScoreModel {
-    var new = self
-    new.id = exRecord.id
-    new.memo = exRecord.memo
-    new.photo = exRecord.photo
-    
-    return new
+  
+  private var selectDoubleHeader: some View {
+    Picker("더블헤더 선택", selection: .init(
+      get: { recordUseCase.state.record.isDoubleHeader },
+      set: { changeDoubleHeader in
+        let isFirst = changeDoubleHeader < 1
+        recordUseCase.effect(.tappedFirstDoubleButton(isFirst))
+      }
+    )) {
+      ForEach([0, 1], id: \.self) { doubleNum in
+        Text(doubleNum == 0 ? "DH1" : "DH2" )
+      }
+    }
+    .pickerStyle(.inline)
+  }
+  
+  private var inputScoreField: some View {
+    HStack(spacing: 0) {
+      Text("스코어")
+        .foregroundStyle(recordUseCase.state.record.isCancel ? .gray : .black)
+      Spacer()
+      
+      // 스코어 입력 : 취소 시 disabled
+      TextField(
+        "--",
+        text: .init(
+          get: {
+            recordUseCase.state.record.myTeamScore
+          },
+          set: { newValue in
+            recordUseCase.effect(.inputScoreMyTeam(true, newValue))
+          }))
+      .keyboardType(.numberPad)
+      .multilineTextAlignment(.center)
+      .frame(width: 94, height: 32)
+      .background(
+        RoundedRectangle(cornerRadius: 8)
+          .foregroundStyle(recordUseCase.state.record.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
+      )
+      .font(.headline)
+      .foregroundStyle(recordUseCase.state.record.isCancel ? .gray : .black)
+      
+      Text(":")
+        .foregroundStyle(recordUseCase.state.record.isCancel ? .gray.opacity(0.4) : .gray)
+        .padding(.horizontal, 21)
+      
+      TextField(
+        "--",
+        text: .init(
+          get: {
+            recordUseCase.state.record.vsTeamScore
+          },
+          set: { newValue in
+            recordUseCase.effect(.inputScoreMyTeam(false, newValue))
+          }))
+      .keyboardType(.numberPad)
+      .multilineTextAlignment(.center)
+      .frame(width: 94, height: 32)
+      .background(
+        RoundedRectangle(cornerRadius: 8)
+          .foregroundStyle(recordUseCase.state.record.isCancel ? .noTeam2.opacity(0.4) : .noTeam2)
+      )
+      .font(.headline)
+      .foregroundStyle(recordUseCase.state.record.isCancel ? .gray : .black)
+    }
+    .disabled(recordUseCase.state.record.isCancel)
+  }
+  
+  private var toggleCancelButton: some View {
+    Toggle(
+      isOn: .init(
+        get: { recordUseCase.state.record.isCancel },
+        set: { _ in recordUseCase.effect(.tappedIsCancel) }
+      )
+    ) {
+      Text("취소")
+    }
+  }
+  
+  private var inputMemoField: some View {
+    TextField("한 줄 메모를 남겨 보세요.", text: Binding(
+      get: { recordUseCase.state.record.memo ?? "" },
+      set: { recordUseCase.effect(.inputMemo($0)) }
+    ))
+    .overlay(
+      alignment: .trailing,
+      content: {
+        Text("\(recordUseCase.state.record.memo?.count ?? 0) / 15")
+          .font(.callout)
+          .foregroundStyle(Color(uiColor: .systemGray2))
+      }
+    )
   }
 }
 
 #Preview {
   DetailRecordView(
-    // 현재 보여지는 뷰는 편집(삭제 버튼 추가)
-    to: .edit,
-    usecase: RecordUseCase(
-      recordService: RecordDataService()
-    ),
-    updateRecords: { _ in },
+    to: .new,
     goBackAction: { }
   )
 }

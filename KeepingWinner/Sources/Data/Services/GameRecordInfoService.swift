@@ -11,7 +11,7 @@ import Foundation
 extension GameRecordInfoService {
   static let live = {
     return Self(
-      gameRecord: { date, myTeam in
+      gameRecord: { date, myTeam, baseballTeams, stadiums in
         let result = await Provider<GameRecordInfoAPI>
           .init()
           .request(
@@ -21,19 +21,28 @@ extension GameRecordInfoService {
         
         switch result {
         case let .success(gameDTO):
-          let recordList = gameDTO.map { dto in
-            return GameRecordWithScoreModel(
-              date: dto.date.toCalendarDate(),
-              stadiums: dto.stadium,
-              myTeam: baseballTeamConvertFrom(dto.myTeam),
-              vsTeam: baseballTeamConvertFrom(dto.vsTeam),
-              isDoubleHeader: dto.doubleHeaderGameOrder,
-              myTeamScore: dto.myTeamScore,
-              vsTeamScore: dto.vsTeamScore,
-              isCancel: dto.cancel
-            )
+          let records: [RecordModel?] = gameDTO.map { dto in
+            let date = dto.date.toCalendarDate()
+            let myTeam = baseballTeams.first { $0.name(year: date.year) == dto.myTeam }
+            let vsTeam = baseballTeams.first { $0.name(year: date.year) == dto.vsTeam }
+            let stadium = stadiums.first { $0.symbol == dto.stadium }
+            
+            if let myTeam, let vsTeam, let stadium {
+              return RecordModel(
+                date: date,
+                stadium: stadium,
+                isDoubleHeader: dto.doubleHeaderGameOrder,
+                myTeam: myTeam,
+                vsTeam: vsTeam,
+                myTeamScore: dto.myTeamScore,
+                vsTeamScore: dto.vsTeamScore,
+                isCancel: dto.cancel
+              )
+            } else {
+              return nil
+            }
           }
-          return .success(recordList)
+          return .success(records)
         case let .failure(error): return .failure(error)
         }
       }, teamWinRate: { myTeam in
@@ -55,20 +64,4 @@ extension GameRecordInfoService {
       }
     )
   }()
-  
-  private static func baseballTeamConvertFrom(_ team: String) -> BaseballTeam {
-      switch team {
-      case "두산": return .doosan
-      case "롯데": return .lotte
-      case "삼성": return .samsung
-      case "한화": return .hanwha
-      case "키움": return .kiwoom
-      case "KIA": return .kia
-      case "KT": return .kt
-      case "LG": return .lg
-      case "NC": return .nc
-      case "SSG": return .ssg
-      default: return .doosan
-      }
-  }
 }

@@ -11,19 +11,17 @@ import SwiftUI
 struct AllRecordView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var userInfoUseCase: UserInfoUseCase
-  @Bindable var recordUseCase: RecordUseCase
-  @State var selectedRecord: GameRecordWithScoreModel?
+  @Bindable var recordUseCase: AllRecordUseCase
+  @State var selectedRecord: RecordModel?
   
   @Binding var plusButtonTapped: Bool
-  @Binding var selectedYearFilter: String
   @State var selectedRecordFilter: RecordFilter = RecordFilter.initialValue
-  @State var isAscending: Bool = true
   
   var body: some View {
     let filteredList = recordUseCase.state.recordList
-      .filtered(years: selectedYearFilter)
+      .filtered(year: recordUseCase.state.selectedYearFilter)
       .filtered(options: selectedRecordFilter)
-      .sortByLatestDate(isAscending)
+      .sortByLatestDate(recordUseCase.state.isAscending)
     
     VStack(spacing: 0) {
       Spacer()
@@ -31,23 +29,31 @@ struct AllRecordView: View {
       
       TotalRecordCell(
         recordList: filteredList,
-        myTeam: userInfoUseCase.state.myTeam ?? .noTeam
+        myTeam: userInfoUseCase.state.myTeam
       )
       .padding(.bottom, 24)
       
       HStack {
         RecordListFilterButton(
+          recordUseCase: recordUseCase,
           selectedRecordFilter: $selectedRecordFilter,
-          myTeam: userInfoUseCase.state.myTeam ?? .doosan
+          myTeamSymbol: userInfoUseCase.state.myTeam?.symbol ?? BaseballTeamModel.noTeam.symbol
         )
         Spacer()
-        RecordListOrderButton(sortByLatestDate: $isAscending)
+        RecordListOrderButton(
+          sortByLatestDate: .init(
+            get: { recordUseCase.state.isAscending },
+            set: { _ in recordUseCase.effect(.tappedAscending) }
+          ),
+          firstTitle: "최근 순",
+          secondTitle: "이전 순"
+        )
       }
       
       if recordUseCase.state.recordList
-        .filtered(years: selectedYearFilter)
+        .filtered(year: recordUseCase.state.selectedYearFilter)
         .filtered(options: selectedRecordFilter)
-        .sortByLatestDate(isAscending).isEmpty {
+        .sortByLatestDate(recordUseCase.state.isAscending).isEmpty {
         HStack{
           Spacer()
           Group {
@@ -55,7 +61,7 @@ struct AllRecordView: View {
             case .all:
               Text("\(RecordFilter.all.label) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
             case .teamOptions(let baseballTeam):
-              Text("\(baseballTeam.sliceName) 상대 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+              Text("\(baseballTeam) 상대 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
             case .stadiumsOptions(let string):
               Text("\(string) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
             case .resultsOptions(let gameResult):
@@ -95,10 +101,16 @@ struct AllRecordView: View {
       item: $selectedRecord,
       content: { selectedRecord in
         DetailRecordView(
-          to: .edit,
-          record: selectedRecord,
-          usecase: recordUseCase,
-          updateRecords: { records in winRateUseCase.effect(.updateRecords(records))},
+          to: .edit(selectedRecord),
+          editRecord: { record in
+            winRateUseCase.effect(.editRecord(record))
+            recordUseCase.effect(.editRecord(record))
+          },
+          removeRecord: { id in
+            winRateUseCase.effect(.removeRecord(id))
+            recordUseCase.effect(.removeRecord(id))
+            
+          },
           goBackAction: { self.selectedRecord = nil }
         )
       }
@@ -107,25 +119,27 @@ struct AllRecordView: View {
       isPresented: $plusButtonTapped
     ) {
       DetailRecordView(
-        to: .create,
-        record: .init(
-          myTeam: winRateUseCase.state.myTeam != .noTeam ? winRateUseCase.state.myTeam : .doosan,
-          vsTeam: winRateUseCase.state.myTeam != .noTeam ? winRateUseCase.state.myTeam.anyOtherTeam() : .doosan.anyOtherTeam()
-        ),
-        usecase: recordUseCase,
-        updateRecords: { records in winRateUseCase.effect(.updateRecords(records)) },
+        to: .new,
+        newRecord: { record in
+          winRateUseCase.effect(.newRecord(record))
+          recordUseCase.effect(.newRecord(record))
+        },
         goBackAction: { plusButtonTapped = false }
       )
     }
+    .yearPickerSheet(
+      isPresented: recordUseCase.state.isPresentedYearFilterSheet,
+      selectedYear: recordUseCase.state.selectedYearFilter,
+      changeYearTo: { year in recordUseCase.effect(.setYearFilter(to: year)) },
+      goBackAction: { recordUseCase.effect(.presentingYearFilter(false)) }
+    )
   }
 }
 
 #Preview {
   NavigationStack {
-    let recordList: [GameRecordWithScoreModel] = [.init(myTeamScore: "0", vsTeamScore: "0")]
     AllRecordView(
       winRateUseCase: .init(
-        recordList: recordList,
         recordService: RecordDataService(),
         myTeamService: UserDefaultsService(),
         gameRecordInfoService: .live
@@ -134,14 +148,12 @@ struct AllRecordView: View {
         myTeamService: UserDefaultsService(),
         myNicknameService: UserDefaultsService(),
         changeIconService: ChangeAppIconService(),
-        settingsService: .live
+        settingsService: .preview
       ),
       recordUseCase: .init(
-        recordList: recordList,
         recordService: RecordDataService()
       ),
-      plusButtonTapped: .constant(false),
-      selectedYearFilter: .constant("전체")
+      plusButtonTapped: .constant(false)
     )
   }
 }

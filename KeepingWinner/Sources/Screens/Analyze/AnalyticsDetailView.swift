@@ -10,130 +10,88 @@ import SwiftUI
 
 struct AnalyticsDetailView: View {
   @Bindable var winRateUseCase: WinRateUseCase
-  @Bindable var recordUseCase: RecordUseCase
-  @State var selectedRecord: GameRecordWithScoreModel?
+  @Bindable var recordUseCase: AllRecordUseCase
   
-  let filterOptionsCategory: AnalyticsFilter
-  
-  var detailOptions: String {
-    switch filterOptionsCategory {
-    case let .team(baseballTeam):
-      return baseballTeam.name
-    case let .stadiums(stadiums):
-      return stadiums
-    }
-  }
-  
-  var winRate: Int? {
-    switch filterOptionsCategory {
-    case let .team(baseballTeam):
-      return winRateUseCase.state.eachTeamAnalytics.vsTeamWinRate[baseballTeam] ?? nil
-    case let .stadiums(stadiums):
-      return winRateUseCase.state.eachStadiumsAnalytics.stadiumsWinRate[stadiums] ?? nil
-    }
-  }
-  
-  var recordCount: Int? {
-    switch filterOptionsCategory {
-    case let .team(baseballTeam):
-      return winRateUseCase.state.eachTeamAnalytics.vsTeamRecordCount[baseballTeam] ?? nil
-    case let .stadiums(stadiums):
-      return winRateUseCase.state.eachStadiumsAnalytics.stadiumsRecordCount[stadiums] ?? nil
-    }
-  }
-  
-  var filteredRecordList: [GameRecordWithScoreModel] {
-    switch filterOptionsCategory {
-    case let .team(baseballTeam):
-      return winRateUseCase.state.filteredRecordList.filter { $0.vsTeam == baseballTeam }
-        .sortByLatestDate(true)
-    case let .stadiums(stadiums):
-      return winRateUseCase.state.filteredRecordList.filter { $0.stadiums == stadiums }
-        .sortByLatestDate(true)
-    }
-  }
+  @State var selectedRecord: RecordModel?
+  let selectedCategory: String
   
   init(
     winRateUseCase: WinRateUseCase,
-    recordUseCase: RecordUseCase,
-    filterOptions: AnalyticsFilter
+    recordUseCase: AllRecordUseCase,
+    selectedCategory: String
   ) {
     self.winRateUseCase = winRateUseCase
     self.recordUseCase = recordUseCase
-    self.filterOptionsCategory = filterOptions
+    self.selectedCategory = selectedCategory
   }
   
   var body: some View {
     VStack {
-      VStack(spacing: 0) {
-        HStack {
-          Text("\(detailOptions)")
-            .foregroundStyle(.date)
-            .bold()
-          Spacer()
-        }
-        .padding(.bottom, 8)
-        
-        HStack(spacing: 11) {
-          VStack(alignment: .leading, spacing: 8) {
-            Text("직관 승률")
-              .font(.footnote)
-            HStack(spacing: 0) {
-              Spacer()
-              if let winRate {
-                Text("\(String(winRate))")
-                  .font(.title2)
-                  .bold()
-                
-              } else {
-                Text("--")
-                  .font(.title2)
-                  .bold()
-              }
-              Text("%")
+      HStack(spacing: 11) {
+        VStack(alignment: .leading, spacing: 8) {
+          Text("직관 승률")
+            .font(.footnote)
+          HStack(spacing: 0) {
+            Spacer()
+            if let winRate = winRateUseCase.state
+              .selectedGroupingOptionRecords[selectedCategory]?.winRate {
+              Text("\(String(winRate))")
+                .font(.title2)
+                .bold()
+              
+            } else {
+              Text("--")
                 .font(.title2)
                 .bold()
             }
+            Text("%")
+              .font(.title2)
+              .bold()
           }
-          .padding(16)
-          .background {
-            RoundedRectangle(cornerRadius: 14)
-              .stroke(lineWidth: 0.33)
-              .foregroundStyle(.gray)
-          }
+        }
+        .padding(16)
+        .background {
+          RoundedRectangle(cornerRadius: 14)
+            .stroke(lineWidth: 0.33)
+            .foregroundStyle(.gray)
+        }
+        
+        VStack(alignment: .leading, spacing: 8) {
+          let recordCount = winRateUseCase.state
+            .selectedGroupingOptionRecords[selectedCategory]?.count
+          Text("총 \(String(recordCount ?? 0))경기")
+            .font(.footnote)
           
-          VStack(alignment: .leading, spacing: 8) {
-            
-            Text("총 \(String(recordCount ?? 0))경기")
-              .font(.footnote)
-            
-            HStack {
-              Spacer()
-              // 각 팀의 승무패 횟수
-              let winCount = filteredRecordList.filter { $0.result == .win }.count
-              let loseCount = filteredRecordList.filter { $0.result == .lose }.count
-              let drawCount = filteredRecordList.filter { $0.result == .draw }.count
-              Text("\(winCount)승 \(loseCount)패 \(drawCount)무")
-            }
-            .font(.title2)
-            .bold()
+          HStack {
+            Spacer()
+            let filteredRecordList = winRateUseCase.state.selectedGroupingOptionRecords[selectedCategory] ?? []
+             // 각 팀의 승무패 횟수
+            let winCount = filteredRecordList.filter { $0.result == .win }.count
+            let loseCount = filteredRecordList.filter { $0.result == .lose }.count
+            let drawCount = filteredRecordList.filter { $0.result == .draw }.count
+            Text("\(winCount)승 \(loseCount)패 \(drawCount)무")
           }
-          .padding(16)
-          .background {
-            RoundedRectangle(cornerRadius: 14)
-              .stroke(lineWidth: 0.33)
-              .foregroundStyle(.gray)
-          }
+          .font(.title2)
+          .bold()
+        }
+        .padding(16)
+        .background {
+          RoundedRectangle(cornerRadius: 14)
+            .stroke(lineWidth: 0.33)
+            .foregroundStyle(.gray)
         }
       }
       .padding(.top, 30)
       .padding(.bottom, 20)
       .padding(.horizontal, 16)
       
-      if filteredRecordList.isEmpty {
+      let records = winRateUseCase.state
+        .selectedGroupingOptionRecords[selectedCategory] ?? []
+      
+      if records.isEmpty {
         HStack{
           Spacer()
-          Text("\(detailOptions)와의 직관 기록이 없습니다")
+          Text("\(selectedCategory)와의 직관 기록이 없습니다")
             .foregroundColor(.gray)
             .font(.callout)
             .padding(.bottom, 12)
@@ -144,8 +102,7 @@ struct AnalyticsDetailView: View {
       } else {
         ScrollView() {
           VStack {
-            ForEach(
-              filteredRecordList,
+            ForEach(records.sortByLatestDate(true),
               id: \.id
             ) { record in
               Button(
@@ -153,17 +110,24 @@ struct AnalyticsDetailView: View {
                   selectedRecord = record
                 },
                 label: {
-                  RecordCell(record: record)
+                  RecordCell(
+                    record: record
+                  )
                 }
               )
               .sheet(
                 item: $selectedRecord,
                 content: { record in
                   DetailRecordView(
-                    to: .edit,
-                    record: record,
-                    usecase: recordUseCase,
-                    updateRecords: { records in winRateUseCase.effect(.updateRecords(records))},
+                    to: .edit(record),
+                    editRecord: { record in winRateUseCase.effect(.editRecord(record))
+                      recordUseCase.effect(.editRecord(record))
+                    },
+                    removeRecord: { id in
+                      winRateUseCase.effect(.removeRecord(id))
+                      recordUseCase.effect(.removeRecord(id))
+                      
+                    },
                     goBackAction: { selectedRecord = nil }
                   )
                   .navigationBarBackButtonHidden()
@@ -189,8 +153,8 @@ struct AnalyticsDetailView: View {
       myTeamService: UserDefaultsService(),
       gameRecordInfoService: .live
     ),
-    recordUseCase: RecordUseCase(
+    recordUseCase: AllRecordUseCase(
       recordService: RecordDataService()),
-    filterOptions: .team(.kia)
+    selectedCategory: "KIA 타이거즈"
   )
 }

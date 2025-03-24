@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct MyTeamSelectCell: View {
-  let team: BaseballTeam
+  let baseballTeam: BaseballTeamModel
   
     var body: some View {
       ZStack {
@@ -18,11 +18,11 @@ struct MyTeamSelectCell: View {
           .frame(width: 105, height: 105)
         
         VStack {
-          Text(team.name)
+          Text(baseballTeam.name(type: .full))
             .font(.system(.caption, weight: .bold))
             .foregroundColor(.black)
           
-          team.image
+          Image("\(baseballTeam.symbol)")
             .resizable()
             .scaledToFit()
             .frame(width: 70)
@@ -34,5 +34,5 @@ struct MyTeamSelectCell: View {
 }
 
 #Preview {
-  MyTeamSelectCell(team: .samsung)
+  MyTeamSelectCell(baseballTeam: BaseballTeamModel.noTeam)
 }

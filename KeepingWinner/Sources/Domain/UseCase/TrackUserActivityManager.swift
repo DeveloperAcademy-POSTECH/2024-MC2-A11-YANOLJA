@@ -13,7 +13,7 @@ class TrackUserActivityManager {
     case mainTabOnAppear
     case tappedMainCharacter
     case tappedPlusButtonToMakeRecord
-    case tappedConfirmButtonToRecord(recording: GameRecordWithScoreModel)
+    case tappedConfirmButtonToRecord(recording: RecordModel)
   }
   
   static var shared: TrackUserActivityManager = .init()

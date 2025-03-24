@@ -9,15 +9,21 @@
 import SwiftUI
 
 struct SelectTeamBlock: View {
-  @Binding var selectedTeam: BaseballTeam
+  @Binding var selectedTeamSymbol: String
+  let baseballTeams: [BaseballTeamModel]
+  let year: String
   private let type: SelectType
   
   init(
     type: SelectType,
-    selectedTeam: Binding<BaseballTeam>
+    baseballTeams: [BaseballTeamModel],
+    year: String,
+    selectedTeamSymbol: Binding<String>
   ) {
     self.type = type
-    self._selectedTeam = selectedTeam
+    self.baseballTeams = baseballTeams
+    self.year = year
+    self._selectedTeamSymbol = selectedTeamSymbol
   }
   
   var body: some View {
@@ -25,34 +31,28 @@ struct SelectTeamBlock: View {
       Text(type.title)
         .font(.caption)
         .foregroundStyle(.gray)
-      selectedTeam
-        .image
+      Image("\(self.selectedTeamSymbol)")
         .resizable()
         .scaledToFit()
       
       HStack {
         Picker(
           "",
-          selection: $selectedTeam,
+          selection: .init(
+            get: {
+              baseballTeams.map{ $0.symbol }.contains(selectedTeamSymbol) ? selectedTeamSymbol : (baseballTeams.first ?? .dummy).symbol
+            },
+            set: { selectedTeamSymbol = $0 }
+          ),
           content: {
-            if case let .vs(myteam) = type {
-              ForEach(BaseballTeam.recordBaseBallTeam.filter{ $0 != myteam }, id: \.self) { team in
-                HStack {
-                  Text(team.name)
-                    .font(.subheadline)
-                    .foregroundStyle(.gray)
-                  Spacer()
-                }
+            ForEach(baseballTeams, id: \.id) { team in
+              HStack {
+                Text(team.name(year: year, type: .full))
+                  .font(.subheadline)
+                  .foregroundStyle(.gray)
+                Spacer()
               }
-            } else {
-              ForEach(BaseballTeam.recordBaseBallTeam, id: \.self) { team in
-                HStack {
-                  Text(team.name)
-                    .font(.subheadline)
-                    .foregroundStyle(.gray)
-                  Spacer()
-                }
-              }
+              .tag(team.symbol)
             }
           }
         )
@@ -68,7 +68,7 @@ struct SelectTeamBlock: View {
 extension SelectTeamBlock {
   enum SelectType: Equatable {
     case my
-    case vs(myteam: BaseballTeam)
+    case vs
     
     var title: String {
       switch self {
@@ -83,8 +83,10 @@ extension SelectTeamBlock {
 
 #Preview {
   SelectTeamBlock(
-    type: .my,
-    selectedTeam: .constant(.nc)
+    type: .vs,
+    baseballTeams: [],
+    year: "2015",
+    selectedTeamSymbol: .constant(BaseballTeamModel.dummy.symbol)
   )
 }
 

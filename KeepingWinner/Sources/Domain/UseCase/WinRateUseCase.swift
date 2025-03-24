@@ -12,210 +12,229 @@ import SwiftUI
 class WinRateUseCase {
   // MARK: - State
   struct State {
-    var selectedYearFilter: String = YearFilter.initialValue
+    var baseballTeams: [BaseballTeamModel] = []
+    var stadiums: [StadiumModel] = []
     
     // MARK: - Data State
-    var myTeam: BaseballTeam = .noTeam
-    var myTeamWinRate: Int?
-    var totalWinRate: Int? = 88
-    var eachTeamAnalytics: EachTeamAnalyticsModel = .init()
-    var eachStadiumsAnalytics: EachStadiumsAnalyticsModel = .init()
-    fileprivate var recordList: [GameRecordWithScoreModel] = []
-    var filteredRecordList: [GameRecordWithScoreModel] {
-      self.recordList.filtered(years: selectedYearFilter)
+    var myTeam: BaseballTeamModel = BaseballTeamModel.noTeam
+    var myTeamRealWinRate: Int?
+    var isAscending: Bool = true
+    
+    var isPresentedYearFilterSheet: Bool = false
+    var selectedYearFilter: String = YearFilter.initialValue
+    
+    fileprivate var records: [RecordModel] = []
+    var groupingOptions: [RecordGrouping] = []
+    var selectedGroupingOption: RecordGrouping = WeekdayRecordGrouping()
+    
+    var selectedGroupingOptionCategories: [String] = []
+    var selectedGroupingOptionRecords: [String: [RecordModel]] = [:]
+    
+    var recordWinRate: Int? { self.records.winRate }
+    var yearFilteredRecordList: [RecordModel] {
+      if selectedYearFilter != "전체" {
+        return self.records.filter { $0.date.year == selectedYearFilter }
+      } else {
+        return self.records
+      }
     }
   }
   
   // MARK: - Action
   enum Action {
     // MARK: - User Action
-    case tappedTeamChange(BaseballTeam) // MARK: - 팀 변경 시 다른 형태로 값 주입 필요 (현재 기존 형태)
-    case tappedAnalyticsYearFilter(to: String)
-    case updateRecords([GameRecordWithScoreModel]) // 새로운 기록이 추가되면 WinRate 다시 계산
-    case sendMyTeamInfo(BaseballTeam)
-    case setMyTeamWinRate
+    case tappedTeamChange(BaseballTeamModel) // MARK: - 팀 변경 시 다른 형태로 값 주입 필요 (현재 기존 형태)
+    case setYearFilter(to: String)
+    case presentingYearFilter(Bool)
+    
+    case _loadBaseballTeams
+    case _loadStadiums
+    case _loadMyTeamInfo
+    
+    case _loadAllRecords([BaseballTeamModel], [StadiumModel])
+    case _setGroupingOptions
+    
+    case tappedGroupingOption(any RecordGrouping)
+    case _sortCategories
+    
+    case tappedAscending
+    
+    case newRecord(RecordModel) // 새로운 기록이 추가되면 WinRate 다시 계산
+    case editRecord(RecordModel)
+    case removeRecord(UUID)
+    
+    case _loadMyTeamWinRate
+    case onAppear
   }
   
   private let gameRecordInfoService: GameRecordInfoService
-  private var _state: State = .init()
-  var state: State { _state }
+  private let recordService: RecordDataServiceInterface
+  private var userInfoService: MyTeamServiceInterface
+  private var baseballTeamService: BaseballTeamService = .live
+  private var stadiumService: StadiumService = .live
+  private(set) var state: State = .init()
   
   init(
     recordService: RecordDataServiceInterface,
     myTeamService: MyTeamServiceInterface,
     gameRecordInfoService: GameRecordInfoService
   ) {
+    self.recordService = recordService
     self.gameRecordInfoService = gameRecordInfoService
-    _state.myTeam = myTeamService.readMyTeam() ?? .noTeam
-    
-    switch recordService.readAllRecord() {
-    case .success(let allList):
-      self._state.recordList = allList
-      self.totalWinRate(recordList: allList)
-      self.vsAllTeamWinRate(recordList: allList)
-      self.vsAllStadiumsWinRate(recordList: allList)
-      
-    case .failure:
-      break
-    }
-    
-    effect(.setMyTeamWinRate)
-  }
-  
-  // MARK: - Preview용
-  init(
-    recordList: [GameRecordWithScoreModel],
-    recordService: RecordDataServiceInterface,
-    myTeamService: MyTeamServiceInterface,
-    gameRecordInfoService: GameRecordInfoService
-  ) {
-    self.gameRecordInfoService = gameRecordInfoService
-    _state.myTeam = myTeamService.readMyTeam() ?? .noTeam
-    _state.recordList = recordList
-    self.totalWinRate(recordList: recordList)
-    self.vsAllTeamWinRate(recordList: recordList)
-    self.vsAllStadiumsWinRate(recordList: recordList)
+    self.userInfoService = myTeamService
   }
   
   func effect(_ action: Action) {
     switch action {
-    case .setMyTeamWinRate:
-      Task {
-        if case let .success(winRate) = await gameRecordInfoService.teamWinRate(_state.myTeam.sliceName) {
-          _state.myTeamWinRate = winRate
-        } else {
-          _state.myTeamWinRate = nil
+    case .onAppear:
+      effect(._loadBaseballTeams)
+      effect(._loadStadiums)
+      effect(._loadMyTeamInfo)
+      effect(._loadAllRecords(state.baseballTeams, state.stadiums))
+      effect(._setGroupingOptions)
+      
+    case let ._loadAllRecords(baseballTeams, stadiums):
+      switch recordService
+        .readAllRecord(baseballTeams: baseballTeams, stadiums: stadiums) {
+      case .success(let records):
+        self._state.records = records
+        
+      case .failure:
+        break
+      }
+      
+    case ._loadBaseballTeams:
+      self.state.baseballTeams = self.baseballTeamService.teams()
+      return
+      
+    case ._loadStadiums:
+      self.state.stadiums = self.stadiumService.stadiums()
+      return
+      
+    case ._loadMyTeamInfo:
+      let myTeam = self.userInfoService.readMyTeam(baseballTeams: state.baseballTeams)
+      self.state.myTeam = myTeam ?? BaseballTeamModel.noTeam
+//      if !self.state.myTeam.isNoTeam {
+//        effect(._loadMyTeamWinRate)
+//      }
+      
+    case ._loadMyTeamWinRate:
+      Task { await loadMyTeamWinRate() }
+      
+    case let .tappedGroupingOption(selectedGrouping):
+      let yearFilterRecords = state.yearFilteredRecordList
+      var optionRecords: [String: [RecordModel]] = [:]
+      
+      for category in selectedGrouping
+        .categories(validYear: state.selectedYearFilter) {
+        optionRecords[category, default: []] = yearFilterRecords.filter {
+          selectedGrouping.matchesCategory(record: $0, category: category)
         }
       }
       
+      state.selectedGroupingOptionRecords = optionRecords
+      state.selectedGroupingOption = selectedGrouping
+      effect(._sortCategories)
+      
+    case .tappedAscending:
+      state.isAscending.toggle()
+      effect(._sortCategories)
+      
+    case .presentingYearFilter(let presenting):
+      state.isPresentedYearFilterSheet = presenting
+      
+    case ._sortCategories:
+      let categories = state.selectedGroupingOption.categories(validYear: state.selectedYearFilter)
+      
+      state.selectedGroupingOptionCategories = categories.sorted { lhs, rhs in
+        let leftRecords = state.selectedGroupingOptionRecords[lhs] ?? []
+        let rightRecords = state.selectedGroupingOptionRecords[rhs] ?? []
+        
+        let leftWinRate = leftRecords.winRate ?? -1
+        let rightWinRate = rightRecords.winRate ?? -1
+        
+        let isLeftCancelled = leftWinRate == -1
+        let isRightCancelled = rightWinRate == -1
+        
+        // 둘 다 취소 경기
+        if isLeftCancelled && isRightCancelled {
+          // 동일한 경기 수라면 custom sort 기준
+          if leftRecords.count == rightRecords.count {
+            return state.selectedGroupingOption.sortPriority(lhs, rhs)
+          }
+          // 더 많은 경기 수 우선
+          return leftRecords.count > rightRecords.count
+        }
+        
+        // 한쪽만 취소 경기
+        if isLeftCancelled { return false }
+        if isRightCancelled { return true }
+        
+        // 둘 다 정상 경기
+        if leftWinRate == rightWinRate {
+          return state.selectedGroupingOption.sortPriority(lhs, rhs)
+        }
+        
+        // 승률 기준 정렬
+        return state.isAscending ? leftWinRate > rightWinRate : leftWinRate < rightWinRate
+      }
+      
+      
+    case ._setGroupingOptions:
+      let baseballGrouping = BaseballTeamRecordGrouping(
+        baseballTeams: state.baseballTeams,
+        myTeam: state.myTeam
+      )
+      let stadiumGrouping = StadiumRecordGrouping(
+        stadiums: state.stadiums
+      )
+      let homeAwayGrouping = HomeAwayRecordGrouping(
+        myTeam: state.myTeam,
+        stadiums: state.stadiums
+      )
+      let weekdayGrouping = WeekdayRecordGrouping()
+      
+      state.groupingOptions = [
+        baseballGrouping,
+        stadiumGrouping,
+        homeAwayGrouping,
+        weekdayGrouping
+      ]
+      effect(.tappedGroupingOption(baseballGrouping))
+      
     case let .tappedTeamChange(team):
-      _state.myTeam = team
-      effect(.setMyTeamWinRate)
+      state.myTeam = team
+      effect(._setGroupingOptions)
+      effect(._loadMyTeamWinRate)
       
-    case let .tappedAnalyticsYearFilter(year): // 연도 정보 토대로 필터정보 변경
-      _state.selectedYearFilter = year
-      let recordList = _state.recordList.filtered(years: year)
-      self.vsAllTeamWinRate(recordList: recordList)
-      self.vsAllStadiumsWinRate(recordList: recordList)
+    case let .setYearFilter(year):
+      state.selectedYearFilter = year
+      effect(.tappedGroupingOption(state.selectedGroupingOption))
       
-    case .updateRecords(let records):
-      self._state.recordList = records
-      self.totalWinRate(recordList: records)
-      self.vsAllTeamWinRate(recordList: records)
-      self.vsAllStadiumsWinRate(recordList: records)
+    case .newRecord(let record):
+      state.records.append(record)
+      effect(.tappedGroupingOption(state.selectedGroupingOption))
       
-    case let .sendMyTeamInfo(myTeam):
-      _state.myTeam = myTeam
+    case .editRecord(let record):
+      guard let index = self.state.records.firstIndex(where: { $0.id == record.id }) else { return }
+      self.state.records[index] = record
+      effect(.tappedGroupingOption(state.selectedGroupingOption))
+      
+    case .removeRecord(let id):
+      guard let index = self.state.records.firstIndex(where: { $0.id == id }) else { return }
+      self.state.records.remove(at: index)
+      effect(.tappedGroupingOption(state.selectedGroupingOption))
     }
   }
   
-  // MARK: - Usecase Logic
-  /// 직관 기록을 통해 총 승률을 계산하고 입력합니다
-  private func totalWinRate(recordList: [GameRecordWithScoreModel])  {
+  @MainActor
+  func loadMyTeamWinRate() async {
+    let result = await gameRecordInfoService.teamWinRate(state.myTeam.name())
     
-    let totalGames = recordList.filter { $0.result != .cancel }.count // 취소를 제외한 경기 중 무승부를 포함한 전체 게임 수
-    let drawCount = recordList.filter { $0.result == .draw}.count // 무승부 수
-    let winCount = recordList.filter { $0.result == .win}.count // 이긴 게임 수
-    let winOrLoseGamesCount = totalGames - drawCount // 무승부를 제외한 전체 게임 수
-    
-    if winOrLoseGamesCount > 0 {
-      _state.totalWinRate = Int(Double(winCount) / Double(winOrLoseGamesCount) * 100)
+    if case let .success(winRate) = result {
+      state.myTeamRealWinRate = winRate
     } else {
-      _state.totalWinRate = nil
+      state.myTeamRealWinRate = nil
     }
-  }
-  /// 직관 기록을 통해 구단 별 승률을 계산하고 입력합니다
-  private func vsAllTeamWinRate(recordList: [GameRecordWithScoreModel]) {
-    var teamWins: [BaseballTeam: Int] = [:]
-    var teamGamesAll: [BaseballTeam: Int] = [:]
-    var teamGamesNotCancel: [BaseballTeam: Int] = [:]
-    var teamDraws: [BaseballTeam: Int] = [:]
-    let recordList = recordList.filtered(years: state.selectedYearFilter)
-    
-    for record in recordList {
-      let team = record.vsTeam
-      teamGamesAll[team, default: 0] += 1
-      
-      guard record.result != .cancel else { continue } // 취소 경기는 포함하지 않음
-      teamGamesNotCancel[team, default: 0] += 1
-      
-      if record.result == .win {
-        // 승리한 경우에만 승리 수 증가
-        teamWins[team, default: 0] += 1
-      }
-      
-      if record.result == .draw {
-        // 무승부인 경우 무승부 수 증가
-        teamDraws[team, default: 0] += 1
-      }
-    }
-    
-    // 각 팀의 승률 계산 및 상태에 저장
-    var vsTeamWinRate: [BaseballTeam: Int?] = [:]
-    var vsTeamRecordCount: [BaseballTeam: Int?] = [:]
-    
-    for team in BaseballTeam.recordBaseBallTeam {
-      let wins = teamWins[team] ?? 0
-      let gamesNotCancel = teamGamesNotCancel[team] ?? 0
-      let gamesAll = teamGamesAll[team]
-      let draws = teamDraws[team] ?? 0
-      
-      vsTeamRecordCount[team] = gamesAll
-      
-      if gamesNotCancel-draws > 0 {
-        vsTeamWinRate[team] = Int((Double(wins) / Double(gamesNotCancel-draws)) * 100)
-      }
-    }
-    
-    _state.eachTeamAnalytics.vsTeamWinRate = vsTeamWinRate
-    _state.eachTeamAnalytics.vsTeamRecordCount = vsTeamRecordCount
-  }
-  
-  /// 직관 기록을 통해 구장 별 승률을 계산하고 입력합니다
-  private func vsAllStadiumsWinRate(recordList: [GameRecordWithScoreModel]) {
-    var stadiumsWins: [String: Int] = [:]
-    var stadiumsGamesAll: [String: Int] = [:]
-    var stadiumsGamesNotCancel: [String: Int] = [:]
-    var stadiumsDraws: [String: Int] = [:]
-    let recordList = recordList.filtered(years: state.selectedYearFilter)
-    
-    for record in recordList {
-      let stadiums = record.stadiums
-      stadiumsGamesAll[stadiums, default: 0] += 1
-      
-      guard record.result != .cancel else { continue } // 취소 경기는 포함하지 않음
-
-      stadiumsGamesNotCancel[stadiums, default: 0] += 1
-      
-      if record.result == .win {
-        // 승리한 경우에만 승리 수 증가
-        stadiumsWins[stadiums, default: 0] += 1
-      }
-      
-      if record.result == .draw {
-        // 무승부인 경우 무승부 수 증가
-        stadiumsDraws[stadiums, default: 0] += 1
-      }
-    }
-    
-    // 각 팀의 승률 계산 및 상태에 저장
-    var stadiumsWinRate: [String: Int?] = [:]
-    var stadiumsRecordCount: [String: Int?] = [:]
-    
-    for stadiums in BaseballStadiums.nameList {
-      let wins = stadiumsWins[stadiums] ?? 0
-      let gamesNotCancel = stadiumsGamesNotCancel[stadiums] ?? 0
-      let gamesAll = stadiumsGamesAll[stadiums]
-      let draws = stadiumsDraws[stadiums] ?? 0
-      
-      stadiumsRecordCount[stadiums] = gamesAll
-      
-      if gamesNotCancel-draws > 0 {
-        stadiumsWinRate[stadiums] = Int((Double(wins) / Double(gamesNotCancel-draws)) * 100)
-      }
-    }
-    
-    _state.eachStadiumsAnalytics.stadiumsWinRate = stadiumsWinRate
-    _state.eachStadiumsAnalytics.stadiumsRecordCount = stadiumsRecordCount
   }
 }

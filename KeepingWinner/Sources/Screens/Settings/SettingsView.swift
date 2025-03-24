@@ -38,8 +38,8 @@ struct SettingsView: View {
     userInfoUseCase: .init(
       myTeamService: UserDefaultsService(),
       myNicknameService: UserDefaultsService(),
-      changeIconService: ChangeAppIconService(),
-      settingsService: .live
+      changeIconService: ChangeAppIconService(), 
+      settingsService: .preview
     )
   )
 }
@@ -71,7 +71,9 @@ struct ContentView: View {
             Image(.myPageFace)
               .resizable()
               .renderingMode(.template)
-              .foregroundStyle(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
+              .foregroundStyle(
+                userInfoUseCase.state.myTeam?.color() ?? KeepingWinningRule
+                  .noTeamBaseballModel.color())
             Image(.myPageLine)
               .resizable()
           }
@@ -151,7 +153,7 @@ struct ContentView: View {
         NavigationLink(
           destination: {
             NoticesView(notices: userInfoUseCase.state.notices)
-              .onAppear { userInfoUseCase.effect(.setNotices) }
+              .onAppear { userInfoUseCase.effect(.onAppear) }
               .navigationTitle("공지사항")
               .navigationBarTitleDisplayMode(.inline)
               .navigationBarBackButtonHidden(true)

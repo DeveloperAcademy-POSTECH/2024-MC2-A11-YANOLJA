@@ -10,20 +10,29 @@ import SwiftUI
 
 struct RecordListOrderButton: View {
   @Binding var sortByLatestDate: Bool
+  let firstTitle: String
+  let secondTitle: String
   
   var body: some View {
     Button(
       action: {
         sortByLatestDate.toggle()
     }) {
-      Image(systemName: "arrow.up.arrow.down")
-        .font(.subheadline)
-        .foregroundStyle(.gray)
-        .bold()
+      HStack(spacing: 4) {
+        Text(sortByLatestDate ? firstTitle : secondTitle)
+        Image(systemName: "arrow.up.arrow.down")
+      }
+      .font(.subheadline)
+      .foregroundStyle(.gray)
+      .bold()
     }
   }
 }
 
 #Preview {
-  RecordListOrderButton(sortByLatestDate: .constant(true))
+  RecordListOrderButton(
+    sortByLatestDate: .constant(true),
+    firstTitle: "",
+    secondTitle: ""
+  )
 }

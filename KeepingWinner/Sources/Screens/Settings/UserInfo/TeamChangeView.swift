@@ -14,7 +14,7 @@ struct TeamChangeView: View {
   @Bindable var winRateUseCase: WinRateUseCase
   @Bindable var userInfoUseCase: UserInfoUseCase
   
-  @State var selectedTeam: BaseballTeam? = nil
+  @State var selectedTeam: BaseballTeamModel? = nil
   
   var body: some View {
     HStack(spacing: 0) {
@@ -43,8 +43,12 @@ struct TeamChangeView: View {
     .frame(height: 44)
     .padding(.top, 16)
     .padding(.horizontal, 16)
+    
     VStack(spacing: 0) {
-      MyTeamSettingsContent(selectedTeam: $selectedTeam)
+      MyTeamSettingsContent(
+        baseballTeams: userInfoUseCase.state.myTeamOptions,
+        selectedTeam: $selectedTeam
+      )
         .presentationDragIndicator(.visible)
         .onAppear {
           selectedTeam = userInfoUseCase.state.myTeam

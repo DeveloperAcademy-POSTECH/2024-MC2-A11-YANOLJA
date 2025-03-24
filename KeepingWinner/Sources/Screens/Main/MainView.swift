@@ -17,16 +17,23 @@ struct MainView: View {
       Spacer()
       
       WinRatePercentage(
-        totalWinRate: winRateUseCase.state.totalWinRate,
-        myTeam: userInfoUseCase.state.myTeam
+        totalWinRate: winRateUseCase.state.recordWinRate,
+        teamColor: userInfoUseCase.state.myTeam?
+          .color() ?? BaseballTeamModel.noTeam.color()
       )
-      .foregroundColor(userInfoUseCase.state.myTeam?.mainColor ?? .noTeam1)
+      .foregroundColor(
+        userInfoUseCase.state.myTeam?
+          .color() ?? BaseballTeamModel.noTeam
+          .color()
+      )
       .padding(.bottom, 8)
       
       MainCharacterWithBubbleView(
         characterModel: .init(
-          myTeam: userInfoUseCase.state.myTeam ?? .noTeam,
-          totalWinRate: winRateUseCase.state.totalWinRate
+          symbol: userInfoUseCase.state.myTeam?.symbol ?? BaseballTeamModel.noTeam.symbol,
+          colorHex: userInfoUseCase.state.myTeam?
+            .colorHex() ?? BaseballTeamModel.noTeam.colorHex(),
+          totalWinRate: winRateUseCase.state.recordWinRate
         ),
         bubbleText: userInfoUseCase.state.bubbleTextList
       )
@@ -42,7 +49,7 @@ struct MainView: View {
 
 private struct WinRatePercentage: View {
   let totalWinRate: Int?
-  let myTeam: BaseballTeam?
+  let teamColor: Color
   
   var body: some View {
     HStack(alignment: .top, spacing: 13.5) {
@@ -55,7 +62,7 @@ private struct WinRatePercentage: View {
             .renderingMode(.template)
         }
       }
-      .foregroundStyle(myTeam?.mainColor ?? .noTeam1)
+      .foregroundStyle(teamColor)
     }
   }
 }
@@ -70,7 +77,10 @@ private struct NameBox: View {
           .resizable()
           .scaledToFit()
           .frame(height: 10)
-        Text(userInfoUseCase.state.myTeam?.name ?? BaseballTeam.noTeam.name)
+        Text(
+          userInfoUseCase.state.myTeam?
+            .name(type: .full) ?? KeepingWinningRule.noTeamName
+        )
           .font(.footnote)
         Image(systemName: "sparkle")
           .resizable()
@@ -97,7 +107,7 @@ private struct NameBox: View {
       userInfoUseCase: .init(
         myTeamService: UserDefaultsService(), myNicknameService: UserDefaultsService(),
         changeIconService: ChangeAppIconService(),
-        settingsService: .live
+        settingsService: .preview
       )
     )
   }
