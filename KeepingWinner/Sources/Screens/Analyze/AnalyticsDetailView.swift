@@ -91,7 +91,7 @@ struct AnalyticsDetailView: View {
       if records.isEmpty {
         HStack{
           Spacer()
-          Text("\(selectedCategory)와의 직관 기록이 없습니다")
+          Text("\(selectedCategory) 직관 기록이 없습니다.")
             .foregroundColor(.gray)
             .font(.callout)
             .padding(.bottom, 12)
