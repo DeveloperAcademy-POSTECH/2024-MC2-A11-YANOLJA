@@ -241,7 +241,15 @@ struct DetailRecordView: View {
         }
       )
     ) {
-      ForEach(recordUseCase.state.stadiums, id: \.id) { stadium in
+      ForEach(
+        recordUseCase.state.stadiums
+          .sorted { (lhs, rhs) in
+            let recordYear = recordUseCase.state.record.date.year
+            return lhs.name(year: recordYear).sortKRPriority(rhs.name(year: recordYear))
+          }
+        ,
+        id: \.id
+      ) { stadium in
         Text(stadium.name(year: recordUseCase.state.record.date.year))
           .tag(stadium.symbol) // tag를 Stadium 모델 전체로 설정
       }
