@@ -20,6 +20,17 @@ final class AllRecordUseCase {
     var baseballTeams: [BaseballTeamModel] = []
     var stadiums: [StadiumModel] = []
     var recordList: [RecordModel] = []
+    
+    var stadiumFilterOptions: [String] {
+      let yearStadiums = self.stadiums
+        .filter {
+          $0.isValid(in: Int(self.selectedYearFilter) ?? KeepingWinningRule.dataUpdateYear)
+        }
+      let extraStadium = self.recordList.filter { !yearStadiums.map { $0.symbol }.contains( $0.stadium.symbol) }
+      
+      return (yearStadiums.map { $0.name(year: self.selectedYearFilter) } + extraStadium.map { $0.stadium.name(year: $0.date.year) })
+        .sorted(by: { lhs, rhs in return lhs.sortKRPriority(rhs) })
+    }
   }
   
   // MARK: - Action

@@ -186,7 +186,8 @@ class WinRateUseCase {
         myTeam: state.myTeam
       )
       let stadiumGrouping = StadiumRecordGrouping(
-        stadiums: state.stadiums
+        stadiums: state.stadiums,
+        myRecords: state.records
       )
       let homeAwayGrouping = HomeAwayRecordGrouping(
         myTeam: state.myTeam,
