@@ -108,9 +108,15 @@ struct AllAnalyticsView: View {
         }
       )
       .yearPickerSheet(
-        isPresented: winRateUseCase.state.isPresentedYearFilterSheet,
+        isPresented: .init(
+          get: { winRateUseCase.state.isPresentedYearFilterSheet },
+          set: { presented in
+            winRateUseCase.effect(.presentingYearFilter(presented))
+          }
+        ),
         selectedYear: winRateUseCase.state.selectedYearFilter,
-        changeYearTo: { year in winRateUseCase.effect(.setYearFilter(to: year)) },
+        changeYearTo: { year in winRateUseCase.effect(.setYearFilter(to: year))
+        },
         goBackAction: { winRateUseCase.effect(.presentingYearFilter(false))
         }
       )
