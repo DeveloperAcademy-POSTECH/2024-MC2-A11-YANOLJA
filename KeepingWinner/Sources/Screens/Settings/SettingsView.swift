@@ -109,6 +109,7 @@ struct ContentView: View {
           destination: {
             PolicyView(viewType: .termsPolicy)
               .navigationTitle("이용약관")
+              .navigationBarTitleDisplayMode(.inline)
               .navigationBarBackButtonHidden(true)
               .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -123,6 +124,7 @@ struct ContentView: View {
           destination: {
             PolicyView(viewType: .personalPolicy)
               .navigationTitle("개인정보 처리방침")
+              .navigationBarTitleDisplayMode(.inline)
               .navigationBarBackButtonHidden(true)
               .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -137,6 +139,7 @@ struct ContentView: View {
           destination: {
             CreatorsView()
               .navigationTitle("승리지쿄를 만든 사람들")
+              .navigationBarTitleDisplayMode(.inline)
               .navigationBarBackButtonHidden(true)
               .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -152,6 +155,7 @@ struct ContentView: View {
             NoticesView(notices: userInfoUseCase.state.notices)
               .onAppear { userInfoUseCase.effect(.onAppear) }
               .navigationTitle("공지사항")
+              .navigationBarTitleDisplayMode(.inline)
               .navigationBarBackButtonHidden(true)
               .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

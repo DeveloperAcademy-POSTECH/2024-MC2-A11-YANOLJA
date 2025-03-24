@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Creators.svg",
+      "filename" : "chevron.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Creators 1.svg",
+      "filename" : "chevron 1.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Creators 2.svg",
+      "filename" : "chevron 2.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }

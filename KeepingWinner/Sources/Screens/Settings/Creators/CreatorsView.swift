@@ -15,58 +15,55 @@ struct CreatorsView: View {
   @State private var showEmailView: Bool = false
   
   var body: some View {
-    VStack(spacing: 0) {
-      ZStack{
-        
+    List {
+      Section() {
         Image("Creators")
           .resizable()
           .aspectRatio(contentMode: .fill)
           .frame(width: UIScreen.main.bounds.width)
+          .listRowInsets(EdgeInsets())
           .background(Color.brandColor)
       }
       
-      List {
-        Section(header: Text("팀 승리지쿄")) {
-          Button(action: {
-            openInstagram()
-          }) {
-            HStack {
-              Text("인스타그램")
-              Spacer()
-              Text("@keeping_winner")
-            }
-            
+      Section(header: Text("팀 승리지쿄")) {
+        Button(action: {
+          openInstagram()
+        }) {
+          HStack {
+            Text("인스타그램")
+            Spacer()
+            Text("@keeping_winner")
+              .foregroundStyle(.secondary)
+            Image("chevron")
           }
-          
-          Button(action: {
-            if MFMailComposeViewController.canSendMail() {
-              email.send(openURL: openURL)
-            } else {
-              showEmailView = true
-            }
-          }) {
-            HStack {
-              Text("이메일")
-              Spacer()
-              Image(systemName: "chevron.right")
-            }
+        }
+        Button(action: {
+          if MFMailComposeViewController.canSendMail() {
+            email.send(openURL: openURL)
+          } else {
+            showEmailView = true
+          }
+        }) {
+          HStack {
+            Text("이메일")
+            Spacer()
+            Text("go9danju"+"@gmail.com")
+              .foregroundStyle(.secondary)
+            Image("chevron")
           }
         }
       }
-      .tint(.black)
-      
     }
+    .tint(.black)
   }
   
   func openInstagram() {
-    let appURL = URL(string: "instagram://user?username=keeping_winner")! // 인스타그램 앱 URL
-    let webURL = URL(string: "https://instagram.com/keeping_winner")! // 웹 브라우저용 URL
+    let appURL = URL(string: "instagram://user?username=keeping_winner")!
+    let webURL = URL(string: "https://instagram.com/keeping_winner")!
     
     if UIApplication.shared.canOpenURL(appURL) {
-      // 인스타그램 앱이 설치되어 있으면 앱으로 이동
       openURL(appURL)
     } else {
-      // 설치되어 있지 않으면 웹 브라우저로 이동
       openURL(webURL)
     }
   }
