@@ -18,16 +18,12 @@ struct MyCharacterView: View {
           switch characterModel.emotionByWinRate {
           case .none:
             Image(.mainCharacter0Background)
-              .resizable()
             Image(.mainCharacter0Face)
-              .resizable()
               .renderingMode(.template)
             Image(.mainCharacter0Line)
-              .resizable()
             VStack {
               Spacer()
               Image(.mainCharacter0Shadow)
-                .resizable()
             }
             .frame(height: 280)
           case .veryBad:
