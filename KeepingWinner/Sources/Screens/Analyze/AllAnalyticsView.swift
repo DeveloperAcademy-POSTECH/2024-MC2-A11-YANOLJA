@@ -17,7 +17,7 @@ struct AllAnalyticsView: View {
   
   var body: some View {
     let yearFilteredRecordList = winRateUseCase.state.yearFilteredRecordList
-    NavigationStack {
+    NavigationView {
       VStack(spacing: 0) {
         Spacer()
           .frame(height: 30)
