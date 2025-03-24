@@ -23,8 +23,15 @@ struct StadiumRecordGrouping: RecordGrouping {
     if validYear != "전체" {
       return yearStadiums.map { $0.name(year: validYear) }
     } else {
-      let extraStadium = self.myRecords.filter { !yearStadiums.map { $0.symbol }.contains( $0.stadium.symbol) }
-      return (yearStadiums.map { $0.name(year: validYear) } + extraStadium.map { $0.stadium.name(year: $0.date.year) })
+      var seenSymbols: Set<String> = Set(yearStadiums.map { $0.symbol })
+      let extraStadium = self.myRecords.filter {
+        guard !seenSymbols.contains($0.stadium.symbol) else { return false }
+        seenSymbols.insert($0.stadium.symbol)
+        return true
+      }
+      
+      return (yearStadiums.map { $0.name() } +
+              extraStadium.map { $0.stadium.recentName() })
     }
   }
   

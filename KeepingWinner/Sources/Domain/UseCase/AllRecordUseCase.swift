@@ -26,10 +26,22 @@ final class AllRecordUseCase {
         .filter {
           $0.isValid(in: Int(self.selectedYearFilter) ?? KeepingWinningRule.dataUpdateYear)
         }
-      let extraStadium = self.recordList.filter { !yearStadiums.map { $0.symbol }.contains( $0.stadium.symbol) }
       
-      return (yearStadiums.map { $0.name(year: self.selectedYearFilter) } + extraStadium.map { $0.stadium.name(year: $0.date.year) })
+      if self.selectedYearFilter != "전체" {
+        return yearStadiums.map { $0.name(year: self.selectedYearFilter) }
+          .sorted(by: { lhs, rhs in return lhs.sortKRPriority(rhs) })
+      } else {
+        var seenSymbols: Set<String> = Set(yearStadiums.map { $0.symbol })
+        let extraStadium = self.recordList.filter {
+          guard !seenSymbols.contains($0.stadium.symbol) else { return false }
+          seenSymbols.insert($0.stadium.symbol)
+          return true
+        }
+        
+        return (yearStadiums.map { $0.name() } +
+                extraStadium.map { $0.stadium.recentName() })
         .sorted(by: { lhs, rhs in return lhs.sortKRPriority(rhs) })
+      }
     }
   }
   
