@@ -185,9 +185,7 @@ struct ShareCardView: View {
   
   // 인스타그램 공유 버튼을 통한 인스타그램 스토리 이동
   private func sharedToInstagramStory(_ image: UIImage) {
-    // MARK: - Meta Application ID
-    // 업데이트 이전 애플리케이션 ID를 개발 단계에서 라이브 단계로 바꿔놓아야 함! >> 브리 역할
-    let applicationID = "1318753709238862"
+    guard let applicationID = PrivateKey.getInstgram else { return } // 예외처리 필요
     guard let urlScheme = URL(string: "instagram-stories://share?source_application=\(applicationID)") else {
       presentShareSheet(for: image)
       return
