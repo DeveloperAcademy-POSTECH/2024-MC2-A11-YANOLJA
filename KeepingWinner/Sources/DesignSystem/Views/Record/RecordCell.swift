@@ -23,7 +23,7 @@ struct RecordCell: View {
               .opacity(0.5)
               .frame(width: 70, height: 70)
           } else {
-            Text(record.myTeamScore)
+            Text(record.myTeamScore.isEmpty ? "0" : record.myTeamScore)
               .jikyoFont(.recordCell)
               .foregroundStyle(myTeamScoreColor())
               .frame(width: 70, height: 70)
@@ -85,7 +85,7 @@ struct RecordCell: View {
                 .opacity(0.5)
                 .frame(width: 70, height: 70)
             } else {
-              Text(record.vsTeamScore)
+              Text(record.vsTeamScore.isEmpty ? "0" : record.vsTeamScore)
                 .jikyoFont(.recordCell)
                 .foregroundStyle(vsTeamScoreColor())
                 .frame(width: 70, height: 70)
