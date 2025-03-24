@@ -26,33 +26,32 @@ struct CreatorsView: View {
       }
       
       Section(header: Text("팀 승리지쿄")) {
-        NavigationLink(destination: EmptyView()) {
+        Button(action: {
+          openInstagram()
+        }) {
           HStack {
             Text("인스타그램")
             Spacer()
             Text("@keeping_winner")
               .foregroundStyle(.secondary)
+            Image("chevron")
           }
         }
-        .simultaneousGesture(TapGesture().onEnded {
-          openInstagram()
-        })
-        
-        NavigationLink(destination: EmptyView()) {
-          HStack {
-            Text("이메일")
-            Spacer()
-            Text("go9danju"+"@gmail.com")
-              .foregroundStyle(.secondary)
-          }
-        }
-        .simultaneousGesture(TapGesture().onEnded {
+        Button(action: {
           if MFMailComposeViewController.canSendMail() {
             email.send(openURL: openURL)
           } else {
             showEmailView = true
           }
-        })
+        }) {
+          HStack {
+            Text("이메일")
+            Spacer()
+            Text("go9danju"+"@gmail.com")
+              .foregroundStyle(.secondary)
+            Image("chevron")
+          }
+        }
       }
     }
     .tint(.black)
