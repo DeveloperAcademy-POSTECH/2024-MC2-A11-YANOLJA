@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     recordService: RecordDataService()
   )
   
-  
   let userInfoUseCase = UserInfoUseCase.init(
     myTeamService: UserDefaultsService(),
     myNicknameService: UserDefaultsService(),
@@ -36,12 +35,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     UserDefaultsService().save(data: true, key: .isPopGestureEnabled)
     
-    recordUseCase.effect(.onAppear)
-    winRateUseCase.effect(.onAppear)
     userInfoUseCase.effect(.onAppear)
+    winRateUseCase.effect(.onAppear)
+    recordUseCase.effect(.onAppear)
     
     Task {
-      await ResetRecordService().transferExRecordDataToPublicVersionRecordData()
+      if await ResetRecordService().transferExRecordDataToPublicVersionRecordData() {
+        winRateUseCase.effect(.onAppear)
+        recordUseCase.effect(.onAppear)
+      }
     }
     
     let appView = AppView(

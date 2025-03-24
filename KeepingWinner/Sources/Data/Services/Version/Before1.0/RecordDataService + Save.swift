@@ -23,6 +23,21 @@ extension RecordDataService: RecordUpdateServiceInterface {
     let recordContext = container.viewContext
     let newRecordData = RecordData(context: recordContext)
     
+    var myTeamSymbol = myTeamSymbol
+    var vsTeamSymbol = vsTeamSymbol
+    
+    if myTeamSymbol == "sk" {
+      myTeamSymbol = "ssg"
+    } else if myTeamSymbol == "nexen" {
+      myTeamSymbol = "kiwoom"
+    }
+    
+    if vsTeamSymbol == "sk" {
+      vsTeamSymbol = "ssg"
+    } else if vsTeamSymbol == "nexen" {
+      vsTeamSymbol = "kiwoom"
+    }
+    
     newRecordData.id = id
     newRecordData.date = date
     newRecordData.myTeam = myTeamSymbol
