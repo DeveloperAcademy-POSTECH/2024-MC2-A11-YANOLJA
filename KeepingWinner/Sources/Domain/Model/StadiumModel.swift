@@ -39,6 +39,15 @@ struct StadiumModel: Hashable, CheckValidYear {
     return name
   }
   
+  func recentName() -> String {
+    let name = self.histories.sorted {
+      let first = $0.dueYear ?? 9999
+      let second = $1.dueYear ?? 9999
+      return first >= second
+    }.first?.name ?? ""
+    return name
+  }
+  
   func contains(fullName: String) -> Bool {
     return self.histories.map { $0.name }.contains(fullName)
   }

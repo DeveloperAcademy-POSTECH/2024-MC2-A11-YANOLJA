@@ -21,21 +21,20 @@ struct CoreDataService {
     }
   }
   
-  private func saveRecord() -> Result<VoidResponse, Error> {
+  private func saveRecord(dateString: String, exMyTeamRawValue: String, exVSTeamRawValue: String = "doosan") -> Result<VoidResponse, Error> {
     let context = container.viewContext
     let newRecord = GameRecord(context: context)
     
-    let dateString = "24-08-14"
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yy-MM-dd"
     let date = dateFormatter.date(from: dateString) ?? .now
     
     newRecord.id = .init()
     newRecord.date = date
-    newRecord.myTeam = "kiwoom"
-    newRecord.vsTeam = "doosan"
-    newRecord.stadiums = "gocheok"
-    newRecord.result = "win"
+    newRecord.myTeam = exMyTeamRawValue
+    newRecord.vsTeam = exVSTeamRawValue
+    newRecord.stadiums = ""
+    newRecord.result = ""
     
     do {
       try context.save()
@@ -68,6 +67,7 @@ struct CoreDataService {
 
 extension CoreDataService: RecordLoadServiceInterface {
   func loadRecord() -> Result<[(id: UUID, date: Date, stadiumRawValue: String, myTeamSymbol: String, vsTeamSymbol: String)], any Error> {
+
     let context = container.viewContext
     let request: NSFetchRequest<GameRecord> = GameRecord.fetchRequest()
     

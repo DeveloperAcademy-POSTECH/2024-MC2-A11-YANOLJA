@@ -17,7 +17,7 @@ struct AllAnalyticsView: View {
   
   var body: some View {
     let yearFilteredRecordList = winRateUseCase.state.yearFilteredRecordList
-    NavigationStack {
+    NavigationView {
       VStack(spacing: 0) {
         Spacer()
           .frame(height: 30)
@@ -108,9 +108,15 @@ struct AllAnalyticsView: View {
         }
       )
       .yearPickerSheet(
-        isPresented: winRateUseCase.state.isPresentedYearFilterSheet,
+        isPresented: .init(
+          get: { winRateUseCase.state.isPresentedYearFilterSheet },
+          set: { presented in
+            winRateUseCase.effect(.presentingYearFilter(presented))
+          }
+        ),
         selectedYear: winRateUseCase.state.selectedYearFilter,
-        changeYearTo: { year in winRateUseCase.effect(.setYearFilter(to: year)) },
+        changeYearTo: { year in winRateUseCase.effect(.setYearFilter(to: year))
+        },
         goBackAction: { winRateUseCase.effect(.presentingYearFilter(false))
         }
       )

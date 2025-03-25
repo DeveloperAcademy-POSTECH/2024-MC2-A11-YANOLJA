@@ -9,7 +9,7 @@ import SwiftUI
 
 extension View {
   func yearPickerSheet(
-    isPresented: Bool,
+    isPresented: Binding<Bool>,
     selectedYear: String,
     changeYearTo: @escaping (String) -> Void,
     goBackAction: @escaping () -> Void
@@ -27,14 +27,14 @@ extension View {
 
 
 struct YearPickerSheetModifier: ViewModifier {
-  let isPresented: Bool
+  @Binding var isPresented: Bool
   var selectedYear: String
   var changeYearTo: (String) -> Void
   var goBackAction: () -> Void
   
   func body(content: Content) -> some View {
     content
-      .sheet(isPresented: .init(get: { isPresented }, set: { _ in })) {
+      .sheet(isPresented: $isPresented) {
         SelectYearContent(
           years: YearFilter.list,
           selectedYear: selectedYear,

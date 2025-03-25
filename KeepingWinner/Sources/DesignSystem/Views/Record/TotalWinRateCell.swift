@@ -30,7 +30,7 @@ struct TotalWinRateCell: View {
             }
             .font(.title)
             
-            HStack(spacing: 6) {
+            HStack(spacing: 3) {
               Text("\(listInfo.winCount)승")
               Text("\(listInfo.loseCount)패")
               Text("\(listInfo.drawCount)무")

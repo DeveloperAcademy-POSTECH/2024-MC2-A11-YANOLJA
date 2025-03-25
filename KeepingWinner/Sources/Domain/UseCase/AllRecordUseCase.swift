@@ -20,6 +20,29 @@ final class AllRecordUseCase {
     var baseballTeams: [BaseballTeamModel] = []
     var stadiums: [StadiumModel] = []
     var recordList: [RecordModel] = []
+    
+    var stadiumFilterOptions: [String] {
+      let yearStadiums = self.stadiums
+        .filter {
+          $0.isValid(in: Int(self.selectedYearFilter) ?? KeepingWinningRule.dataUpdateYear)
+        }
+      
+      if self.selectedYearFilter != "전체" {
+        return yearStadiums.map { $0.name(year: self.selectedYearFilter) }
+          .sorted(by: { lhs, rhs in return lhs.sortKRPriority(rhs) })
+      } else {
+        var seenSymbols: Set<String> = Set(yearStadiums.map { $0.symbol })
+        let extraStadium = self.recordList.filter {
+          guard !seenSymbols.contains($0.stadium.symbol) else { return false }
+          seenSymbols.insert($0.stadium.symbol)
+          return true
+        }
+        
+        return (yearStadiums.map { $0.name() } +
+                extraStadium.map { $0.stadium.recentName() })
+        .sorted(by: { lhs, rhs in return lhs.sortKRPriority(rhs) })
+      }
+    }
   }
   
   // MARK: - Action
@@ -55,9 +78,9 @@ final class AllRecordUseCase {
   func effect(_ action: Action) {
     switch action {
     case .onAppear:
-      effect(.renewAllRecord)
       effect(._loadBaseballTeamNames)
       effect(._loadStadiums)
+      effect(.renewAllRecord)
       
     case ._loadBaseballTeamNames:
       self.state.baseballTeams = self.baseballTeamService.teams()

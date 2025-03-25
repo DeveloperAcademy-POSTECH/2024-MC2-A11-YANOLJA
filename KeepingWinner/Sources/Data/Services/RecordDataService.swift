@@ -63,12 +63,15 @@ class RecordDataService: RecordDataServiceInterface {
     let recordContext = container.viewContext
     let newRecordData = RecordData(context: recordContext)
     
+    let myTeamScore = record.myTeamScore.isEmpty ? "0" : record.myTeamScore
+    let vsTeamScore = record.vsTeamScore.isEmpty ? "0" : record.vsTeamScore
+    
     newRecordData.id = record.id
     newRecordData.date = record.date
     newRecordData.myTeam = record.myTeam.symbol
     newRecordData.vsTeam = record.vsTeam.symbol
-    newRecordData.myTeamScore = Int32(record.myTeamScore) ?? 0
-    newRecordData.vsTeamScore = Int32(record.vsTeamScore) ?? 0
+    newRecordData.myTeamScore = Int32(myTeamScore) ?? 0
+    newRecordData.vsTeamScore = Int32(vsTeamScore) ?? 0
     newRecordData.isCancel = record.isCancel
     newRecordData.isDoubleHeader = Int32(record.isDoubleHeader)
     newRecordData.stadiums = record.stadium.symbol
@@ -98,11 +101,14 @@ class RecordDataService: RecordDataServiceInterface {
       let results = try recordContext.fetch(fetchRequest)
       if let recordToEdit = results.first {
         // 기존 데이터 수정
+        let myTeamScore = record.myTeamScore.isEmpty ? "0" : record.myTeamScore
+        let vsTeamScore = record.vsTeamScore.isEmpty ? "0" : record.vsTeamScore
+        
         recordToEdit.date = record.date
         recordToEdit.myTeam = record.myTeam.symbol
         recordToEdit.vsTeam = record.vsTeam.symbol
-        recordToEdit.myTeamScore = Int32(record.myTeamScore) ?? 0
-        recordToEdit.vsTeamScore = Int32(record.vsTeamScore) ?? 0
+        recordToEdit.myTeamScore = Int32(myTeamScore) ?? 0
+        recordToEdit.vsTeamScore = Int32(vsTeamScore) ?? 0
         recordToEdit.isCancel = record.isCancel
         recordToEdit.isDoubleHeader = Int32(record.isDoubleHeader)
         recordToEdit.stadiums = record.stadium.symbol
