@@ -59,13 +59,13 @@ struct AllRecordView: View {
           Group {
             switch selectedRecordFilter {
             case .all:
-              Text("\(RecordFilter.all.label) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+              Text("\(RecordFilter.all.label) 직관 기록이 없습니다. \n직관 기록을 추가하세요!")
             case .teamOptions(let baseballTeam):
-              Text("\(baseballTeam) 상대 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+              Text("\(baseballTeam) 상대 직관 기록이 없습니다. \n직관 기록을 추가하세요!")
             case .stadiumsOptions(let string):
-              Text("\(string) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+              Text("\(string) 직관 기록이 없습니다. \n직관 기록을 추가하세요!")
             case .resultsOptions(let gameResult):
-              Text("\(gameResult.label) 직관 기록이 없습니다 \n직관 기록을 추가하세요!")
+              Text("\(gameResult.label) 직관 기록이 없습니다. \n직관 기록을 추가하세요!")
             }
           }
             .multilineTextAlignment(.center)
@@ -128,7 +128,12 @@ struct AllRecordView: View {
       )
     }
     .yearPickerSheet(
-      isPresented: recordUseCase.state.isPresentedYearFilterSheet,
+      isPresented: .init(
+        get: { recordUseCase.state.isPresentedYearFilterSheet },
+        set: { presented in
+          recordUseCase.effect(.presentingYearFilter(presented))
+        }
+      ),
       selectedYear: recordUseCase.state.selectedYearFilter,
       changeYearTo: { year in recordUseCase.effect(.setYearFilter(to: year)) },
       goBackAction: { recordUseCase.effect(.presentingYearFilter(false)) }

@@ -35,29 +35,15 @@ struct RecordListFilterButton: View {
           }
       }
       Menu(RecordFilter.stadiumsOptions("").label) {
-        // MARK: - 구장별 선택 시 전체 유의 수정
         ForEach(
-          recordUseCase.state.stadiums
-            .filter { $0.isValid(
-              in: Int(
-                recordUseCase.state.selectedYearFilter
-              ) ?? KeepingWinningRule.dataUpdateYear
-            )
-            }
-            .sorted(by: {
-              let lhs = $0.name(year: recordUseCase.state.selectedYearFilter)
-              let rhs = $1.name(year: recordUseCase.state.selectedYearFilter)
-              return lhs.sortKRPriority(rhs)
-            })
-          ,
-          id: \.self) { stadium in
-            let name = stadium.name(year: recordUseCase.state.selectedYearFilter)
+          recordUseCase.state.stadiumFilterOptions,
+          id: \.self) { stadiumName in
             RecordFilterLabel(
               selectedRecordFilter: $selectedRecordFilter,
-              recordFilter: .stadiumsOptions(name),
-              showLabel: name
+              recordFilter: .stadiumsOptions(stadiumName),
+              showLabel: stadiumName
             )
-            .tag(stadium)
+            .tag(stadiumName)
           }
       }
       Menu(RecordFilter.resultsOptions(.cancel).label) {

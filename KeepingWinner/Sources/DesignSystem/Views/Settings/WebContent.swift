@@ -25,11 +25,13 @@ public struct WebContent: UIViewRepresentable {
   public func makeUIView(context: Context) -> WKWebView {
     let webView = WKWebView()
     webView.navigationDelegate = context.coordinator  // 델리게이트 설정
+    webView.isOpaque = false // 불투명도 비활성화 (배경이 투명하게 보이도록 설정)
+    webView.backgroundColor = UIColor.systemGray6  // 배경 색상 설정
     
     if let filePath = Bundle.main.path(forResource: htmlFileName, ofType: "html") {
-                let fileURL = URL(fileURLWithPath: filePath)
-                let request = URLRequest(url: fileURL)
-                webView.load(request)
+      let fileURL = URL(fileURLWithPath: filePath)
+      let request = URLRequest(url: fileURL)
+      webView.load(request)
     }
     
     return webView
