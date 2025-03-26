@@ -86,7 +86,7 @@ struct AppView: View {
                     )
                     Button(
                       action: { router.navigate(to: .settings)  },
-                      label: { Image(systemName: "gearshape") }
+                      label: { Image(systemName: "person") }
                     )
                   }
                 case .record:
