@@ -15,6 +15,7 @@ struct ShareCardView: View {
   
   @Binding var cardButtonTapped: Bool
   @State private var saveState: SaveState = .idle
+  @State private var showPermissionDeniedAlert = false
   
   var body: some View {
     ZStack {
@@ -51,11 +52,19 @@ struct ShareCardView: View {
         shareCardActionButtons
       }
       
-      if saveState == .saving {
-        overlayView("저장 중...")
-      } else if saveState == .saved {
+      if saveState == .saved {
         overlayView("저장됨", systemImage: "checkmark")
       }
+    }
+    .alert("사진 저장 권한이 필요합니다", isPresented: $showPermissionDeniedAlert) {
+      Button("설정") {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+          UIApplication.shared.open(url)
+        }
+      }
+      Button("취소", role: .cancel) {}
+    } message: {
+      Text("이미지를 저장하려면 설정에서 사진 접근 권한을 허용해 주세요.")
     }
   }
   
@@ -152,11 +161,22 @@ struct ShareCardView: View {
   }
   
   // 이미지 공유 버튼을 통한 PNG 이미지 저장
+  @MainActor
   private func saveImageToAlbum(_ image: UIImage) {
     saveState = .saving
     
     guard let pngData = image.pngData() else {
+      saveState = .idle
       return
+    }
+    
+    handlePhotoLibraryPermission { granted in
+      if granted {
+        self.saveImageDataToAlbum(pngData)
+      } else {
+        self.openSettingsAlert()
+        self.saveState = .idle
+      }
     }
     
     PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
@@ -164,23 +184,49 @@ struct ShareCardView: View {
         saveState = .idle
         return
       }
+    }
+  }
+  
+  @MainActor
+  private func handlePhotoLibraryPermission(completion: @escaping (Bool) -> Void) {
+    let currentStatus = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+    
+    switch currentStatus {
+    case .authorized:
+      completion(true)
       
-      PHPhotoLibrary.shared().performChanges({
-        let options = PHAssetResourceCreationOptions()
-        let creationRequest = PHAssetCreationRequest.forAsset()
-        creationRequest.addResource(with: .photo, data: pngData, options: options)
-      }) { success, error in
-        if success {
-          saveState = .saved
-          
-          DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            saveState = .idle
-          }
-        } else if error != nil {
-          saveState = .idle
+    case .notDetermined:
+      PHPhotoLibrary.requestAuthorization(for: .addOnly) { newStatus in
+        DispatchQueue.main.async {
+          completion(newStatus == .authorized)
         }
       }
+      
+    default:
+      completion(false)
     }
+  }
+  
+  @MainActor
+  private func saveImageDataToAlbum(_ data: Data) {
+    PHPhotoLibrary.shared().performChanges({
+      let options = PHAssetResourceCreationOptions()
+      let creationRequest = PHAssetCreationRequest.forAsset()
+      creationRequest.addResource(with: .photo, data: data, options: options)
+    }) { success, error in
+      if success {
+        self.saveState = .saved
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+          self.saveState = .idle
+        }
+      } else if error != nil {
+        self.saveState = .idle
+      }
+    }
+  }
+  
+  private func openSettingsAlert() {
+    showPermissionDeniedAlert = true
   }
   
   // 인스타그램 공유 버튼을 통한 인스타그램 스토리 이동
