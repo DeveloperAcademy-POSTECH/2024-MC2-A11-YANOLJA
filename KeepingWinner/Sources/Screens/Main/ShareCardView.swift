@@ -56,7 +56,7 @@ struct ShareCardView: View {
         overlayView("저장됨", systemImage: "checkmark")
       }
     }
-    .alert("사진 저장 권한이 필요합니다", isPresented: $showPermissionDeniedAlert) {
+    .alert("'승리지쿄'가 사용자의 사진에 카드를 저장하려고 합니다.", isPresented: $showPermissionDeniedAlert) {
       Button("설정") {
         if let url = URL(string: UIApplication.openSettingsURLString) {
           UIApplication.shared.open(url)
@@ -64,7 +64,7 @@ struct ShareCardView: View {
       }
       Button("취소", role: .cancel) {}
     } message: {
-      Text("이미지를 저장하려면 설정에서 사진 접근 권한을 허용해 주세요.")
+      Text("설정에서 사진 접근 권한을 허용해 주세요.")
     }
   }
   
