@@ -174,15 +174,7 @@ struct ShareCardView: View {
       if granted {
         self.saveImageDataToAlbum(pngData)
       } else {
-        self.openSettingsAlert()
         self.saveState = .idle
-      }
-    }
-    
-    PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
-      guard status == .authorized else {
-        saveState = .idle
-        return
       }
     }
   }
@@ -198,11 +190,19 @@ struct ShareCardView: View {
     case .notDetermined:
       PHPhotoLibrary.requestAuthorization(for: .addOnly) { newStatus in
         DispatchQueue.main.async {
+          UserDefaults.standard.set(true, forKey: "didJustRequestPhotoPermission")
           completion(newStatus == .authorized)
         }
       }
       
     default:
+      let justRequested = UserDefaults.standard.bool(forKey: "didJustRequestPhotoPermission")
+      UserDefaults.standard.set(false, forKey: "didJustRequestPhotoPermission")
+      
+      if !justRequested {
+        openSettingsAlert()
+      }
+      
       completion(false)
     }
   }
