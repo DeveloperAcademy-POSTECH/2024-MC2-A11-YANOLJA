@@ -15,4 +15,7 @@ protocol TrackUserActivityService {
   func tappedConfirmButtonToRecord()
   func tappedConfirmButtonWithMemo(_ count: Int)
   func tappedConfirmButtonWithPhoto(_ exists: Bool)
+  func tappedShareButtonToViewCard()
+  func tappedSaveButtonToDownloadCard()
+  func tappedShareButtonToShareInsta()
 }

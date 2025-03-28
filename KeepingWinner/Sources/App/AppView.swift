@@ -80,7 +80,10 @@ struct AppView: View {
                 case .main:
                   HStack(alignment: .top, spacing: 16) {
                     Button(
-                      action: { cardButtonTapped = true },
+                      action: {
+                        TrackUserActivityManager.shared.effect(.tappedShareButtonToViewCard)
+                        cardButtonTapped = true
+                      },
                       label: { Image(systemName: "square.and.arrow.down")
                         .offset(y: -2) }
                     )

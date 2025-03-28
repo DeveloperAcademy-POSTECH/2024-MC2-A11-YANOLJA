@@ -42,4 +42,22 @@ struct MixpanelService: TrackUserActivityService {
     let type = MixpanelDTO.uploadPicture
     Mixpanel.mainInstance().track(event: type.event, properties: [type.property: exists])
   }
+  
+  func tappedShareButtonToViewCard() {
+    let type = MixpanelDTO.viewCard
+    Mixpanel.mainInstance().track(event: type.event)
+    Mixpanel.mainInstance().people.increment(property: type.property, by: 1)
+  }
+  
+  func tappedSaveButtonToDownloadCard() {
+    let type = MixpanelDTO.saveCard
+    Mixpanel.mainInstance().track(event: type.event)
+    Mixpanel.mainInstance().people.increment(property: type.property, by: 1)
+  }
+  
+  func tappedShareButtonToShareInsta() {
+    let type = MixpanelDTO.shareInsta
+    Mixpanel.mainInstance().track(event: type.event)
+    Mixpanel.mainInstance().people.increment(property: type.property, by: 1)
+  }
 }

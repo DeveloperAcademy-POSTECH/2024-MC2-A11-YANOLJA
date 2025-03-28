@@ -14,6 +14,9 @@ enum MixpanelDTO {
   case completeButton
   case writeMemo
   case uploadPicture
+  case viewCard
+  case saveCard
+  case shareInsta
   
   var event: String {
     switch self {
@@ -22,6 +25,9 @@ enum MixpanelDTO {
     case .completeButton:  "CompleteButton"
     case .writeMemo:       "WriteMemo"
     case .uploadPicture:   "UploadPicture"
+    case .viewCard:        "ViewCard"
+    case .saveCard:        "SaveCard"
+    case .shareInsta:      "ShareInsta"
     }
   }
   
@@ -32,6 +38,9 @@ enum MixpanelDTO {
     case .completeButton:  "complete_button"
     case .writeMemo:       "write_memo_length"
     case .uploadPicture:   "uploaded_picture"
+    case .viewCard:        "view_card"
+    case .saveCard:        "save_card"
+    case .shareInsta:      "share_insta"
     }
   }
 }

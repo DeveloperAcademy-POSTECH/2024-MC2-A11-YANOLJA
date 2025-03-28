@@ -96,6 +96,9 @@ struct ShareCardView: View {
           .clipped(cornerRadius: 20)
         
         saveImageToAlbum(image)
+        
+        TrackUserActivityManager.shared
+          .effect(.tappedSaveButtonToDownloadCard)
       }
     }) {
       Label("이미지 저장", image: .saveIcon)
@@ -123,6 +126,9 @@ struct ShareCardView: View {
           .clipped(cornerRadius: 20)
         
         sharedToInstagramStory(image)
+        
+        TrackUserActivityManager.shared
+          .effect(.tappedShareButtonToShareInsta)
       }
     }) {
       Label("스토리 공유", image: .instagramIcon)
