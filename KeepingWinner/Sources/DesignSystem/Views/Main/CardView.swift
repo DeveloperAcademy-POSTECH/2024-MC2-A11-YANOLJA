@@ -102,7 +102,7 @@ struct CardNameBox: View {
         .padding(.vertical, 7)
         .background(
           RoundedRectangle(cornerRadius: 24)
-            .stroke(lineWidth: 2)
+            .stroke(lineWidth: 0.54)
             .foregroundStyle(Color(.systemGray))
         )
       
