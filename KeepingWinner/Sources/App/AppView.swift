@@ -84,7 +84,7 @@ struct AppView: View {
                         TrackUserActivityManager.shared.effect(.tappedShareButtonToViewCard)
                         cardButtonTapped = true
                       },
-                      label: { Image(systemName: "square.and.arrow.down")
+                      label: { Image(systemName: "square.and.arrow.up")
                         .offset(y: -2) }
                     )
                     Button(
