@@ -39,13 +39,7 @@ struct ShareCardView: View {
           }
           .padding(.bottom, 8)
           
-          CardView(
-            recordWinRate: winRateUseCase.state.recordWinRate,
-            myTeam: userInfoUseCase.state.myTeam?
-              .name(type: .full) ?? KeepingWinningRule.noTeamName,
-            myNickname: userInfoUseCase.state.myNickname,
-            characterModel: characterModel
-          )
+          cardView
         }
         .padding(.bottom, 16)
         
@@ -68,6 +62,16 @@ struct ShareCardView: View {
     }
   }
   
+  private var cardView: some View {
+    CardView(
+      recordWinRate: winRateUseCase.state.recordWinRate,
+      myTeam: userInfoUseCase.state.myTeam?
+        .name(type: .full) ?? KeepingWinningRule.noTeamName,
+      myNickname: userInfoUseCase.state.myNickname,
+      characterModel: characterModel
+    )
+  }
+  
   @ViewBuilder
   private var shareCardActionButtons: some View {
     if winRateUseCase.state.recordWinRate != nil {
@@ -84,13 +88,7 @@ struct ShareCardView: View {
   private var saveButton: some View {
     Button(action: {
       DispatchQueue.main.async {
-        let image = CardView(
-          recordWinRate: winRateUseCase.state.recordWinRate,
-          myTeam: userInfoUseCase.state.myTeam?
-            .name(type: .full) ?? KeepingWinningRule.noTeamName,
-          myNickname: userInfoUseCase.state.myNickname,
-          characterModel: characterModel
-        )
+        let image = cardView
           .drawingGroup()
           .asUIImage(size: CGSize(width: 280, height: 470))
           .clipped(cornerRadius: 20)
@@ -114,13 +112,7 @@ struct ShareCardView: View {
   private var shareButton: some View {
     Button(action: {
       DispatchQueue.main.async {
-        let image = CardView(
-          recordWinRate: winRateUseCase.state.recordWinRate,
-          myTeam: userInfoUseCase.state.myTeam?
-            .name(type: .full) ?? KeepingWinningRule.noTeamName,
-          myNickname: userInfoUseCase.state.myNickname,
-          characterModel: characterModel
-        )
+        let image = cardView
           .drawingGroup()
           .asUIImage(size: CGSize(width: 280, height: 470))
           .clipped(cornerRadius: 20)
