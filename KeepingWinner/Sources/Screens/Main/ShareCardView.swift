@@ -51,12 +51,12 @@ struct ShareCardView: View {
       }
     }
     .alert("'승리지쿄'가 사용자의 사진에 카드를 저장하려고 합니다.", isPresented: $showPermissionDeniedAlert) {
+      Button("취소") {}
       Button("설정") {
         if let url = URL(string: UIApplication.openSettingsURLString) {
           UIApplication.shared.open(url)
         }
       }
-      Button("취소", role: .cancel) {}
     } message: {
       Text("설정에서 사진 접근 권한을 허용해 주세요.")
     }
