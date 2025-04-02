@@ -19,7 +19,7 @@ struct ShareCardView: View {
   
   var body: some View {
     ZStack {
-      DarkBlurView(blurRadius: 20)
+      DarkBlurView()
         .ignoresSafeArea()
       
       VStack(spacing: 0) {

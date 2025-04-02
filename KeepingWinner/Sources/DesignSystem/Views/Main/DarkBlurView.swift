@@ -9,24 +9,13 @@ import SwiftUI
 import UIKit
 
 struct DarkBlurView: UIViewRepresentable {
-  var blurRadius: CGFloat
-  
-  func makeUIView(context: Context) -> UIVisualEffectView {
-    let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
-    let blurView = UIVisualEffectView(effect: blurEffect)
-    
-    if let blurEffectSubView = blurView.subviews.first(where: { String(describing: type(of: $0)).contains("VisualEffectSubview") }) {
-      blurEffectSubView.layer.filters = [makeBlurFilter()]
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialDark) // 가장 옅은 블러
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        return blurView
     }
-    
-    return blurView
-  }
-  
-  func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
-  
-  private func makeBlurFilter() -> CIFilter {
-    let filter = CIFilter(name: "CIGaussianBlur")!
-    filter.setValue(blurRadius, forKey: kCIInputRadiusKey)
-    return filter
-  }
+
+    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
 }
+
