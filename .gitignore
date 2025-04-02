@@ -58,16 +58,6 @@ DerivedData/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 
-### Projects ###
-*.xcodeproj
-*.xcworkspace
-
-### Tuist derived files ###
-graph.dot
-Derived/
-
-### Tuist managed dependencies ###
-Tuist/Dependencies
 
 ### Privacy ###
 *.xcconfig
