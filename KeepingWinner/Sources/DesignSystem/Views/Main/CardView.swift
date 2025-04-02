@@ -64,7 +64,7 @@ struct CardView: View {
         .padding(.top, 16)
       }
     } else {
-      Text("아직 승률을 볼 수 있는 경기가 없네요.\n승/패가 갈린 직관 기록이 필요해요!")
+      Text("아직 승률을 볼 수 있는 경기가 없네요.\n우리 다음 직관을 노려봐요!")
         .font(.footnote)
         .foregroundStyle(.black.opacity(0.5))
         .multilineTextAlignment(.center)
