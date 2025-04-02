@@ -14,6 +14,9 @@ class TrackUserActivityManager {
     case tappedMainCharacter
     case tappedPlusButtonToMakeRecord
     case tappedConfirmButtonToRecord(recording: RecordModel)
+    case tappedShareButtonToViewCard
+    case tappedSaveButtonToDownloadCard
+    case tappedShareButtonToShareInsta
   }
   
   static var shared: TrackUserActivityManager = .init()
@@ -44,6 +47,15 @@ class TrackUserActivityManager {
       trackConfirmButtonTapped()
       trackConfirmButton(withMemo: recording.memo)
       trackConfirmButton(withPhotoExists: recording.photo != nil)
+      
+    case .tappedShareButtonToViewCard:
+      trackShareButtonTapped()
+      
+    case .tappedSaveButtonToDownloadCard:
+      trackSaveButtonTapped()
+      
+    case .tappedShareButtonToShareInsta:
+      trackInstaButtonTapped()
     }
   }
   
@@ -67,5 +79,17 @@ class TrackUserActivityManager {
   
   private func trackConfirmButton(withPhotoExists exists: Bool) {
     trackService?.tappedConfirmButtonWithPhoto(exists)
+  }
+  
+  private func trackShareButtonTapped() {
+    trackService?.tappedShareButtonToViewCard()
+  }
+  
+  private func trackSaveButtonTapped() {
+    trackService?.tappedSaveButtonToDownloadCard()
+  }
+  
+  private func trackInstaButtonTapped() {
+    trackService?.tappedShareButtonToShareInsta()
   }
 }

@@ -14,6 +14,7 @@ public enum JikyoFontType {
   case mainWinRatePercentage
   case recordCell
   case recordCellInner
+  case cardWinRate
 }
 
 extension View {
@@ -35,6 +36,10 @@ extension View {
     case .recordCellInner:
       return self
         .font(Font.custom("SquadaOne-Regular", size: 50))
+        .kerning(0)
+    case .cardWinRate:
+      return self
+        .font(Font.custom("SixCaps", size: 270))
         .kerning(0)
     }
   }

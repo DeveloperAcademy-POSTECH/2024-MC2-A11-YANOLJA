@@ -44,6 +44,7 @@ struct MainView: View {
       
       Spacer()
     }
+    .frame(maxWidth: .infinity)
   }
 }
 

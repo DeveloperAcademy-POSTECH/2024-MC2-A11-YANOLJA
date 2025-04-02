@@ -12,4 +12,8 @@ enum PrivateKey {
   static var getMixpanel: String? {
     return Bundle.main.object(forInfoDictionaryKey: "MixpanelKEY") as? String
   }
+  
+  static var getInstgram: String? {
+    return Bundle.main.object(forInfoDictionaryKey: "InstagramID") as? String
+  }
 }
