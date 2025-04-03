@@ -382,18 +382,21 @@ struct DetailRecordView: View {
   }
   
   private var inputMemoField: some View {
-    TextField("한 줄 메모를 남겨 보세요.", text: Binding(
-      get: { recordUseCase.state.record.memo ?? "" },
-      set: { recordUseCase.effect(.inputMemo($0)) }
-    ))
-    .overlay(
-      alignment: .trailing,
-      content: {
-        Text("\(recordUseCase.state.record.memo?.count ?? 0) / 15")
-          .font(.callout)
-          .foregroundStyle(Color(uiColor: .systemGray2))
+      VStack(alignment: .trailing, spacing: 0) {
+          TextEditor(
+            text: Binding(
+                get: { recordUseCase.state.record.memo ?? "" },
+                set: { recordUseCase.effect(.inputMemo($0)) }
+            )
+          )
+          
+          Text("\(recordUseCase.state.record.memo?.count ?? 0) / 100")
+            .font(.callout)
+            .foregroundStyle(Color(uiColor: .systemGray2))
+            .padding(.bottom, 5)
+            
       }
-    )
+      .frame(maxHeight: 163)
   }
 }
 
