@@ -191,7 +191,7 @@ final class EditRecordUseCase {
         state.record.vsTeamScore = state.record.isCancel ? "-" : "0"
         
       case let .inputMemo(memo):
-        state.record.memo = String(memo.prefix(15))
+        state.record.memo = String(memo.prefix(100))
         
       case let .selectPhoto(photo):
         state.record.photo = photo
