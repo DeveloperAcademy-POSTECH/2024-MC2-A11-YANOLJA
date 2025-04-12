@@ -217,7 +217,11 @@ struct DetailRecordView: View {
   }
   
   private var selectDate: some View {
-    DatePicker(
+    let minDate = Calendar.current.date(from: DateComponents(year: 2015, month: 1, day: 1)) ?? Date()
+    let maxDate = Date()
+    let safeRange = minDate <= maxDate ? minDate...maxDate : maxDate...maxDate
+    
+    return DatePicker(
       "날짜",
       selection: .init(
         get: { recordUseCase.state.record.date },
@@ -225,10 +229,12 @@ struct DetailRecordView: View {
           recordUseCase.effect(.tappedChangeDate(date))
         }
       ),
-      in: Calendar.current
-        .date(from: DateComponents(year: 2015, month: 1, day: 1))!...Date(),
+      in: safeRange,
       displayedComponents: [.date]
     )
+    .onAppear {
+      recordUseCase.effect(.validateInitialDate)
+    }
   }
   
   private var selectStadium: some View {

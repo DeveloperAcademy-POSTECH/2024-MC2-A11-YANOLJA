@@ -63,6 +63,8 @@ final class EditRecordUseCase {
     case tappedConfirmToNew(Bool)
     case tappedDeleteRecord
     case tappedFirstDoubleButton(Bool)// true: 왼쪽. false: 오른쪽
+    
+    case validateInitialDate
   }
   
   private var myRecordService: RecordDataServiceInterface = RecordDataService()
@@ -224,6 +226,15 @@ final class EditRecordUseCase {
         
       case .tappedDeleteRecord:
         _ = myRecordService.removeRecord(id: state.record.id)
+      
+      case .validateInitialDate:
+        let minDate = Calendar.current.date(from: DateComponents(year: 2015, month: 1, day: 1)) ?? Date()
+        let maxDate = Date()
+        let safeDate = min(max(state.record.date, minDate), maxDate)
+      
+        if safeDate != state.record.date {
+          state.record.date = safeDate
+        }
       }
     }
   }
