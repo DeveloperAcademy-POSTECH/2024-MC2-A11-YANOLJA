@@ -226,7 +226,7 @@ struct DetailRecordView: View {
       selection: .init(
         get: { recordUseCase.state.record.date },
         set: { date in
-          recordUseCase.effect(.validateDateIfNeeded(date))
+          recordUseCase.effect(.tappedChangeDate(date))
         }
       ),
       in: safeRange,
