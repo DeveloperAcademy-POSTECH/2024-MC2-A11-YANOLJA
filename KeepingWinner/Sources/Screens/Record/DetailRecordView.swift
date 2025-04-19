@@ -233,7 +233,7 @@ struct DetailRecordView: View {
       displayedComponents: [.date]
     )
     .onAppear {
-      recordUseCase.effect(.validateDateIfNeeded(recordUseCase.state.record.date))
+      recordUseCase.effect(.validateDateIfNeeded)
     }
   }
   
