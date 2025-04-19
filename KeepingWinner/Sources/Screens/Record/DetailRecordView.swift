@@ -226,14 +226,14 @@ struct DetailRecordView: View {
       selection: .init(
         get: { recordUseCase.state.record.date },
         set: { date in
-          recordUseCase.effect(.tappedChangeDate(date))
+          recordUseCase.effect(.validateDateIfNeeded(date))
         }
       ),
       in: safeRange,
       displayedComponents: [.date]
     )
     .onAppear {
-      recordUseCase.effect(.validateInitialDate)
+      recordUseCase.effect(.validateDateIfNeeded(recordUseCase.state.record.date))
     }
   }
   
